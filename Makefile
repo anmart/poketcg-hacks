@@ -11,7 +11,7 @@ $(foreach obj, $(OBJS), \
 	$(eval $(obj:.o=)_dep = $(shell python $(EXTRAS)/scan_includes.py $(obj:.o=.asm))) \
 )
 
-all: tcg.gbc compare
+all: tcg.gbc
 
 compare: baserom.gbc tcg.gbc
 	cmp $^

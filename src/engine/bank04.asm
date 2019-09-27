@@ -1104,10 +1104,13 @@ _GameLoop: ; 126d1 (4:66d1)
 	scf
 	ret
 
+; Replaces CardPop since no one uses it
+; Also makes new game show the settings
+; then begin a new game like normal
 MainMenuFunctionTable:
-	dw MainMenu_CardPop
+	dw MainMenu_HackSettings
 	dw MainMenu_ContinueFromDiary
-	dw MainMenu_NewGame
+	dw MainMenu_HackedNewGame
 	dw MainMenu_ContinueDuel
 
 MainMenu_NewGame: ; 12704 (4:6704)
@@ -1142,8 +1145,8 @@ MainMenu_ContinueFromDiary: ; 12741 (4:6741)
 	farcall Func_70000
 	call EnableSRAM
 	xor a
-	ld [$ba44], a
-	call DisableSRAM
+	call HackDiaryContinueHook
+	call DisableSRAM ; 675a
 	ld a, GAME_EVENT_OVERWORLD
 	ld [wGameEvent], a
 	farcall $03, ExecuteGameEvent
@@ -1584,4 +1587,40 @@ Func_13485: ; 13485 (4:7485)
 	ret
 ; 0x134b1
 
-	INCROM $134b1, $14000
+	INCROM $134b1, $13ee6
+
+HackSettingMenu:
+	ld a, MUSIC_CREDITS
+	call PlaySong
+	farcall DrawHackSettings
+	farcall WhiteOutDMGPals
+	call DoFrameIfLCDEnabled
+	ld a, MUSIC_STOP
+	call PlaySong
+	; save settings
+	call EnableSRAM
+	ld a, [wHackSettingsCardLossAmt]
+	ld [sHackSettingsCardLossAmt], a
+	ld a, [wHackSettingsBoosterAdd]
+	ld [sHackSettingsBoosterAdd], a
+	call DisableSRAM
+	scf
+	ret
+
+MainMenu_HackedNewGame:
+	call HackSettingMenu
+	jp MainMenu_NewGame
+
+MainMenu_HackSettings:
+	call HackSettingMenu
+	jp MainMenu_ContinueFromDiary
+
+HackDiaryContinueHook:
+	; removed code
+	ld [$ba44], a
+	; Now my code
+	ld a, [sHackSettingsCardLossAmt]
+	ld [wHackSettingsCardLossAmt], a
+	ld a, [sHackSettingsBoosterAdd]
+	ld [wHackSettingsBoosterAdd], a
+	ret

@@ -889,7 +889,7 @@ TextOffsets:: ; 34000 (d:4000)
 	textpointer Text0375                                 ; 0x0375
 	textpointer Text0376                                 ; 0x0376
 	textpointer Text0377                                 ; 0x0377
-	textpointer Text0378                                 ; 0x0378
+	textpointer HackCardLossAmount                                 ; 0x0378
 	textpointer Text0379                                 ; 0x0379
 	textpointer Text037a                                 ; 0x037a
 	textpointer Text037b                                 ; 0x037b
@@ -1970,7 +1970,7 @@ TextOffsets:: ; 34000 (d:4000)
 	textpointer Text07ae                                 ; 0x07ae
 	textpointer Text07af                                 ; 0x07af
 	textpointer Text07b0                                 ; 0x07b0
-	textpointer Text07b1                                 ; 0x07b1
+	textpointer HackCredits                                 ; 0x07b1
 	textpointer Text07b2                                 ; 0x07b2
 	textpointer Text07b3                                 ; 0x07b3
 	textpointer Text07b4                                 ; 0x07b4
@@ -1982,7 +1982,7 @@ TextOffsets:: ; 34000 (d:4000)
 	textpointer Text07ba                                 ; 0x07ba
 	textpointer Text07bb                                 ; 0x07bb
 	textpointer Text07bc                                 ; 0x07bc
-	textpointer Text07bd                                 ; 0x07bd
+	textpointer HackBoosterMultMod                                 ; 0x07bd
 	textpointer Text07be                                 ; 0x07be
 	textpointer Text07bf                                 ; 0x07bf
 	textpointer Text07c0                                 ; 0x07c0

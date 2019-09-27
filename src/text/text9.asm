@@ -719,10 +719,10 @@ Text07b0: ; 56478 (15:6478)
 	line "when we Duel again!"
 	done
 
-Text07b1: ; 564db (15:64db)
+HackCredits: ; 564db (15:64db)
 	text ""
 	line "        Pokémon Trading Card Game "
-	line "                  Staff"
+	line "             Mod by Aroymart "
 	done
 
 Text07b2: ; 56518 (15:6518)
@@ -816,20 +816,18 @@ Text07bc: ; 56873 (15:6873)
 	line "             Takumi Akabane"
 	done
 
-Text07bd: ; 568b1 (15:68b1)
+HackBoosterMultMod: ; 568b1 (15:68b1)
 	text ""
-	line "            Card Game Creator"
-	line ""
-	line ""
-	line "             Kouichi Oyama"
+	line "extra boosters  "
+	line "   1   2   3   4   5   6   7   8   9"
 	done
 
 Text07be: ; 568ee (15:68ee)
 	text ""
-	line "            Card Game Creator"
+	line "Card Game Creators"
 	line ""
 	line ""
-	line "              Akihiko Miura"
+	line "      Kouichi Oyama & Akihiko Miura"
 	done
 
 Text07bf: ; 5692c (15:692c)

@@ -2731,4 +2731,13 @@ wMusicChannelStackPointersBackup:: ; dead
 wMusicCh1StackBackup:: ; deb5
 	ds $c * 4
 
+wHackSettingsCardLossAmt::
+	ds $1
+wHackSettingsBoosterAdd::
+	ds $1
+wHackSettingsCurrentSelected::
+	ds $1
+wHackSettingsCursorOn::
+	ds $1
+
 INCLUDE "sram.asm"

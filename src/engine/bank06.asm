@@ -3434,6 +3434,165 @@ Func_1bae4: ; 1bae4 (6:7ae4)
 	scf
 	ret
 
-rept $508
+; Some quick EQU's to explain magic numbers
+HACK_CURSOR_OFFSET		EQU $98
+HACK_CURSOR_FLASH_TIME		EQU $0a
+HACK_SETTINGS_Y1		EQU $48
+HACK_SETTINGS_Y2		EQU $70
+
+DrawHackSettings:
+	push bc ; I don't think the menu select used these
+	push hl ; But better safe than sorry
+	push de
+
+	call Set_OBJ_8x8
+
+	; seems to load cursor to every unused sprite loc
+	; just gonna use the last two for this
+	; (Most things use cursors in the bg)
+	farcall LoadCursorTile
+
+	call DrawTextboxForKeyboard
+	ld hl, HackSettingsTexts
+	call PlaceTextItems
+	jr .drawSprites
+
+.updateOptionSelection
+	and D_UP | D_DOWN
+	jr z, .handleLeftRight
+
+	; this only works because there are exactly 2 options
+	ld hl, wHackSettingsCurrentSelected
+	inc [hl]
+	ld a, 1
+	and [hl]
+	ld [hl], a
+
+.handleLeftRight
+	ldh a, [hKeysPressed]
+	and D_LEFT | D_RIGHT
+	jr z, .drawSprites
+	and D_LEFT
+	jr nz, .left
+	ld b, $01
+	jr .getWramAddress
+
+.left
+	ld b, $ff
+
+.getWramAddress
+	ld hl, wHackSettingsCardLossAmt
+	ld a, [wHackSettingsCurrentSelected]
+	cp $01
+	jr nz, .addLeftRight
+	inc hl
+
+.addLeftRight
+	ld a, b
+	add [hl]
+	cp $ff
+	jr z, .fixLeftFlow
+	cp $09 ; max setting value + 1
+	jr c, .storeSetting
+	xor a
+	jr .storeSetting
+
+.fixLeftFlow
+	ld a, $08
+
+.storeSetting
+	ld [hl], a
+
+.drawSprites
+	ld a, [wHackSettingsCardLossAmt]
+	call HackSettingsGetCursorX
+	ld d, a
+	ld a, [wHackSettingsBoosterAdd]
+	call HackSettingsGetCursorX
+	ld e, a
+
+	ld hl, wOAM + HACK_CURSOR_OFFSET
+
+	ld a, HACK_SETTINGS_Y1
+	ld [hli], a
+	ld [hl], d
+	inc hl
+	inc hl
+	inc hl
+
+	ld a, HACK_SETTINGS_Y2
+	ld [hli], a
+	ld [hl], e
+
+.loopOut
+	ld e, HACK_CURSOR_FLASH_TIME
+	ld a, 1
+	ld [wHackSettingsCursorOn], a
+.loop
+	ld a, 1
+	ld [wVBlankOAMCopyToggle], a
+	call DoFrame
+	ldh a, [hKeysPressed]
+	and B_BUTTON | D_PAD
+	jr nz, .buttonPressed
+	dec e
+	jr nz, .loop
+	ld a, [wHackSettingsCursorOn]
+	cp $00
+	jr z, .drawSprites
+
+	ld a, [wHackSettingsCurrentSelected]
+	cp $00
+	ld c, HACK_CURSOR_OFFSET
+	jr z, .moveSelectedCursor
+	; same number of bytes as adding
+	inc c
+	inc c
+	inc c
+	inc c
+
+.moveSelectedCursor
+	xor a
+	ld b, a
+	ld hl, wOAM
+	add bc
+	ld [wHackSettingsCursorOn], a
+	ld [hl], $ff
+	ld e, HACK_CURSOR_FLASH_TIME
+	jr .loop
+
+.buttonPressed
+	and D_PAD
+	jp nz, .updateOptionSelection
+
+.quit
+	pop de
+	pop hl
+	pop bc
+	ret
+
+; a - pos
+; eats bc and hl
+HackSettingsGetCursorX:
+	ld hl, HackSettingsCursorXMap
+	ld c, a
+	ld b, 0
+	add hl, bc
+	ld a, [hl]
+	ret
+
+HackSettingsTexts:
+	db $1
+	db $5
+	tx HackCardLossAmount ; otherwise known as difficulty?
+	db $1
+	db $8
+	tx HackBoosterMultMod
+	db $1
+	db $c
+	tx HackCredits
 	db $ff
-endr
+
+; Shared between both settings
+HackSettingsCursorXMap:
+	db $13, $23, $33, $43, $53, $63, $73, $83, $93

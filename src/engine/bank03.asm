@@ -3037,12 +3037,18 @@ OWSequence_d753: ; d753 (3:5753)
 	run_script OWScript_MovePlayer
 	db $00
 	db $02
+
+	; Skip to the end of the tutorial
+	run_script OWScript_Jump
+	dw $5854
+
 	run_script OWScript_PrintTextString
 	tx Text05e3
 	run_script OWScript_CloseAdvancedTextBox
-	run_script Func_d088
+	; keep byte amount
+	; run_script Func_d088
 	db SAM
-	dw OWSequence_d779
+	;dw OWSequence_d779
 	run_script OWScript_EndScriptLoop1
 	ret
 

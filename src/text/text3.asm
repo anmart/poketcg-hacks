@@ -1274,21 +1274,23 @@ Text036c: ; 3ec0c (f:6c0c)
 	done
 
 Text036d: ; 3ec16 (f:6c16)
-	text "CARD POP!"
+	text "SETTINGS & CONT."
 	line "CONTINUE FROM DIARY"
 	line "NEW GAME"
 	done
+	nop
 
 Text036e: ; 3ec3e (f:6c3e)
-	text "CARD POP!"
+	text "SETTINGS & CONT."
 	line "CONTINUE FROM DIARY"
 	line "New Game"
 	line "CONTINUE DUEL"
 	done
+	nop
 
 Text036f: ; 3ec74 (f:6c74)
-	text "When you CARD POP! with a friend,"
-	line "you will each receive a new card!"
+	text "Settings for this romhack"
+	line "  github: bit.ly/PTCGHack"
 	done
 
 Text0370: ; 3ecb9 (f:6cb9)
@@ -1351,10 +1353,10 @@ Text0377: ; 3ef50 (f:6f50)
 	text "CONTINUE FROM DIARY?"
 	done
 
-Text0378: ; 3ef66 (f:6f66)
-	text "You can access Card Pop! only"
-	line "with two Game Boy Colors."
-	line "Please play using a Game Boy Color."
+HackCardLossAmount: ; 3ef66 (f:6f66)
+	text "Pokemon/Trainers To Lose     "
+	line "   1   2   3   4   5   6   7   8   9"
+	line "                        "
 	done
 
 Text0379: ; 3efc3 (f:6fc3)
