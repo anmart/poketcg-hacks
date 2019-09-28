@@ -451,10 +451,10 @@ Text0617: ; 4dafe (13:5afe)
 	done
 
 Text0618: ; 4db74 (13:5b74)
-	text "I wonder if the Legendary Cards"
-	line "are pretty?"
-	line "If they're sparkly, I'll be"
-	line "really happy."
+	text "I heard Aroymart is a really   "
+	line "cool hacker."
+	line "Oh, You don't think so?    "
+	line "Okay........."
 	done
 
 Text0619: ; 4dbcb (13:5bcb)

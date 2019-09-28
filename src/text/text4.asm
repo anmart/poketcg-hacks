@@ -433,10 +433,10 @@ Text0429: ; 41f2d (10:5f2d)
 	done
 
 Text042a: ; 41fc7 (10:5fc7)
-	text "All Amy, the Master of this Club,"
-	line "does lately is sleep."
-	line "She's bored because she doesn't"
-	line "have anybody to duel."
+	text "Hello Hacker Friend. Here's the "
+	line "deal. if you hack this"
+	line "I will be really excited-cause "
+	line "that's pretty cool.  "
 	done
 
 Text042b: ; 42036 (10:6036)
@@ -830,10 +830,10 @@ Text0467: ; 43221 (10:7221)
 	done
 
 Text0468: ; 43325 (10:7325)
-	text "What? You're still here?"
-	line "OK, sit over there."
-	line "What? You're already sitting?"
-	line "OK, OK! Then let's get started!"
+	text "Are you collecting all  "
+	line "of the cards?      "
+	line "That's a tough challenge     "
+	line "considering these conditions!  "
 	done
 
 Text0469: ; 43391 (10:7391)

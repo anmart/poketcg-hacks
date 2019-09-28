@@ -120,10 +120,10 @@ Text074d: ; 5471b (15:471b)
 	done
 
 Text074e: ; 54740 (15:4740)
-	text "I get so involved in the Pokémon "
-	line "Trading Card Game, I lose track "
-	line "of time. Isn't the Pokémon Trading"
-	line "Card Game really fun?"
+	text "Whoa, why are you talking to me? "
+	line "Most people that come by here go"
+	line "really fast, and just ignore me..."
+	line "they must love speed!"
 	done
 
 Text074f: ; 547bd (15:47bd)

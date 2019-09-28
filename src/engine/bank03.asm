@@ -3885,7 +3885,7 @@ HackPreventInfiniteBattle:
 OWJump_NoUsablePokemon:
 	; no start_script as this is a jump point
 	run_script OWScript_DoFrames
-	db $3c
+	db $20
 	run_script OWScript_PrintTextString
 	tx TextHackNoPokemon
 	run_script OWScript_EndScriptCloseText
