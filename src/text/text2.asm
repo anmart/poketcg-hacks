@@ -864,21 +864,19 @@ Text0199: ; 39f59 (e:5f59)
 	text "Received from <RAMNAME>."
 	done
 
-Text019a: ; 39f6b (e:5f6b)
-	text "Sending a card...Move the Game"
-	line "Boys close and press the A Button."
+TextHackNoPokemon: ; 39f6b (e:5f6b)
+	text "Oh! you don't have any pokemon"
+	line "in your deck? Bold Move I guess..."
+	line "But it's not really how"
+	line "I want to play. Maybe Edit   "
+	line "Your deck first before trying  "
+	line "to battle me again?                "
+	done
+	done
 	done
 
 Text019b: ; 39fae (e:5fae)
-	text "Receiving a card...Move"
-	line "the Game Boys close together."
-	done
-
 Text019c: ; 39fe5 (e:5fe5)
-	text "Sending a Deck Configuration..."
-	line "Position the Game Boys and press A."
-	done
-
 Text019d: ; 3a02a (e:602a)
 	text "Receiving Deck configuration..."
 	line "Position the Game Boys and press A."

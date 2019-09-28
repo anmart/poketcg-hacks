@@ -1797,7 +1797,9 @@ OWScript_AskQuestionJump: ; cce9 (3:4ce9)
 ; args - prize cards, deck id, duel theme index
 ; sets a battle up, doesn't start until we break out of the script system.
 OWScript_StartBattle: ; cd01 (3:4d01)
-	call Func_cd66
+	;call Func_cd66
+	jp HackPreventInfiniteBattle ; jp in case we cancel the battle
+.startBattleForReal
 	ld a, [wd3b6]
 	ld l, $0
 	call Func_39ad
@@ -3695,7 +3697,7 @@ HackRemoveCards:
 	add a
 	ld c, a
 	ld b, 0
-	ld hl, HackDeckLocations
+	ld hl, HackDeckEndLocations
 	add hl, bc
 	ld a, [hli]
 	ld h, [hl]
@@ -3730,6 +3732,11 @@ HackRemoveCards:
 .removeCards
 	ld a, [wHackSettingsCardLossAmt]
 	inc a
+	cp b
+	jr c, .contRemoveCards
+	ld a, b ; also goes here if equal -- but they're equal
+
+.contRemoveCards
 	ld c, a
 	inc hl ; it's one behind from previous loop
 .removeCardsLoop
@@ -3780,9 +3787,11 @@ HackRemoveCards:
 	ld [de], a
 
 	dec b
+	jr z, .noMoreCardsToRemove
 	dec c
 	jr nz, .removeCardsLoop
 
+.noMoreCardsToRemove
 ; Here we actually tell the player what cards they lost
 	ld a, $ff
 	ld [wHackRemovedCards], a ; store ff as a stopper for later
@@ -3794,6 +3803,11 @@ HackRemoveCards:
 
 	ld a, [wHackSettingsCardLossAmt]
 	inc a
+	cp 10 ; we only have 9 text spaces open
+	jr c, .validCardLossAmt
+	ld a, 9 ; set a maximum display
+
+.validCardLossAmt
 	ld c, a
 	ld b, 0
 	ld hl, wHackRemovedCards
@@ -3829,9 +3843,61 @@ HackRemoveCards:
 	pop de
 	ret
 
+HackPreventInfiniteBattle:
+	; I have no idea what the script system truly needs
+	; so i'm being safe
+	push hl
+	push de
+	push bc
+	push af
+	call EnableSRAM
+	ld a, [sCurrentlySelectedDeck]
+	add a
+	ld b, 0
+	ld c, a
+	ld hl, HackDeckStartLocations
+	add hl, bc
+	ld a, [hli]
+	ld h, [hl]
+	ld l, a
+
+	; hl points to our currrently selected deck
+	farcall 2, $564c
+	jr c, .continueBattle
+	call DisableSRAM
+	pop af
+	pop bc
+	pop de
+	pop hl
+	ld bc, OWJump_NoUsablePokemon
+	jp SetOWScriptPointer
+
+.continueBattle
+	call DisableSRAM
+	pop af
+	pop bc
+	pop de
+	pop hl
+	; Removed code:
+	call Func_cd66
+	jp OWScript_StartBattle.startBattleForReal
+
+OWJump_NoUsablePokemon:
+	; no start_script as this is a jump point
+	run_script OWScript_DoFrames
+	db $3c
+	run_script OWScript_PrintTextString
+	tx TextHackNoPokemon
+	run_script OWScript_EndScriptCloseText
+
 ; I'm lazy and this is easy
-; Also we're going backwards so point to last item
-HackDeckLocations:
+HackDeckStartLocations:
+	dw sDeck1Cards
+	dw sDeck2Cards
+	dw sDeck3Cards
+	dw sDeck4Cards
+
+HackDeckEndLocations:
 	dw sDeck1Cards + 59
 	dw sDeck2Cards + 59
 	dw sDeck3Cards + 59

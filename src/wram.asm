@@ -2741,7 +2741,7 @@ wHackSettingsCursorOn::
 	ds $1
 ; backwards, $ff terminated
 wHackRemovedCards::
-	ds $a
+	ds 60
 wHackTextBuffer::
 	ds $25
 ; $ff terminated

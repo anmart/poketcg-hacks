@@ -411,7 +411,7 @@ TextOffsets:: ; 34000 (d:4000)
 	textpointer Text0197                                 ; 0x0197
 	textpointer Text0198                                 ; 0x0198
 	textpointer Text0199                                 ; 0x0199
-	textpointer Text019a                                 ; 0x019a
+	textpointer TextHackNoPokemon                                 ; 0x019a
 	textpointer Text019b                                 ; 0x019b
 	textpointer Text019c                                 ; 0x019c
 	textpointer Text019d                                 ; 0x019d
