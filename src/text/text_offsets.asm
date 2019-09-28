@@ -395,10 +395,10 @@ TextOffsets:: ; 34000 (d:4000)
 	textpointer Text0187                                 ; 0x0187
 	textpointer Text0188                                 ; 0x0188
 	textpointer Text0189                                 ; 0x0189
-	textpointer Text018a                                 ; 0x018a
+	textpointer TextHackBlank                                 ; 0x018a
 	textpointer Text018b                                 ; 0x018b
 	textpointer Text018c                                 ; 0x018c
-	textpointer Text018d                                 ; 0x018d
+	textpointer TextHackUpdateDeck                                 ; 0x018d
 	textpointer Text018e                                 ; 0x018e
 	textpointer ReceivedCardText                         ; 0x018f
 	textpointer ReceivedPromotionalCardText              ; 0x0190
@@ -638,7 +638,7 @@ TextOffsets:: ; 34000 (d:4000)
 	textpointer Text027a                                 ; 0x027a
 	textpointer Text027b                                 ; 0x027b
 	textpointer Text027c                                 ; 0x027c
-	textpointer Text027d                                 ; 0x027d
+	textpointer TextHackRemoveCard                                 ; 0x027d
 	textpointer Text027e                                 ; 0x027e
 	textpointer Text027f                                 ; 0x027f
 	textpointer Text0280                                 ; 0x0280

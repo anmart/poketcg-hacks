@@ -3675,4 +3675,53 @@ HackGiveBoosterPacks:
 	dec e
 	jr nz, .loop
 
+	call HackRemovePokemon
+
 	jp OWScript_GiveBoosterPacks.asm_ceb4
+
+HackRemovePokemon:
+	push de
+	push bc
+
+	lb de, 0, 0
+	lb bc, 20, 15
+	call DrawRegularTextBox
+	ldtx hl, TextHackRemoveCard
+	call PrintScrollableText_NoTextBoxLabel
+	ld hl, HackTextTemplates
+	call PlaceTextItems
+	ldtx hl, TextHackUpdateDeck
+	call PrintScrollableText_NoTextBoxLabel
+	pop bc
+	pop de
+	ret
+
+HackTextTemplates:
+	db 1
+	db 1
+	tx TextHackBlank
+	db 1
+	db 2
+	tx TextHackBlank
+	db 1
+	db 3
+	tx TextHackBlank
+	db 1
+	db 4
+	tx TextHackBlank
+	db 1
+	db 5
+	tx TextHackBlank
+	db 1
+	db 6
+	tx TextHackBlank
+	db 1
+	db 7
+	tx TextHackBlank
+	db 1
+	db 8
+	tx TextHackBlank
+	db 1
+	db 9
+	tx TextHackBlank
+	db $ff

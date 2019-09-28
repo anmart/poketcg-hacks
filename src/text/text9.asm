@@ -722,7 +722,7 @@ Text07b0: ; 56478 (15:6478)
 HackCredits: ; 564db (15:64db)
 	text ""
 	line "        Pokémon Trading Card Game "
-	line "             Mod by Aroymart "
+	line "           Mod by Aroymart  :)"
 	done
 
 Text07b2: ; 56518 (15:6518)

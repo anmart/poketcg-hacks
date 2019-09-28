@@ -784,9 +784,11 @@ Text0189: ; 39d1b (e:5d1b)
 	line "with <RAMNAME>."
 	done
 
-Text018a: ; 39d39 (e:5d39)
-	text "Are you both ready"
-	line "to Card Pop! ?"
+TextHackBlank: ; 39d39 (e:5d39)
+	text "                  "
+	done
+
+	line "to Card Pop!?"
 	done
 
 Text018b: ; 39d5c (e:5d5c)
@@ -795,13 +797,15 @@ Text018b: ; 39d5c (e:5d5c)
 	done
 
 Text018c: ; 39d8b (e:5d8b)
-	text "You cannot Card Pop! with a"
-	line "friend you previously Popped! with."
+	text ""
+	line "err!!"
 	done
 
-Text018d: ; 39dcc (e:5dcc)
-	text "Position the Game Boy Colors"
-	line "and press the A Button."
+TextHackUpdateDeck: ; 39dcc (e:5dcc)
+	text "These have been removed from"
+	line "your deck and collection."
+	line "Please update your deck before"
+	line "Trying to battle again."
 	done
 
 Text018e: ; 39e02 (e:5e02)

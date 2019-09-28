@@ -74,13 +74,15 @@ Text027c: ; 3c22b (f:422b)
 	text "Procedures for sending cards:"
 	done
 
-Text027d: ; 3c24a (f:424a)
-	text "1. Choose the card you wish to send."
-	line "   Press left/right to choose more."
-	line ""
-	line "2. Choose all the cards. Then press"
-	line "   the B Button to open the menu."
-	line ""
+TextHackRemoveCard: ; 3c24a (f:424a)
+	text "Congrats on your win,      "
+	line "<RAMNAME>      "
+	line "As a result, you'll be losing"
+	line "The following Pokemon and Trainers:"
+	done
+TextNothingness:
+	line "                                 "
+	line "       "
 	line "3. Choose Send to finish"
 	line "   the process."
 	done
