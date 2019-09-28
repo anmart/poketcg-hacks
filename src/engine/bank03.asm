@@ -3727,9 +3727,10 @@ HackRemoveCards:
 	dec c
 	jr nz, .loopLookForCards
 
-HACK_CARDS_TO_REMOVE EQU 5
 .removeCards
-	ld c, HACK_CARDS_TO_REMOVE
+	ld a, [wHackSettingsCardLossAmt]
+	inc a
+	ld c, a
 	inc hl ; it's one behind from previous loop
 .removeCardsLoop
 	push hl
@@ -3791,7 +3792,10 @@ HACK_CARDS_TO_REMOVE EQU 5
 	ld hl, HackTextTemplates
 	call CopyDataHLtoDE
 
-	ld bc, HACK_CARDS_TO_REMOVE
+	ld a, [wHackSettingsCardLossAmt]
+	inc a
+	ld c, a
+	ld b, 0
 	ld hl, wHackRemovedCards
 	add hl, bc
 
