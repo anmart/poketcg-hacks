@@ -3733,12 +3733,28 @@ HackRemoveCards:
 
 .removeCards
 	ld c, b ; This will be our amount of cards to remove, in the future
-	ld de, wTempCardCollection
 	inc hl ; it's one behind from previous loop
 .removeCardsLoop
 	push hl
-	ld a, [de]
+
+	; figure out which index in de to use
+	ld a, b
+	call Random
+	ld de, wTempCardCollection
+	add e
+	ld e, a
+	ld a, $0
+	adc d
+	ld d, a
+	dec de
+
+.searchValidCardSpot
 	inc de
+	ld a, [de]
+	cp $ff
+	jr z, .searchValidCardSpot
+
+	ld a, [de]
 	add l
 	ld l, a
 	ld a, 0
@@ -3746,7 +3762,13 @@ HackRemoveCards:
 	ld h, a
 	ld [hl], $01
 	pop hl
+
+	; we just removed a card, update wTempCardCollection
+	ld a, $ff
+	ld [de], a
+
 	dec b
+	dec c
 	jr nz, .removeCardsLoop
 
 	call DisableSRAM
