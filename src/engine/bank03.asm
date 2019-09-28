@@ -3633,24 +3633,28 @@ Unknown_fc68: ; fc68 (3:7c68)
 Func_fcad: ; fcad (3:7cad)
 	INCROM $fcad, $fce4
 
-HACK_BOOSTER_NUMBER EQU 14
-
 HackGiveBoosterPacks:
-
+	ld e, 1
 	ld hl, wHackBoosterList
 	ld [hl], c
 	inc hl
 	ld [hl], b
 	inc b
 	jr c, .end
+	inc e
 	inc hl
 	call GetOWSArgs3AfterPointer
 	ld [hl], c
+	inc c
+	jr c, .end
+	inc e
 	inc hl
-	ld [hl], $ff ; in case there are 3 boosters
+	ld [hl], $ff
 .end
 	ld hl, wHackBoosterList
-	ld e, HACK_BOOSTER_NUMBER
+	ld a, [wHackSettingsBoosterAdd]
+	add e
+	ld e, a
 
 .loop
 	ld a, [hli]
