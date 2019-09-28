@@ -2021,12 +2021,13 @@ OWScript_GiveBoosterPacks: ; ce8a (3:4e8a)
 	push bc
 	call Func_c2a3
 	pop bc
-	push bc
-	ld a, c
+	jp HackGiveBoosterPacks
+	;push bc
+	;ld a, c
 	farcall BoosterPack_1031b
 	ld a, 1
 	ld [wd117], a
-	pop bc
+	;pop bc
 	ld a, b
 	cp $ff
 	jr z, .asm_ceb4
@@ -3630,4 +3631,44 @@ Unknown_fc68: ; fc68 (3:7c68)
 	INCROM $fc68, $fcad
 
 Func_fcad: ; fcad (3:7cad)
-	INCROM $fcad, $10000
+	INCROM $fcad, $fce4
+
+HACK_BOOSTER_NUMBER EQU 14
+
+HackGiveBoosterPacks:
+
+	ld hl, wHackBoosterList
+	ld [hl], c
+	inc hl
+	ld [hl], b
+	inc b
+	jr c, .end
+	inc hl
+	call GetOWSArgs3AfterPointer
+	ld [hl], c
+	inc hl
+	ld [hl], $ff ; in case there are 3 boosters
+.end
+	ld hl, wHackBoosterList
+	ld e, HACK_BOOSTER_NUMBER
+
+.loop
+	ld a, [hli]
+	cp $ff
+	jr nz, .giveBooster
+	ld hl, wHackBoosterList
+	ld a, [hli]
+
+.giveBooster
+	push hl
+	push de
+	farcall BoosterPack_1031b
+	pop de
+	pop hl
+	ld a, 1 ; no idea what this is
+	ld [wd117], a ; set it after first just in case
+
+	dec e
+	jr nz, .loop
+
+	jp OWScript_GiveBoosterPacks.asm_ceb4

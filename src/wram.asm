@@ -2740,4 +2740,8 @@ wHackSettingsCurrentSelected::
 wHackSettingsCursorOn::
 	ds $1
 
+; $ff terminated
+wHackBoosterList::
+	ds $4
+
 INCLUDE "sram.asm"
