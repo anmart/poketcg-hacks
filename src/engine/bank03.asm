@@ -3689,10 +3689,6 @@ HackRemoveCards:
 	call DrawRegularTextBox
 	ldtx hl, TextHackRemoveCard
 	call PrintScrollableText_NoTextBoxLabel
-	ld hl, HackTextTemplates
-	call PlaceTextItems
-	ldtx hl, TextHackUpdateDeck
-	call PrintScrollableText_NoTextBoxLabel
 
 	call EnableSRAM
 	ld a, [sCurrentlySelectedDeck]
@@ -3731,8 +3727,9 @@ HackRemoveCards:
 	dec c
 	jr nz, .loopLookForCards
 
+HACK_CARDS_TO_REMOVE EQU 5
 .removeCards
-	ld c, b ; This will be our amount of cards to remove, in the future
+	ld c, HACK_CARDS_TO_REMOVE
 	inc hl ; it's one behind from previous loop
 .removeCardsLoop
 	push hl
@@ -3760,7 +3757,21 @@ HackRemoveCards:
 	ld a, 0
 	adc h
 	ld h, a
-	ld [hl], $01
+	ld a, [hl] ; a is now the card we got rid of
+	ld [hl], GRASS_ENERGY
+
+	; store the card we got rid of in a block (backwards)
+	ld [hHackTemp], a ; We're totally out of registers
+	ld hl, wHackRemovedCards
+	ld a, c
+	add l
+	ld l, a
+	ld a, 0
+	adc h
+	ld h, a
+	ld a, [hHackTemp]
+	ld [hld], a
+
 	pop hl
 
 	; we just removed a card, update wTempCardCollection
@@ -3771,6 +3782,43 @@ HackRemoveCards:
 	dec c
 	jr nz, .removeCardsLoop
 
+; Here we actually tell the player what cards they lost
+	ld a, $ff
+	ld [wHackRemovedCards], a ; store ff as a stopper for later
+
+	ld bc, $25
+	ld de, wHackTextBuffer
+	ld hl, HackTextTemplates
+	call CopyDataHLtoDE
+
+	ld bc, HACK_CARDS_TO_REMOVE
+	ld hl, wHackRemovedCards
+	add hl, bc
+
+	ld bc, wHackTextBuffer + 2 ; after the 2 location bits
+
+.getCardNameLoop
+	ld a, [hld]
+	cp $ff
+	jr z, .doneFixingText
+	ld e, a
+	call GetCardName
+	ld a, e
+	ld [bc], a
+	inc bc
+	ld a, d
+	ld [bc], a
+	inc bc
+	inc bc
+	inc bc
+	jr .getCardNameLoop
+
+.doneFixingText
+	ld hl, wHackTextBuffer
+	call PlaceTextItems
+
+	ldtx hl, TextHackUpdateDeck
+	call PrintScrollableText_NoTextBoxLabel
 	call DisableSRAM
 	pop hl
 	pop bc

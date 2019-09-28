@@ -2739,7 +2739,11 @@ wHackSettingsCurrentSelected::
 	ds $1
 wHackSettingsCursorOn::
 	ds $1
-
+; backwards, $ff terminated
+wHackRemovedCards::
+	ds $a
+wHackTextBuffer::
+	ds $25
 ; $ff terminated
 wHackBoosterList::
 	ds $4
