@@ -62,7 +62,7 @@ s0a3f8:: ; a3f8
 	ds DECK_NAME_SIZE + DECK_SIZE
 
 	ds $12b4
-s0b700:: ; b700
+sCurrentlySelectedDeck:: ; b700
 	ds $1
 
 ; skip ahead to the end of sram

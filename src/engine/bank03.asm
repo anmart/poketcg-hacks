@@ -3675,13 +3675,14 @@ HackGiveBoosterPacks:
 	dec e
 	jr nz, .loop
 
-	call HackRemovePokemon
+	call HackRemoveCards
 
 	jp OWScript_GiveBoosterPacks.asm_ceb4
 
-HackRemovePokemon:
+HackRemoveCards:
 	push de
 	push bc
+	push hl
 
 	lb de, 0, 0
 	lb bc, 20, 15
@@ -3692,9 +3693,76 @@ HackRemovePokemon:
 	call PlaceTextItems
 	ldtx hl, TextHackUpdateDeck
 	call PrintScrollableText_NoTextBoxLabel
+
+	call EnableSRAM
+	ld a, [sCurrentlySelectedDeck]
+	add a
+	ld c, a
+	ld b, 0
+	ld hl, HackDeckLocations
+	add hl, bc
+	ld a, [hli]
+	ld h, [hl]
+	ld l, a
+
+	ld c, 60
+	ld b, $0
+	ld de, wTempCardCollection
+	jr .loopLookForCards
+
+; jump here when we're looking at a card that can be removed
+; right now that includes anything past DCE
+.fitsCriteria
+	dec c ; c is only the proper offset if we dec it
+	ld a, c
+	ld [de], a
+	inc de
+	inc b
+
+	xor a
+	cp c
+	jr z, .removeCards
+
+.loopLookForCards
+	ld a, [hld]
+	cp BULBASAUR
+	jr nc, .fitsCriteria
+
+	dec c
+	jr nz, .loopLookForCards
+
+.removeCards
+	ld c, b ; This will be our amount of cards to remove, in the future
+	ld de, wTempCardCollection
+	inc hl ; it's one behind from previous loop
+.removeCardsLoop
+	push hl
+	ld a, [de]
+	inc de
+	add l
+	ld l, a
+	ld a, 0
+	adc h
+	ld h, a
+	ld [hl], $01
+	pop hl
+	dec b
+	jr nz, .removeCardsLoop
+
+	call DisableSRAM
+	pop hl
 	pop bc
 	pop de
 	ret
+
+; I'm lazy and this is easy
+; Also we're going backwards so point to last item
+HackDeckLocations:
+	dw sDeck1Cards + 59
+	dw sDeck2Cards + 59
+	dw sDeck3Cards + 59
+	dw sDeck4Cards + 59
+
 
 HackTextTemplates:
 	db 1
