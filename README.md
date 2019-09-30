@@ -1,4 +1,19 @@
-# Pokémon TCG
+# Pokemon TCG Hacks
+This is a collection of all the hacks I've created using the pret disassembly of [pokemon TCG](https://github.com/pret/poketcg). This repo will fall behind pret's, only pulling when I want to work on a new hack.
+
+Every hack is set up as a branch of this repo, with _patch\__ as a prefix
+
+
+## Included Hacks
+
+* [Card Loss Challenge](https://github.com/anmart/poketcg-hacks/tree/patch_CardLossChallenge)
+  * First time trying custom menus!
+  * Removes cards from your deck after every battle and gives extra booster packs to make up for it
+
+
+## Below is a duplicate of the original README
+
+### Pokémon TCG
 
 This is a disassembly of Pokémon TCG.
 
@@ -13,7 +28,7 @@ Run `make` in your shell.
 This will output a file named "tcg.gbc".
 
 
-# See Also
+### See Also
 
 * Disassembly of [**Pokémon Red/Blue**][pokered]
 * Disassembly of [**Pokémon Yellow**][pokeyellow]
