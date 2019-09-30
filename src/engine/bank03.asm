@@ -3693,15 +3693,25 @@ HackRemoveCards:
 	call PrintScrollableText_NoTextBoxLabel
 
 	call EnableSRAM
+
+	; boosters and decks use the same area of memory
+	; in order to use the built in "hand" drawing routine
+	; we have to re-load the players deck cards (before we
+	; delete them all)
 	ld a, [sCurrentlySelectedDeck]
 	add a
 	ld c, a
 	ld b, 0
-	ld hl, HackDeckEndLocations
+	ld hl, HackDeckLocations
 	add hl, bc
 	ld a, [hli]
 	ld h, [hl]
 	ld l, a
+	ld bc, 60
+	ld de, wPlayerDeck
+	call CopyDataHLtoDE
+
+	dec hl ; CopyDataHLtoDE puts us right past the end of the deck
 
 	ld c, 60
 	ld b, $0
@@ -3739,6 +3749,22 @@ HackRemoveCards:
 .contRemoveCards
 	ld c, a
 	inc hl ; it's one behind from previous loop
+	push hl ; store for far later
+
+	; put $ff at the end of our list
+	ld hl, wDuelTempList
+	ld a, c
+	add l
+	ld l, a
+	ld a, 0
+	adc h
+	ld h, a
+	ld [hl], $ff
+
+	pop hl
+	push hl
+
+
 .removeCardsLoop
 	push hl
 
@@ -3759,7 +3785,7 @@ HackRemoveCards:
 	cp $ff
 	jr z, .searchValidCardSpot
 
-	ld a, [de]
+	ld [hHackTemp], a ; We're totally out of registers
 	add l
 	ld l, a
 	ld a, 0
@@ -3769,16 +3795,16 @@ HackRemoveCards:
 	ld [hl], GRASS_ENERGY
 
 	; store the card we got rid of in a block (backwards)
-	ld [hHackTemp], a ; We're totally out of registers
-	ld hl, wHackRemovedCards
+	ld hl, wDuelTempList
 	ld a, c
+	dec a
 	add l
 	ld l, a
 	ld a, 0
 	adc h
 	ld h, a
 	ld a, [hHackTemp]
-	ld [hld], a
+	ld [hl], a
 
 	pop hl
 
@@ -3793,47 +3819,12 @@ HackRemoveCards:
 
 .noMoreCardsToRemove
 ; Here we actually tell the player what cards they lost
-	ld a, $ff
-	ld [wHackRemovedCards], a ; store ff as a stopper for later
 
-	ld bc, $25
-	ld de, wHackTextBuffer
-	ld hl, HackTextTemplates
-	call CopyDataHLtoDE
-
-	ld a, [wHackSettingsCardLossAmt]
-	inc a
-	cp 10 ; we only have 9 text spaces open
-	jr c, .validCardLossAmt
-	ld a, 9 ; set a maximum display
-
-.validCardLossAmt
-	ld c, a
-	ld b, 0
-	ld hl, wHackRemovedCards
-	add hl, bc
-
-	ld bc, wHackTextBuffer + 2 ; after the 2 location bits
-
-.getCardNameLoop
-	ld a, [hld]
-	cp $ff
-	jr z, .doneFixingText
-	ld e, a
-	call GetCardName
-	ld a, e
-	ld [bc], a
-	inc bc
-	ld a, d
-	ld [bc], a
-	inc bc
-	inc bc
-	inc bc
-	jr .getCardNameLoop
-
-.doneFixingText
-	ld hl, wHackTextBuffer
-	call PlaceTextItems
+.printLostCards
+	ld a, $c2
+	ld [hWhoseTurn], a
+	ld [wHackUseCardLossText], a ; any nonzero value will work
+	farcall HackOpenCardList
 
 	ldtx hl, TextHackUpdateDeck
 	call PrintScrollableText_NoTextBoxLabel
@@ -3855,7 +3846,7 @@ HackPreventInfiniteBattle:
 	add a
 	ld b, 0
 	ld c, a
-	ld hl, HackDeckStartLocations
+	ld hl, HackDeckLocations
 	add hl, bc
 	ld a, [hli]
 	ld h, [hl]
@@ -3891,45 +3882,8 @@ OWJump_NoUsablePokemon:
 	run_script OWScript_EndScriptCloseText
 
 ; I'm lazy and this is easy
-HackDeckStartLocations:
+HackDeckLocations:
 	dw sDeck1Cards
 	dw sDeck2Cards
 	dw sDeck3Cards
 	dw sDeck4Cards
-
-HackDeckEndLocations:
-	dw sDeck1Cards + 59
-	dw sDeck2Cards + 59
-	dw sDeck3Cards + 59
-	dw sDeck4Cards + 59
-
-
-HackTextTemplates:
-	db 1
-	db 1
-	tx TextHackBlank
-	db 1
-	db 2
-	tx TextHackBlank
-	db 1
-	db 3
-	tx TextHackBlank
-	db 1
-	db 4
-	tx TextHackBlank
-	db 1
-	db 5
-	tx TextHackBlank
-	db 1
-	db 6
-	tx TextHackBlank
-	db 1
-	db 7
-	tx TextHackBlank
-	db 1
-	db 8
-	tx TextHackBlank
-	db 1
-	db 9
-	tx TextHackBlank
-	db $ff

@@ -2739,13 +2739,10 @@ wHackSettingsCurrentSelected::
 	ds $1
 wHackSettingsCursorOn::
 	ds $1
-; backwards, $ff terminated
-wHackRemovedCards::
-	ds 60
-wHackTextBuffer::
-	ds $25
 ; $ff terminated
 wHackBoosterList::
 	ds $4
+wHackUseCardLossText::
+	ds $1
 
 INCLUDE "sram.asm"

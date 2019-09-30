@@ -791,9 +791,11 @@ TextHackBlank: ; 39d39 (e:5d39)
 	line "to Card Pop!?"
 	done
 
-Text018b: ; 39d5c (e:5d5c)
-	text "The Pop! wasn't successful."
-	line "Please try again."
+TextHackLostCards: ; 39d5c (e:5d5c)
+	text "Removed cards:"
+	done
+	text "            "
+	line "                "
 	done
 
 Text018c: ; 39d8b (e:5d8b)

@@ -479,7 +479,8 @@ OpenNonTurnHolderHandScreen_Simple: ; 4345 (1:4345)
 ; used for example in the "Your Play Area" screen of the Check menu
 OpenTurnHolderHandScreen_Simple: ; 434e (1:434e)
 	call CreateHandCardList
-	jr c, .no_cards_in_hand
+	jr c, HackOpenCardList.no_cards_in_hand
+HackOpenCardList: ; Create jump point for hack script
 	call InitAndDrawCardListScreenLayout
 	ld a, START + A_BUTTON
 	ld [wNoItemSelectionMenuKeys], a
@@ -3300,13 +3301,18 @@ InitAndDrawCardListScreenLayout: ; 559a (1:559a)
 	ld a, START
 	ld [wNoItemSelectionMenuKeys], a
 	ld hl, wCardListInfoBoxText
+	; HACKY STUFF HERE:
+	; jumping out, checking a hack-set var
+	; and changing text depending on who's calling
+	; then jumping back a bit past here
+	;ldtx [hl], Text00a6, & $ff
+	;inc hl
+	jp HackModifyPrintedText
 	ldtx [hl], PleaseSelectHandText, & $ff
 	inc hl
 	ldtx [hl], PleaseSelectHandText, >> 8
 	inc hl ; wCardListHeaderText
-	ldtx [hl], DuelistHandText, & $ff
-	inc hl
-	ldtx [hl], DuelistHandText, >> 8
+	ldtx [hl], Text00a6, >> 8
 ; fallthrough
 
 ; same as InitAndDrawCardListScreenLayout, except that variables like wSelectedDuelSubMenuItem,
@@ -8196,6 +8202,27 @@ Func_7599: ; 7599 (1:7599)
 	ret
 ; 0x759e
 
-rept $a62
-	db $ff
-endr
+HackModifyPrintedText:
+	ld a, [wHackUseCardLossText]
+	or a
+	jr z, .defaultText
+	xor a
+	ld [wHackUseCardLossText], a
+	ldtx [hl], ChooseTheCardYouWishToExamineText, & $ff
+	inc hl
+	ldtx [hl], ChooseTheCardYouWishToExamineText, >> 8
+	inc hl ; wCardListHeaderText
+	ldtx [hl], TextHackLostCards, & $ff
+	inc hl
+	ldtx [hl], TextHackLostCards, >> 8
+	jp DrawCardListScreenLayout
+
+.defaultText
+	ldtx [hl], PleaseSelectHandText, & $ff
+	inc hl
+	ldtx [hl], PleaseSelectHandText, >> 8
+	inc hl ; wCardListHeaderText
+	ldtx [hl], DuelistHandText, & $ff
+	inc hl
+	ldtx [hl], DuelistHandText, >> 8
+	jp DrawCardListScreenLayout

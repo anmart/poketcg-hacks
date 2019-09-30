@@ -396,7 +396,7 @@ TextOffsets:: ; 34000 (d:4000)
 	textpointer Text0188                                 ; 0x0188
 	textpointer Text0189                                 ; 0x0189
 	textpointer TextHackBlank                                 ; 0x018a
-	textpointer Text018b                                 ; 0x018b
+	textpointer TextHackLostCards                                 ; 0x018b
 	textpointer Text018c                                 ; 0x018c
 	textpointer TextHackUpdateDeck                                 ; 0x018d
 	textpointer Text018e                                 ; 0x018e
