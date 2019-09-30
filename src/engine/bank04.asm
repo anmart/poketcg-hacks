@@ -1171,7 +1171,9 @@ MainMenu_ContinueDuel: ; 1277e (4:677e)
 	farcall $04, Func_3a40
 	farcall Func_70000
 	ld a, GAME_EVENT_CONTINUE_DUEL
-	ld [wGameEvent], a
+	; ld [wGameEvent], a
+	jp HackBattleContinueHook
+HackResumeContinueDuel:
 	farcall $03, ExecuteGameEvent
 	or a
 	ret
@@ -1624,3 +1626,15 @@ HackDiaryContinueHook:
 	ld a, [sHackSettingsBoosterAdd]
 	ld [wHackSettingsBoosterAdd], a
 	ret
+
+HackBattleContinueHook:
+	call EnableSRAM
+	ld a, [sHackSettingsCardLossAmt]
+	ld [wHackSettingsCardLossAmt], a
+	ld a, [sHackSettingsBoosterAdd]
+	ld [wHackSettingsBoosterAdd], a
+	call DisableSRAM
+	; removed code
+	ld a, GAME_EVENT_CONTINUE_DUEL
+	ld [wGameEvent], a
+	jp HackResumeContinueDuel
