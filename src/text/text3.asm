@@ -1292,7 +1292,7 @@ Text036e: ; 3ec3e (f:6c3e)
 
 Text036f: ; 3ec74 (f:6c74)
 	text "Settings for this romhack"
-	line "  github: bit.ly/PTCGHack"
+	line "  github: bit.ly/PTCGH_CL"
 	done
 
 Text0370: ; 3ecb9 (f:6cb9)
