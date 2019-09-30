@@ -1,5 +1,5 @@
 # Pokémon TCG Card Replacement Hack
----
+
 ![Screenshot: Settings Menu](https://i.imgur.com/J9bZhTd.png) ![Screenshot: Card Loss Screen](https://i.imgur.com/qFre2gf.png) ![Screenshot: Warning](https://i.imgur.com/Gk4P0TB.png)
 
 This hack aims to force you to change up your deck every time you battle. After you win, you'll lose somewhere between 1-9 cards (configurable) and receive an extra 1-9 booster packs (configurable). As a result, you'll need to make changes to your deck to make sure it still works well, or at all!
