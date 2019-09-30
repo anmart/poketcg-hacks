@@ -9,7 +9,7 @@ This hack was made to demonstrate what is possible with the disassembly in its c
 
 
 ## Features
----
+
 * Removes X Pokemon or Trainers from your deck and collection at the end of battle
 * Gives X extra booster packs after battle
 * Custom Menu
@@ -22,7 +22,7 @@ This hack was made to demonstrate what is possible with the disassembly in its c
 * A couple minor easter eggs
 
 ## Make
----
+
 To make this project, follow the original instructions for pokemon TCG by pret
 
 
@@ -40,7 +40,7 @@ Run `make` in your shell.
 This will output a file named "tcg.gbc".
 
 
-# See Also
+### See Also
 
 * Disassembly of [**Pokémon Red/Blue**][pokered]
 * Disassembly of [**Pokémon Yellow**][pokeyellow]
