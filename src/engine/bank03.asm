@@ -3762,8 +3762,6 @@ HackRemoveCards:
 	ld [hl], $ff
 
 	pop hl
-	push hl
-
 
 .removeCardsLoop
 	push hl
