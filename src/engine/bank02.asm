@@ -2643,7 +2643,32 @@ Func_9326: ; 9326 (2:5326)
 	ret
 
 Func_9345: ; 9345 (2:5345)
-	INCROM $9345, $9843
+	INCROM $9345, $9649
+
+; checks if selected deck has any basics
+Func_9649: ; 9649 (2:5649)
+	ld hl, wcf17
+.asm_964c
+	ld a, [hli]
+	ld e, a
+	or a
+	jr z, .asm_9665
+	call LoadCardDataToBuffer1_FromCardID
+	jr c, .asm_9665
+	ld a, [wLoadedCard1Type]
+	and $08
+	jr nz, .asm_964c
+	ld a, [wLoadedCard1Stage]
+	or a
+	jr nz, .asm_964c
+	scf
+	ret
+.asm_9665
+	or a
+	ret
+; 0x9667
+
+	INCROM $9667, $9843
 
 Func_9843: ; 9843 (2:5843)
 	INCROM $9843, $98a6
