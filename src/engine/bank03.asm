@@ -29,11 +29,11 @@ LoadMap: ; c000 (3:4000)
 	ld a, PLAYER_TURN
 	ldh [hWhoseTurn], a
 	farcall Func_1c440
-	ld a, [wd0bb]
+	ld a, [wTempMap]
 	ld [wCurMap], a
-	ld a, [wd0bc]
+	ld a, [wTempPlayerXCoord]
 	ld [wPlayerXCoord], a
-	ld a, [wd0bd]
+	ld a, [wTempPlayerYCoord]
 	ld [wPlayerYCoord], a
 	call Func_c36a
 	call Func_c184
@@ -109,18 +109,18 @@ Func_c0ed: ; c0ed (3:40ed)
 
 Func_c0f1: ; c0f1 (3:40f1)
 	ld a, [wd3b6]
-	ld [wd3aa], a
-	farcall Func_1c768
+	ld [wLoadedNPCTempIndex], a
+	farcall SetNewOWSequenceNPC
 	ld a, c
-	ld [wd0c6], a
+	ld [wNextOWSequence], a
 	ld a, b
-	ld [wd0c7], a
+	ld [wNextOWSequence+1], a
 	ld a, $3
 	ld [wd0bf], a
 	jr Func_c10a
 
 Func_c10a: ; c10a (3:410a)
-	ld hl, wd0c6
+	ld hl, wNextOWSequence
 	ld a, [hli]
 	ld h, [hl]
 	ld l, a
@@ -135,7 +135,7 @@ CloseAdvancedDialogueBox: ; c111 (3:4111)
 	bit 1, a
 	jr z, .asm_c12a
 	ld a, [wd3b6]
-	ld [wd3aa], a
+	ld [wLoadedNPCTempIndex], a
 	farcall Func_1c5e9
 .asm_c12a
 	xor a
@@ -177,11 +177,11 @@ Func_c158: ; c158 (3:4158)
 	ret nz
 	ld a, [wd0c4]
 	ld [wTempNPC], a
-	call Func_39c3
+	call FindLoadedNPC
 	jr c, .asm_c179
-	ld a, [wd3aa]
-	ld l, $4
-	call Func_39ad
+	ld a, [wLoadedNPCTempIndex]
+	ld l, LOADED_NPC_DIRECTION
+	call GetItemInLoadedNPCIndex
 	ld a, [wd0c5]
 	ld [hl], a
 	farcall Func_1c58e
@@ -231,13 +231,13 @@ Func_c1b1: ; c1b1 (3:41b1)
 	ld a, $c
 	ld [wd32e], a
 	ld a, $0
-	ld [wd0bb], a
+	ld [wTempMap], a
 	ld a, $c
-	ld [wd0bc], a
+	ld [wTempPlayerXCoord], a
 	ld a, $c
-	ld [wd0bd], a
+	ld [wTempPlayerYCoord], a
 	ld a, $2
-	ld [wd0be], a
+	ld [wTempPlayerDirection], a
 	call Func_c9cb
 	call Func_c9dd
 	farcall Func_80b7a
@@ -278,13 +278,13 @@ Func_c1f8: ; c1f8 (3:41f8)
 
 Func_c228: ; c228 (3:4228)
 	ld a, [wCurMap]
-	ld [wd0bb], a
+	ld [wTempMap], a
 	ld a, [wPlayerXCoord]
-	ld [wd0bc], a
+	ld [wTempPlayerXCoord], a
 	ld a, [wPlayerYCoord]
-	ld [wd0bd], a
-	ld a, [wd334]
-	ld [wd0be], a
+	ld [wTempPlayerYCoord], a
+	ld a, [wPlayerDirection]
+	ld [wTempPlayerDirection], a
 	ret
 
 Func_c241: ; c241 (3:4241)
@@ -587,11 +587,11 @@ Func_c4b9: ; c4b9 (3:44b9)
 	ld a, [wCurMap]
 	cp OVERWORLD_MAP
 	jr z, .asm_c4ee
-	ld a, [wd0be]
+	ld a, [wTempPlayerDirection]
 	ld b, a
 .asm_c4ee
 	ld a, b
-	ld [wd334], a
+	ld [wPlayerDirection], a
 	call Func_c5e9
 	ld a, [wCurMap]
 	cp OVERWORLD_MAP
@@ -716,7 +716,7 @@ Func_c5ac: ; c5ac (3:45ac)
 Func_c5cb: ; c5cb (3:45cb)
 	call Func_c5d5
 Func_c5ce: ; c5ce (3:45ce)
-	ld [wd334], a
+	ld [wPlayerDirection], a
 	call Func_c5e9
 	ret
 
@@ -744,7 +744,7 @@ Func_c5e9: ; c5e9 (3:45e9)
 	ld [wWhichSprite], a
 	ld a, [wd337]
 	ld b, a
-	ld a, [wd334]
+	ld a, [wPlayerDirection]
 	add b
 	farcall Func_12ab5
 	pop bc
@@ -802,7 +802,7 @@ AttemptScriptedMovement: ; c619 (3:4619)
 	ret
 
 Func_c653: ; c653 (3:4653)
-	ld a, [wd334]
+	ld a, [wPlayerDirection]
 
 FindScriptedMovementWithOffset: ; c656 (3:4656)
 	rlca
@@ -833,7 +833,7 @@ Func_c66c: ; c66c (3:466c)
 	jr c, .asm_c67e
 	inc c
 .asm_c67e
-	ld a, [wd334]
+	ld a, [wPlayerDirection]
 	call Func_c694
 	pop bc
 	pop hl
@@ -930,7 +930,7 @@ Func_c6f7: ; c6f7 (3:46f7)
 
 Func_c70d: ; c70d (3:470d)
 	push hl
-	ld hl, wd0bb
+	ld hl, wTempMap
 	ld a, [wCurMap]
 	cp [hl]
 	jr z, .asm_c71c
@@ -949,7 +949,7 @@ Func_c71e: ; c71e (3:471e)
 	jr z, .asm_c73d
 	farcall Func_1c72e
 	jr c, .asm_c73d
-	ld a, [wd3aa]
+	ld a, [wLoadedNPCTempIndex]
 	ld [wd3b6], a
 	ld a, $2
 	jr .asm_c748
@@ -1201,18 +1201,18 @@ Func_c915: ; c915 (3:4915)
 	pop bc
 	ret
 
-Func_c926: ; c926 (3:4926)
+SetNextNPCAndOWSequence: ; c926 (3:4926)
 	push bc
-	call Func_39c3
-	ld a, [wd3aa]
+	call FindLoadedNPC
+	ld a, [wLoadedNPCTempIndex]
 	ld [wd3b6], a
-	farcall Func_1c768
+	farcall SetNewOWSequenceNPC
 	pop bc
 ;	fallthrough
 
-Func_c935: ; c935 (3:4935)
+SetNextOWSequence: ; c935 (3:4935)
 	push hl
-	ld hl, wd0c6
+	ld hl, wNextOWSequence
 	ld [hl], c
 	inc hl
 	ld [hl], b
@@ -1288,15 +1288,15 @@ Func_c998: ; c998 (3:4998)
 	ret
 
 Func_c9b8: ; c9b8 (3:49b8)
-	ld l, $8
+	ld l, MAP_SCRIPT_LOAD_MAP
 	jr CallMapScriptPointerIfExists
 
 Func_c9bc: ; c9bc (3:49bc)
-	ld l, $a
+	ld l, MAP_SCRIPT_AFTER_DUEL
 	jr CallMapScriptPointerIfExists
 
 Func_c9c0: ; c9c0 (3:49c0)
-	ld l, $c
+	ld l, MAP_SCRIPT_MOVED_PLAYER
 
 CallMapScriptPointerIfExists: ; c9c2 (3:49c2)
 	call GetMapScriptPointer
@@ -1304,7 +1304,7 @@ CallMapScriptPointerIfExists: ; c9c2 (3:49c2)
 	jp hl
 
 Func_c9c7: ; c9c7 (3:49c7)
-	ld l, $e
+	ld l, MAP_SCRIPT_CLOSE_TEXTBOX
 	jr CallMapScriptPointerIfExists
 
 Func_c9cb: ; c9cb (3:49cb)
@@ -1332,8 +1332,7 @@ Func_c9dd: ; c9dd (3:49dd)
 
 Func_c9e8: ; c9e8 (3:49e8)
 	ld c, $0
-	call Func_ca69
-	db $13
+	get_flag_value EVENT_FLAG_13
 	cp $2
 	jr c, .asm_ca04
 .asm_c9f2
@@ -1343,13 +1342,12 @@ Func_c9e8: ; c9e8 (3:49e8)
 	ld b, $0
 	ld hl, Unknown_ca0a
 	add hl, bc
-	ld a, [wd0bb]
+	ld a, [wTempMap]
 	cp [hl]
 	jr z, .asm_c9f2
 .asm_ca04
 	ld a, c
-	call Func_ca8f
-	db $34
+	set_flag_value EVENT_FLAG_34
 	ret
 
 Unknown_ca0a: ; ca0a (3:4a04)
@@ -1359,12 +1357,10 @@ Func_ca0e: ; ca0e (3:4a0e)
 	ld a, [wd32e]
 	cp $b
 	jr z, .asm_ca68
-	call Func_ca69
-	db $22
+	get_flag_value EVENT_FLAG_22
 	or a
 	jr nz, .asm_ca4a
-	call Func_ca69
-	db $40
+	get_flag_value EVENT_FLAG_40
 	cp $7
 	jr z, .asm_ca68
 	or a
@@ -1372,12 +1368,10 @@ Func_ca0e: ; ca0e (3:4a0e)
 	cp $2
 	jr z, .asm_ca62
 	ld c, $1
-	call Func_ca8f
-	db $40
+	set_flag_value EVENT_FLAG_40
 	jr .asm_ca62
 .asm_ca33
-	call Func_ca69
-	db $3f
+	get_flag_value EVENT_FLAG_3F
 	cp $7
 	jr z, .asm_ca68
 	or a
@@ -1385,8 +1379,7 @@ Func_ca0e: ; ca0e (3:4a0e)
 	cp $2
 	jr z, .asm_ca68
 	ld c, $1
-	call Func_ca8f
-	db $3f
+	set_flag_value EVENT_FLAG_3F
 	jr .asm_ca68
 .asm_ca4a
 	call UpdateRNGSources
@@ -1396,22 +1389,20 @@ Func_ca0e: ; ca0e (3:4a0e)
 	jr z, .asm_ca56
 	ld c, $0
 .asm_ca56
-	call Func_ca8f
-	db $41
+	set_flag_value EVENT_FLAG_41
 	jr .asm_ca5c
 .asm_ca5c
 	ld c, $7
-	call Func_ca8f
-	db $40
+	set_flag_value EVENT_FLAG_40
 .asm_ca62
 	ld c, $7
-	call Func_ca8f
-	db $3f
+	set_flag_value EVENT_FLAG_3F
 .asm_ca68
 	ret
 
-Func_ca69: ; ca69 (3:4a69)
-	call Func_cab3
+GetStackFlagValue: ; ca69 (3:4a69)
+	call GetByteAfterCall
+;	fallthrough
 
 ; returns the event flag's value in a
 ; also ors it with itself before returning
@@ -1437,8 +1428,11 @@ GetEventFlagValue: ; ca6c (3:4a6c)
 
 	INCROM $ca84, $ca8f
 
-Func_ca8f: ; ca8f (3:4a8f)
-	call Func_cab3
+; Use macro set_flag_value. The byte db'd after this func is called
+; is used at the flag argument for SetEventFlagValue
+SetStackFlagValue: ; ca8f (3:4a8f)
+	call GetByteAfterCall
+;	fallthrough
 
 ; a - flag
 ; c - value - truncated to fit only the flag's bounds
@@ -1466,7 +1460,8 @@ SetEventFlagValue: ; ca92 (3:4a92)
 	pop hl
 	ret
 
-Func_cab3: ; cab3 (3:4ab3)
+; returns in a the byte db'd after the call to a function that calls this
+GetByteAfterCall: ; cab3 (3:4ab3)
 	push hl
 	ld hl, sp+$4
 	push bc
@@ -1493,8 +1488,8 @@ MaxOutEventFlag: ; cac5 (3:4ac5)
 	ret
 ; 0xcacd
 
-Func_cacd: ; cacd (3:4acd)
-	call Func_cab3
+ZeroStackFlagValue: ; cacd (3:4acd)
+	call GetByteAfterCall
 ;	fallthrough
 
 ZeroOutEventFlag: ; cad0 (3:4ad0)
@@ -1519,8 +1514,8 @@ Func_cad8: ; cad8 (3:4ad8)
 	dec c
 	jr nz, .asm_cae0
 	ld c, b
-	call Func_ca8f
-	ld l, $79
+	set_flag_value EVENT_FLAG_2E
+	ld a, c
 	push af
 	cp $8
 	jr nc, .asm_caff
@@ -1572,126 +1567,125 @@ GetEventFlag: ; cb1d (3:4b1d)
 
 ; offset - bytes to set or reset
 EventFlagMods: ; cb37 (3:4b37)
-	const_def
-	flag_def EVENT_FLAG_00,           $3f, %10000000
-	flag_def EVENT_FLAG_01,           $3f, %01000000
-	flag_def EVENT_FLAG_02,           $3f, %00100000
-	flag_def EVENT_FLAG_03,           $3f, %00010000
-	flag_def EVENT_FLAG_04,           $3f, %00001000
-	flag_def EVENT_FLAG_05,           $3f, %00000100
-	flag_def EVENT_FLAG_06,           $3f, %00000010
-	flag_def EVENT_FLAG_07,           $3f, %00000001
-	flag_def EVENT_FLAG_08,           $00, %10000000
-	flag_def EVENT_FLAG_09,           $00, %01000000
-	flag_def EVENT_FLAG_0A,           $00, %00100000
-	flag_def EVENT_BEAT_AMY,          $00, %00010000
-	flag_def EVENT_FLAG_0C,           $00, %00001000
-	flag_def EVENT_FLAG_0D,           $00, %00000100
-	flag_def EVENT_FLAG_0E,           $00, %00000010
-	flag_def EVENT_FLAG_0F,           $00, %00000001
-	flag_def EVENT_FLAG_10,           $00, %11111111
-	flag_def EVENT_FLAG_11,           $01, %11110000
-	flag_def EVENT_FLAG_12,           $01, %00001111
-	flag_def EVENT_FLAG_13,           $02, %11000000
-	flag_def EVENT_FLAG_14,           $02, %00110000
-	flag_def EVENT_BEAT_SARA,         $02, %00001000
-	flag_def EVENT_BEAT_AMANDA,       $02, %00000100
-	flag_def EVENT_FLAG_17,           $03, %11110000
-	flag_def EVENT_FLAG_18,           $03, %00001111
-	flag_def EVENT_FLAG_19,           $04, %11110000
-	flag_def EVENT_FLAG_1A,           $04, %00001111
-	flag_def EVENT_FLAG_1B,           $05, %10000000
-	flag_def EVENT_FLAG_1C,           $05, %01000000
-	flag_def EVENT_FLAG_1D,           $05, %00100000
-	flag_def EVENT_FLAG_1E,           $05, %00010000
-	flag_def EVENT_FLAG_1F,           $05, %00001111
-	flag_def EVENT_FLAG_20,           $06, %11110000
-	flag_def EVENT_FLAG_21,           $06, %00001100
-	flag_def EVENT_FLAG_22,           $06, %00000010
-	flag_def EVENT_FLAG_23,           $06, %00000001
-	flag_def EVENT_FLAG_24,           $07, %11000000
-	flag_def EVENT_FLAG_25,           $07, %00100000
-	flag_def EVENT_FLAG_26,           $07, %00010000
-	flag_def EVENT_FLAG_27,           $07, %00001000
-	flag_def EVENT_FLAG_28,           $07, %00000100
-	flag_def EVENT_FLAG_29,           $07, %00000010
-	flag_def EVENT_FLAG_2A,           $07, %00000001
-	flag_def EVENT_FLAG_2B,           $08, %11111111
-	flag_def EVENT_FLAG_2C,           $09, %11100000
-	flag_def EVENT_FLAG_2D,           $09, %00011111
-	flag_def EVENT_FLAG_2E,           $0a, %11110000
-	flag_def EVENT_FLAG_2F,           $0a, %00001000
-	flag_def EVENT_FLAG_30,           $0a, %00000100
-	flag_def EVENT_FLAG_31,           $0a, %00000011
-	flag_def EVENT_FLAG_32,           $0b, %10000000
-	flag_def EVENT_JOSHUA_STATE,      $0b, %01110000
-	flag_def EVENT_FLAG_34,           $0b, %00001100
-	flag_def EVENT_FLAG_35,           $0b, %00000011
-	flag_def EVENT_FLAG_36,           $0c, %11100000
-	flag_def EVENT_FLAG_37,           $0c, %00011100
-	flag_def EVENT_FLAG_38,           $0c, %00000010
-	flag_def EVENT_FLAG_39,           $0c, %00000001
-	flag_def EVENT_FLAG_3A,           $0d, %10000000
-	flag_def EVENT_FLAG_3B,           $0d, %01000000
-	flag_def FLAG_BEAT_BRITTANY,      $0d, %00100000
-	flag_def EVENT_FLAG_3D,           $0d, %00010000
-	flag_def EVENT_FLAG_3E,           $0d, %00001110
-	flag_def EVENT_FLAG_3F,           $0e, %11100000
-	flag_def EVENT_FLAG_40,           $0e, %00011100
-	flag_def EVENT_FLAG_41,           $0f, %11100000
-	flag_def EVENT_FLAG_42,           $10, %10000000
-	flag_def EVENT_FLAG_43,           $10, %01000000
-	flag_def EVENT_FLAG_44,           $10, %00110000
-	flag_def EVENT_FLAG_45,           $10, %00001100
-	flag_def EVENT_FLAG_46,           $10, %00000010
-	flag_def EVENT_FLAG_47,           $10, %00000001
-	flag_def EVENT_FLAG_48,           $11, %11100000
-	flag_def EVENT_FLAG_49,           $11, %00011100
-	flag_def EVENT_FLAG_4A,           $12, %11100000
-	flag_def EVENT_FLAG_4B,           $13, %10000000
-	flag_def EVENT_FLAG_4C,           $13, %01100000
-	flag_def EVENT_FLAG_4D,           $13, %00011000
-	flag_def EVENT_FLAG_4E,           $13, %00000100
-	flag_def EVENT_FLAG_4F,           $13, %00000010
-	flag_def EVENT_FLAG_50,           $14, %10000000
-	flag_def EVENT_FLAG_51,           $14, %01000000
-	flag_def EVENT_FLAG_52,           $14, %00100000
-	flag_def EVENT_FLAG_53,           $14, %00010000
-	flag_def EVENT_FLAG_54,           $14, %00001000
-	flag_def EVENT_FLAG_55,           $14, %00000100
-	flag_def EVENT_FLAG_56,           $14, %00000010
-	flag_def EVENT_FLAG_57,           $14, %00000001
-	flag_def EVENT_FLAG_58,           $15, %11110000
-	flag_def EVENT_FLAG_59,           $15, %00001000
-	flag_def EVENT_FLAG_5A,           $16, %10000000
-	flag_def EVENT_FLAG_5B,           $16, %01000000
-	flag_def EVENT_FLAG_5C,           $16, %00100000
-	flag_def EVENT_FLAG_5D,           $16, %00010000
-	flag_def EVENT_FLAG_5E,           $16, %00001000
-	flag_def EVENT_FLAG_5F,           $16, %00000100
-	flag_def EVENT_FLAG_60,           $16, %00000010
-	flag_def EVENT_FLAG_61,           $16, %00000001
-	flag_def EVENT_FLAG_62,           $16, %11111111
-	flag_def EVENT_FLAG_63,           $17, %10000000
-	flag_def EVENT_FLAG_64,           $17, %01000000
-	flag_def EVENT_FLAG_65,           $17, %00110000
-	flag_def EVENT_FLAG_66,           $17, %00001000
-	flag_def EVENT_FLAG_67,           $17, %00000100
-	flag_def EVENT_FLAG_68,           $18, %11000000
-	flag_def EVENT_FLAG_69,           $18, %00110000
-	flag_def EVENT_FLAG_6A,           $18, %00001100
-	flag_def EVENT_FLAG_6B,           $18, %00000011
-	flag_def EVENT_FLAG_6C,           $19, %11000000
-	flag_def EVENT_FLAG_6D,           $19, %00100000
-	flag_def EVENT_FLAG_6E,           $19, %00010000
-	flag_def EVENT_FLAG_6F,           $19, %00001000
-	flag_def EVENT_FLAG_70,           $19, %00000100
-	flag_def EVENT_FLAG_71,           $19, %00111100
-	flag_def EVENT_FLAG_72,           $1a, %11111100
-	flag_def EVENT_FLAG_73,           $1a, %00000011
-	flag_def EVENT_FLAG_74,           $1b, %11111111
-	flag_def EVENT_FLAG_75,           $1c, %11110000
-	flag_def EVENT_FLAG_76,           $1c, %00001111
+	flag_def $3f, %10000000 ; EVENT_FLAG_00
+	flag_def $3f, %01000000 ; EVENT_FLAG_01
+	flag_def $3f, %00100000 ; EVENT_FLAG_02
+	flag_def $3f, %00010000 ; EVENT_FLAG_03
+	flag_def $3f, %00001000 ; EVENT_FLAG_04
+	flag_def $3f, %00000100 ; EVENT_FLAG_05
+	flag_def $3f, %00000010 ; EVENT_FLAG_06
+	flag_def $3f, %00000001 ; EVENT_FLAG_07
+	flag_def $00, %10000000 ; EVENT_FLAG_08
+	flag_def $00, %01000000 ; EVENT_FLAG_09
+	flag_def $00, %00100000 ; EVENT_FLAG_0A
+	flag_def $00, %00010000 ; EVENT_BEAT_AMY
+	flag_def $00, %00001000 ; EVENT_FLAG_0C
+	flag_def $00, %00000100 ; EVENT_FLAG_0D
+	flag_def $00, %00000010 ; EVENT_FLAG_0E
+	flag_def $00, %00000001 ; EVENT_FLAG_0F
+	flag_def $00, %11111111 ; EVENT_FLAG_10
+	flag_def $01, %11110000 ; EVENT_FLAG_11
+	flag_def $01, %00001111 ; EVENT_FLAG_12
+	flag_def $02, %11000000 ; EVENT_FLAG_13
+	flag_def $02, %00110000 ; EVENT_FLAG_14
+	flag_def $02, %00001000 ; EVENT_BEAT_SARA
+	flag_def $02, %00000100 ; EVENT_BEAT_AMANDA
+	flag_def $03, %11110000 ; EVENT_FLAG_17
+	flag_def $03, %00001111 ; EVENT_FLAG_18
+	flag_def $04, %11110000 ; EVENT_FLAG_19
+	flag_def $04, %00001111 ; EVENT_FLAG_1A
+	flag_def $05, %10000000 ; EVENT_FLAG_1B
+	flag_def $05, %01000000 ; EVENT_FLAG_1C
+	flag_def $05, %00100000 ; EVENT_FLAG_1D
+	flag_def $05, %00010000 ; EVENT_FLAG_1E
+	flag_def $05, %00001111 ; EVENT_FLAG_1F
+	flag_def $06, %11110000 ; EVENT_FLAG_20
+	flag_def $06, %00001100 ; EVENT_FLAG_21
+	flag_def $06, %00000010 ; EVENT_FLAG_22
+	flag_def $06, %00000001 ; EVENT_FLAG_23
+	flag_def $07, %11000000 ; EVENT_FLAG_24
+	flag_def $07, %00100000 ; EVENT_FLAG_25
+	flag_def $07, %00010000 ; EVENT_FLAG_26
+	flag_def $07, %00001000 ; EVENT_FLAG_27
+	flag_def $07, %00000100 ; EVENT_FLAG_28
+	flag_def $07, %00000010 ; EVENT_FLAG_29
+	flag_def $07, %00000001 ; EVENT_FLAG_2A
+	flag_def $08, %11111111 ; EVENT_FLAG_2B
+	flag_def $09, %11100000 ; EVENT_FLAG_2C
+	flag_def $09, %00011111 ; EVENT_FLAG_2D
+	flag_def $0a, %11110000 ; EVENT_FLAG_2E
+	flag_def $0a, %00001000 ; EVENT_FLAG_2F
+	flag_def $0a, %00000100 ; EVENT_FLAG_30
+	flag_def $0a, %00000011 ; EVENT_FLAG_31
+	flag_def $0b, %10000000 ; EVENT_FLAG_32
+	flag_def $0b, %01110000 ; EVENT_JOSHUA_STATE
+	flag_def $0b, %00001100 ; EVENT_FLAG_34
+	flag_def $0b, %00000011 ; EVENT_FLAG_35
+	flag_def $0c, %11100000 ; EVENT_FLAG_36
+	flag_def $0c, %00011100 ; EVENT_FLAG_37
+	flag_def $0c, %00000010 ; EVENT_FLAG_38
+	flag_def $0c, %00000001 ; EVENT_FLAG_39
+	flag_def $0d, %10000000 ; EVENT_FLAG_3A
+	flag_def $0d, %01000000 ; EVENT_FLAG_3B
+	flag_def $0d, %00100000 ; FLAG_BEAT_BRITTANY
+	flag_def $0d, %00010000 ; EVENT_FLAG_3D
+	flag_def $0d, %00001110 ; EVENT_FLAG_3E
+	flag_def $0e, %11100000 ; EVENT_FLAG_3F
+	flag_def $0e, %00011100 ; EVENT_FLAG_40
+	flag_def $0f, %11100000 ; EVENT_FLAG_41
+	flag_def $10, %10000000 ; EVENT_FLAG_42
+	flag_def $10, %01000000 ; EVENT_FLAG_43
+	flag_def $10, %00110000 ; EVENT_FLAG_44
+	flag_def $10, %00001100 ; EVENT_FLAG_45
+	flag_def $10, %00000010 ; EVENT_FLAG_46
+	flag_def $10, %00000001 ; EVENT_FLAG_47
+	flag_def $11, %11100000 ; EVENT_FLAG_48
+	flag_def $11, %00011100 ; EVENT_FLAG_49
+	flag_def $12, %11100000 ; EVENT_FLAG_4A
+	flag_def $13, %10000000 ; EVENT_FLAG_4B
+	flag_def $13, %01100000 ; EVENT_FLAG_4C
+	flag_def $13, %00011000 ; EVENT_FLAG_4D
+	flag_def $13, %00000100 ; EVENT_FLAG_4E
+	flag_def $13, %00000010 ; EVENT_FLAG_4F
+	flag_def $14, %10000000 ; EVENT_FLAG_50
+	flag_def $14, %01000000 ; EVENT_FLAG_51
+	flag_def $14, %00100000 ; EVENT_FLAG_52
+	flag_def $14, %00010000 ; EVENT_FLAG_53
+	flag_def $14, %00001000 ; EVENT_FLAG_54
+	flag_def $14, %00000100 ; EVENT_FLAG_55
+	flag_def $14, %00000010 ; EVENT_FLAG_56
+	flag_def $14, %00000001 ; EVENT_FLAG_57
+	flag_def $15, %11110000 ; EVENT_FLAG_58
+	flag_def $15, %00001000 ; EVENT_FLAG_59
+	flag_def $16, %10000000 ; EVENT_FLAG_5A
+	flag_def $16, %01000000 ; EVENT_FLAG_5B
+	flag_def $16, %00100000 ; EVENT_FLAG_5C
+	flag_def $16, %00010000 ; EVENT_FLAG_5D
+	flag_def $16, %00001000 ; EVENT_FLAG_5E
+	flag_def $16, %00000100 ; EVENT_FLAG_5F
+	flag_def $16, %00000010 ; EVENT_FLAG_60
+	flag_def $16, %00000001 ; EVENT_FLAG_61
+	flag_def $16, %11111111 ; EVENT_FLAG_62
+	flag_def $17, %10000000 ; EVENT_FLAG_63
+	flag_def $17, %01000000 ; EVENT_FLAG_64
+	flag_def $17, %00110000 ; EVENT_FLAG_65
+	flag_def $17, %00001000 ; EVENT_FLAG_66
+	flag_def $17, %00000100 ; EVENT_FLAG_67
+	flag_def $18, %11000000 ; EVENT_FLAG_68
+	flag_def $18, %00110000 ; EVENT_FLAG_69
+	flag_def $18, %00001100 ; EVENT_FLAG_6A
+	flag_def $18, %00000011 ; EVENT_FLAG_6B
+	flag_def $19, %11000000 ; EVENT_FLAG_6C
+	flag_def $19, %00100000 ; EVENT_FLAG_6D
+	flag_def $19, %00010000 ; EVENT_FLAG_6E
+	flag_def $19, %00001000 ; EVENT_FLAG_6F
+	flag_def $19, %00000100 ; EVENT_FLAG_70
+	flag_def $19, %00111100 ; EVENT_FLAG_71
+	flag_def $1a, %11111100 ; EVENT_FLAG_72
+	flag_def $1a, %00000011 ; EVENT_FLAG_73
+	flag_def $1b, %11111111 ; EVENT_FLAG_74
+	flag_def $1c, %11110000 ; EVENT_FLAG_75
+	flag_def $1c, %00001111 ; EVENT_FLAG_76
 
 Func_cc25: ; cc25 (3:4c25)
 	ld hl, wd0ca
@@ -1725,11 +1719,11 @@ RST20: ; cc42 (3:4c42)
 	ld [wOWScriptPointer+1], a
 	xor a
 	ld [wBreakOWScriptLoop], a
-.asm_cc4f
+.continueScriptLoop
 	call RunOverworldScript
 	ld a, [wBreakOWScriptLoop] ; if you break out, it jumps
 	or a
-	jr z, .asm_cc4f
+	jr z, .continueScriptLoop
 	ld hl, wOWScriptPointer
 	ld a, [hli]
 	ld c, a
@@ -1814,6 +1808,7 @@ SetScriptControlByteFail: ; ccb9 (3:4cb9)
 	ld [wScriptControlByte], a
 	ret
 
+; Exits Script mode and runs the next instruction like normal
 OWScript_EndScriptLoop1: ; ccbe (3:4cbe)
 OWScript_EndScriptLoop2: ; ccbe (3:4cbe)
 OWScript_EndScriptLoop3: ; ccbe (3:4cbe)
@@ -1832,7 +1827,7 @@ OWScript_CloseAdvancedTextBox: ; ccc6 (3:4cc6)
 	call CloseAdvancedDialogueBox
 	jp IncreaseOWScriptPointerBy1
 
-OWScript_EndScriptCloseText: ; cccc (3:4ccc)
+OWScript_QuitScriptFully: ; cccc (3:4ccc)
 	call OWScript_CloseAdvancedTextBox
 	call OWScript_EndScriptLoop1
 	pop hl
@@ -1851,7 +1846,7 @@ Func_ccdc: ; ccdc (3:4cdc)
 	call Func_c891
 	jp IncreaseOWScriptPointerBy3
 
-Func_cce4: ; cce4 (3:4ce4)
+OWScript_AskQuestionJumpDefaultYes: ; cce4 (3:4ce4)
 	ld a, $1
 	ld [wDefaultYesOrNo], a
 ;	fallthrough
@@ -1877,8 +1872,8 @@ OWScript_AskQuestionJump: ; cce9 (3:4ce9)
 OWScript_StartBattle: ; cd01 (3:4d01)
 	call Func_cd66
 	ld a, [wd3b6]
-	ld l, $0
-	call Func_39ad
+	ld l, LOADED_NPC_ID
+	call GetItemInLoadedNPCIndex
 	ld a, [hl]
 	farcall Func_118d3
 	ld a, [wcc19]
@@ -1893,8 +1888,8 @@ OWScript_StartBattle: ; cd01 (3:4d01)
 	ld [wcc19], a
 .asm_cd26
 	ld a, [wd3b6]
-	ld l, $0
-	call Func_39ad
+	ld l, LOADED_NPC_ID
+	call GetItemInLoadedNPCIndex
 	ld a, [hl]
 asm_cd2f
 	ld [wd0c4], a
@@ -1952,8 +1947,7 @@ OWScript_PrintVariableText: ; cd83 (3:4d83)
 	jp IncreaseOWScriptPointerBy5
 
 Func_cd94: ; cd94 (3:4d94)
-	call Func_ca69
-	db $44
+	get_flag_value EVENT_FLAG_44
 Unknown_cd98:
 	dec a
 	and $3
@@ -1989,28 +1983,28 @@ OWScript_PrintTextCloseBox: ; cdb9 (3:4db9)
 
 Func_cdcb: ; cdcb (3:4dcb)
 	ld a, [wd3b6]
-	ld [wd3aa], a
+	ld [wLoadedNPCTempIndex], a
 Func_cdd1: ; cdd1 (3:4dd1)
 	farcall Func_1c50a
 	jp IncreaseOWScriptPointerBy1
 
 Func_cdd8: ; cdd8 (3:4dd8)
-	ld a, [wd3aa]
+	ld a, [wLoadedNPCTempIndex]
 	push af
 	ld a, [wTempNPC]
 	push af
 	ld a, [wd696]
 	ld [wTempNPC], a
-	call Func_39c3
+	call FindLoadedNPC
 	call Func_cdd1
 	pop af
 	ld [wTempNPC], a
 	pop af
-	ld [wd3aa], a
+	ld [wLoadedNPCTempIndex], a
 	ret
 
 Func_cdf5: ; cdf5 (3:4df5)
-	ld a, [wd3aa]
+	ld a, [wLoadedNPCTempIndex]
 	push af
 	ld a, [wTempNPC]
 	push af
@@ -2028,12 +2022,12 @@ Func_cdf5: ; cdf5 (3:4df5)
 	pop af
 	ld [wTempNPC], a
 	pop af
-	ld [wd3aa], a
+	ld [wLoadedNPCTempIndex], a
 	jp IncreaseOWScriptPointerBy3
 
 Func_ce26: ; ce26 (3:4e26)
 	ld a, [wd3b6]
-	ld [wd3aa], a
+	ld [wLoadedNPCTempIndex], a
 	farcall Func_1c455
 	rlca
 	add c
@@ -2055,27 +2049,27 @@ Func_ce3a: ; ce3a (3:4e3a)
 
 Func_ce4a: ; ce4a (3:4e4a)
 	ld a, [wd3b6]
-	ld [wd3aa], a
+	ld [wLoadedNPCTempIndex], a
 	jr Func_ce3a
 
 Func_ce52: ; ce52 (3:4e52)
-	ld a, [wd3aa]
+	ld a, [wLoadedNPCTempIndex]
 	push af
 	ld a, [wTempNPC]
 	push af
 	ld a, [wd696]
 asm_ce5d
 	ld [wTempNPC], a
-	call Func_39c3
+	call FindLoadedNPC
 	call Func_ce3a
 	pop af
 	ld [wTempNPC], a
 	pop af
-	ld [wd3aa], a
+	ld [wLoadedNPCTempIndex], a
 	ret
 
 Func_ce6f: ; ce6f (3:4e6f)
-	ld a, [wd3aa]
+	ld a, [wLoadedNPCTempIndex]
 	push af
 	ld a, [wTempNPC]
 	push af
@@ -2106,42 +2100,48 @@ OWScript_GiveBoosterPacks: ; ce8a (3:4e8a)
 	ld [wd117], a
 	pop bc
 	ld a, b
-	cp $ff
+	cp NO_BOOSTER
 	jr z, .asm_ceb4
 	farcall BoosterPack_1031b
 	call GetOWSArgs3AfterPointer
 	ld a, c
-	cp $ff
+	cp NO_BOOSTER
 	jr z, .asm_ceb4
 	farcall BoosterPack_1031b
 .asm_ceb4
 	call Func_c2d4
 	jp IncreaseOWScriptPointerBy4
 
-Func_ceba: ; ceba (3:4eba)
+OWScript_GiveOneOfEachTrainerBooster: ; ceba (3:4eba)
 	xor a
 	ld [wd117], a
 	call Func_c2a3
-	ld hl, $4edd
-.asm_cec4
+	ld hl, .booster_type_table
+.giveBoosterLoop
 	ld a, [hl]
-	cp $ff
-	jr z, .asm_ced7
+	cp NO_BOOSTER
+	jr z, .done
 	push hl
 	farcall BoosterPack_1031b
 	ld a, $1
 	ld [wd117], a
 	pop hl
 	inc hl
-	jr .asm_cec4
-.asm_ced7
+	jr .giveBoosterLoop
+.done
 	call Func_c2d4
 	jp IncreaseOWScriptPointerBy1
-; 0xcedd
 
-	INCROM $cedd, $cee2
+.booster_type_table
+	db BOOSTER_COLOSSEUM_TRAINER
+	db BOOSTER_EVOLUTION_TRAINER
+	db BOOSTER_MYSTERY_TRAINER_COLORLESS
+	db BOOSTER_LABORATORY_TRAINER
+	db NO_BOOSTER ; $ff
 
-Func_cee2: ; cee2 (3:4ee2)
+; Shows the card received screen for a given promotional card
+; arg can either be the card, $00 for a wram card, or $ff for the 4 legends
+OWScript_ShowCardReceivedScreen: ; cee2 (3:4ee2)
 	call Func_c2a3
 	ld a, c
 	cp $ff
@@ -2274,8 +2274,7 @@ Func_cf7b: ; cf7b (3:4f7b)
 
 Func_cf96: ; cf96 (3:4f96)
 	ld c, $0
-	call Func_ca69
-	db $11
+	get_flag_value EVENT_FLAG_11
 	or a
 	jr z, Func_cfc0
 	cp a, $08
@@ -2283,15 +2282,13 @@ Func_cf96: ; cf96 (3:4f96)
 	inc c
 
 .asm_cfa4
-	call Func_ca69
-	db $17
+	get_flag_value EVENT_FLAG_17
 	cp $8
 	jr c, .asm_cfad
 	inc c
 
 .asm_cfad
-	call Func_ca69
-	db $20
+	get_flag_value EVENT_FLAG_20
 	cp a, $08
 	jr c, .asm_cfb6
 	inc c
@@ -2308,14 +2305,13 @@ Func_cfc0: ; cfc0 (3:4fc0)
 
 Func_cfc6: ; cfc6 (3:4fc6)
 	ld a, [wd3b6]
-	ld [wd3aa], a
+	ld [wLoadedNPCTempIndex], a
 	ld a, c
 	farcall Func_1c52e
 	jp IncreaseOWScriptPointerBy2
 
 Func_cfd4: ; cfd4 (3:4fd4)
-	call Func_ca69
-	db $2d
+	get_flag_value EVENT_FLAG_2D
 	ld b, a
 .asm_cfd9
 	ld a, $5
@@ -2339,15 +2335,13 @@ Func_cfd4: ; cfd4 (3:4fd4)
 	or b
 	push bc
 	ld c, a
-	call Func_ca8f
-	dec l
+	set_flag_value EVENT_FLAG_2D
 	pop bc
 	ld b, $0
 	ld hl, Data_d006
 	add hl, bc
 	ld c, [hl]
-	call Func_ca8f
-	dec hl
+	set_flag_value EVENT_FLAG_2B
 	jp IncreaseOWScriptPointerBy1
 
 Data_d006: ; d006 (3:5006)
@@ -2359,8 +2353,7 @@ Func_d00b: ; d00b (3:500b)
 	ld hl, wTxRam2
 	add hl, bc
 	push hl
-	call Func_ca69
-	db $2b
+	get_flag_value EVENT_FLAG_2B
 	ld e, a
 	ld d, $0
 	call GetCardName
@@ -2371,22 +2364,19 @@ Func_d00b: ; d00b (3:500b)
 	jp IncreaseOWScriptPointerBy2
 
 Func_d025: ; d025 (3:5025)
-	call Func_ca69
-	db $2b
+	get_flag_value EVENT_FLAG_2B
 	call GetCardCountInCollectionAndDecks
 	jp c, Func_cf67
 	jp Func_cf6d
 
 Func_d032: ; d032 (3:5032)
-	call Func_ca69
-	db $2b
+	get_flag_value EVENT_FLAG_2B
 	call GetCardCountInCollection
 	jp c, Func_cf67
 	jp Func_cf6d
 
 Func_d03f: ; d03f (3:503f)
-	call Func_ca69
-	db $2b
+	get_flag_value EVENT_FLAG_2B
 	call RemoveCardFromCollection
 	jp IncreaseOWScriptPointerBy1
 
@@ -2398,7 +2388,7 @@ Func_d04f: ; d04f (3:504f)
 	call Func_cad8
 	jp IncreaseOWScriptPointerBy1
 
-Func_d055: ; d055 (3:5055)
+OWScript_SetPlayerDirection: ; d055 (3:5055)
 	ld a, c
 	call Func_c5ce
 	jp IncreaseOWScriptPointerBy2
@@ -2427,23 +2417,21 @@ OWScript_SetDialogName: ; d080 (3:5080)
 	farcall SetNPCDialogName
 	jp IncreaseOWScriptPointerBy2
 
-; Calls another OWSequence with a specified NPC
-; Not confident enough to give it a name yet
-Func_d088: ; d088 (3:5088)
+OWScript_SetNextNPCandOWSequence: ; d088 (3:5088)
 	ld a, c
 	ld [wTempNPC], a
 	call GetOWSArgs2AfterPointer
-	call Func_c926
+	call SetNextNPCAndOWSequence
 	jp IncreaseOWScriptPointerBy4
 
 Func_d095: ; d095 (3:5095)
 	ld a, [wd3b6]
-	ld [wd3aa], a
+	ld [wLoadedNPCTempIndex], a
 	push bc
 	call GetOWSArgs3AfterPointer
 	ld a, [wd3b6]
-	ld l, $5
-	call Func_39ad
+	ld l, LOADED_NPC_FIELD_05
+	call GetItemInLoadedNPCIndex
 	res 4, [hl]
 	ld a, [hl]
 	or c
@@ -2462,7 +2450,7 @@ Func_d095: ; d095 (3:5095)
 
 Func_d0be: ; d0be (3:50be)
 	ld a, [wd3b6]
-	ld [wd3aa], a
+	ld [wLoadedNPCTempIndex], a
 	ld a, c
 	ld c, b
 	ld b, a
@@ -2479,7 +2467,7 @@ OWScript_DoFrames: ; d0ce (3:50ce)
 
 Func_d0d9: ; d0d9 (3:50d9)
 	ld a, [wd3b6]
-	ld [wd3aa], a
+	ld [wLoadedNPCTempIndex], a
 	ld d, c
 	ld e, b
 	farcall Func_1c477
@@ -2491,7 +2479,7 @@ Func_d0d9: ; d0d9 (3:50d9)
 	jp nz, ScriptEventFailedNoJump
 	jp ScriptEventPassedTryJump
 
-Func_d0f2: ; d0f2 (3:50f2)
+OWScript_JumpIfPlayerCoordMatches: ; d0f2 (3:50f2)
 	ld a, [wPlayerXCoord]
 	cp c
 	jp nz, ScriptEventFailedNoJump
@@ -2501,13 +2489,13 @@ Func_d0f2: ; d0f2 (3:50f2)
 	jp ScriptEventPassedTryJump
 
 Func_d103: ; d103 (3:5103)
-	ld a, [wd3aa]
+	ld a, [wLoadedNPCTempIndex]
 	push af
 	ld a, [wTempNPC]
 	push af
 	ld a, c
 	ld [wTempNPC], a
-	call Func_39c3
+	call FindLoadedNPC
 	jr c, .asm_d119
 	call $54d1
 	jr .asm_d11c
@@ -2519,7 +2507,7 @@ Func_d103: ; d103 (3:5103)
 	pop af
 	ld [wTempNPC], a
 	pop af
-	ld [wd3aa], a
+	ld [wLoadedNPCTempIndex], a
 	ret
 
 Func_d125: ; d125 (3:5125)
@@ -2582,12 +2570,10 @@ Func_d16b: ; d16b (3:516b)
 Func_d195: ; d195 (3:5195)
 	ld a, [wTempNPC]
 	push af
-	call Func_ca69
-	db $45
+	get_flag_value EVENT_FLAG_45
 	inc a
 	ld c, a
-	call Func_ca8f
-	ld b, l
+	set_flag_value EVENT_FLAG_45
 	call Func_f580
 	pop af
 	ld [wTempNPC], a
@@ -2598,8 +2584,7 @@ Func_d1ad: ; d1ad (3:51ad)
 	jp IncreaseOWScriptPointerBy1
 
 Func_d1b3: ; d1b3 (3:51b3)
-	call Func_ca69
-	db $44
+	get_flag_value EVENT_FLAG_44
 	dec a
 	cp $2
 	jr c, .asm_d1c3
@@ -2627,8 +2612,7 @@ asm_d1c6
 	INCROM $d1dc, $d209
 
 Func_d209: ; d209 (3:5209)
-	call Func_ca69
-	db $71
+	get_flag_value EVENT_FLAG_71
 	ld e, a
 .asm_d20e
 	call UpdateRNGSources
@@ -2670,8 +2654,7 @@ Func_d24c: ; d24c (3:524c)
 	call Func_d28c
 	ld a, [wd695]
 	ld c, a
-	call Func_ca8f
-	halt
+	set_flag_value EVENT_FLAG_76
 	jp IncreaseOWScriptPointerBy1
 
 	INCROM $d25e, $d271
@@ -2767,8 +2750,7 @@ Func_d2f6: ; d2f6 (3:52f6)
 	call Func_d28c
 	ld a, [wd694]
 	ld c, a
-	call Func_ca8f
-	ld [hl], l
+	set_flag_value EVENT_FLAG_75
 	xor a
 	ld [wd694], a
 	jp IncreaseOWScriptPointerBy1
@@ -2782,8 +2764,7 @@ Func_d317: ; d317 (3:5317)
 	call Func_d28c
 	ld a, [wd694]
 	ld c, a
-	call Func_ca8f
-	ld [hl], l
+	set_flag_value EVENT_FLAG_75
 	jp IncreaseOWScriptPointerBy1
 
 
@@ -2816,7 +2797,8 @@ OWScript_OpenDeckMachine: ; d336 (3:5336)
 	call Func_c2d4
 	jp IncreaseOWScriptPointerBy2
 
-Func_d36d: ; d36d (3:536d)
+; args: unused, room, new player x, new player y, new player direction
+OWScript_EnterMap: ; d36d (3:536d)
 	ld a, [wOWScriptPointer]
 	ld l, a
 	ld a, [wOWScriptPointer+1]
@@ -2824,13 +2806,13 @@ Func_d36d: ; d36d (3:536d)
 	inc hl
 	ld a, [hli]
 	ld a, [hli]
-	ld [wd0bb], a
+	ld [wTempMap], a
 	ld a, [hli]
-	ld [wd0bc], a
+	ld [wTempPlayerXCoord], a
 	ld a, [hli]
-	ld [wd0bd], a
+	ld [wTempPlayerYCoord], a
 	ld a, [hli]
-	ld [wd0be], a
+	ld [wTempPlayerDirection], a
 	ld hl, wd0b4
 	set 4, [hl]
 	jp IncreaseOWScriptPointerBy6
@@ -2849,8 +2831,7 @@ Func_d39d: ; d39d (3:539d)
 	jr nz, .asm_d3ac
 	farcall Func_10dba
 	ld c, a
-	call Func_ca8f
-	ld [hl], d
+	set_flag_value EVENT_FLAG_72
 	jr .asm_d3b6
 
 .asm_d3ac
@@ -3072,60 +3053,64 @@ OWScript_JumpIfFlagZero2:
 
 LoadOverworld: ; d4ec (3:54ec)
 	call Func_d4fb
-	call Func_ca69
-	ld a, $b7
+	get_flag_value EVENT_FLAG_3E
+	or a
 	ret nz
-	ld bc, OWSequence_d52e
-	jp Func_c935
+	ld bc, OWSequence_BeginGame
+	jp SetNextOWSequence
 
 Func_d4fb: ; d4fb (3:54fb)
-	call Func_cacd
-	ld e, c
+	zero_out_flag EVENT_FLAG_59
 	call Func_f602
-	call Func_ca69
-	db $3f
+	get_flag_value EVENT_FLAG_3F
 	cp $02
 	jr z, .asm_d527
-	call Func_ca69
-	db $40
+	get_flag_value EVENT_FLAG_40
 	cp $02
 	jr z, .asm_d521
-	call Func_ca69
-	db $41
+	get_flag_value EVENT_FLAG_41
 	cp $02
 	jr z, .asm_d51b
 	ret
 .asm_d51b
 	ld c, $07
-	call Func_ca8f
-	ld b, c
+	set_flag_value EVENT_FLAG_41
 .asm_d521
 	ld c, $07
-	call Func_ca8f
-	ld b, b
+	set_flag_value EVENT_FLAG_40
 .asm_d527
 	ld c, $07
-	call Func_ca8f
-	ccf
+	set_flag_value EVENT_FLAG_3F
 	ret
 
-OWSequence_d52e: ; d52e (3:552e)
+OWSequence_BeginGame: ; d52e (3:552e)
 	start_script
 	run_script OWScript_DoFrames
 	db $3c
 	run_script Func_d3e0
 	run_script OWScript_DoFrames
 	db $78
-	run_script Func_d36d
+	run_script OWScript_EnterMap
 	db $02
-	db $01
-	db $0e
-	db $1a
-	db $00
-	run_script OWScript_EndScriptCloseText
-; 0xd53b
+	db MASON_LABORATORY
+	db 14
+	db 26
+	db NORTH
+	run_script OWScript_QuitScriptFully
 
-	INCROM $d53b, $d753
+MasonLaboratoryAfterDuel: ; d53b (3:553b)
+	ld hl, .after_duel_table
+	call FindEndOfBattleScript
+	ret
+
+.after_duel_table
+	db SAM
+	db SAM
+	dw $568a
+	dw $569f
+	db $00
+
+	INCROM $d549, $d753
 
 OWSequence_d753: ; d753 (3:5753)
 	start_script
@@ -3159,7 +3144,7 @@ OWSequence_d753: ; d753 (3:5753)
 	run_script OWScript_PrintTextString
 	tx Text05e3
 	run_script OWScript_CloseAdvancedTextBox
-	run_script Func_d088
+	run_script OWScript_SetNextNPCandOWSequence
 	db SAM
 	dw OWSequence_d779
 	run_script OWScript_EndScriptLoop1
@@ -3182,28 +3167,298 @@ OWSequence_d779: ; d779 (03:5779)
 	db $58
 	run_script Func_cfc6
 	db $01
-	run_script Func_d055
+	run_script OWScript_SetPlayerDirection
 	db $03
 	run_script OWScript_CloseAdvancedTextBox
-	run_script Func_d088
-	db $01
-	dw $5794
+	run_script OWScript_SetNextNPCandOWSequence
+	db DRMASON
+	dw OWSequence_d794
 	run_script OWScript_EndScriptLoop1
+	ret
 
-	INCROM $d793, $e13f
+OWSequence_d794: ; d794 (3:5794)
+	start_script
+	run_script Func_ce4a
+	db $8b
+	db $58
+	run_script OWScript_DoFrames
+	db $28
+	run_script OWScript_PrintTextString
+	tx Text05e6
+	run_script OWScript_CloseTextBox
+	run_script OWScript_MovePlayer
+	db WEST
+	db $01
+	run_script OWScript_MovePlayer
+	db WEST
+	db $01
+	run_script OWScript_SetPlayerDirection
+	db SOUTH
+	run_script OWScript_MovePlayer
+	db SOUTH
+	db $01
+	run_script OWScript_MovePlayer
+	db SOUTH
+	db $01
+	run_script OWScript_MovePlayer
+	db SOUTH
+	db $01
+	run_script OWScript_SetPlayerDirection
+	db WEST
+	run_script Func_ce4a
+	db $94
+	db $58
+	run_script OWScript_PrintTextString
+	tx Text05e7
+	run_script OWScript_SetDialogName
+	db $07
+	run_script OWScript_PrintTextString
+	tx Text05e8
+
+.ows_d7bc
+	run_script OWScript_CloseTextBox
+	run_script Func_d317
+	run_script OWScript_CloseTextBox
+	run_script OWScript_JumpIfFlagEqual
+	db EVENT_FLAG_75
+	db $07
+	dw .ows_d80c
+	run_script OWScript_JumpIfFlagEqual
+	db EVENT_FLAG_75
+	db $01
+	dw .ows_d7e8
+	run_script OWScript_JumpIfFlagEqual
+	db EVENT_FLAG_75
+	db $02
+	dw .ows_d7ee
+	run_script OWScript_JumpIfFlagEqual
+	db EVENT_FLAG_75
+	db $03
+	dw .ows_d7f4
+	run_script OWScript_JumpIfFlagEqual
+	db EVENT_FLAG_75
+	db $04
+	dw .ows_d7fa
+	run_script OWScript_JumpIfFlagEqual
+	db EVENT_FLAG_75
+	db $05
+	dw .ows_d800
+	run_script OWScript_JumpIfFlagEqual
+	db EVENT_FLAG_75
+	db $06
+	dw .ows_d806
+	run_script OWScript_PrintTextString
+	tx Text05d6
+	run_script OWScript_Jump
+	dw .ows_d7bc
+
+.ows_d7e8
+	run_script OWScript_PrintTextString
+	tx Text05d7
+	run_script OWScript_Jump
+	dw .ows_d7bc
+
+.ows_d7ee
+	run_script OWScript_PrintTextString
+	tx Text05d8
+	run_script OWScript_Jump
+	dw .ows_d7bc
+
+.ows_d7f4
+	run_script OWScript_PrintTextString
+	tx Text05d9
+	run_script OWScript_Jump
+	dw .ows_d7bc
+
+.ows_d7fa
+	run_script OWScript_PrintTextString
+	tx Text05da
+	run_script OWScript_Jump
+	dw .ows_d7bc
+
+.ows_d800
+	run_script OWScript_PrintTextString
+	tx Text05db
+	run_script OWScript_Jump
+	dw .ows_d7bc
+
+.ows_d806
+	run_script OWScript_PrintTextString
+	tx Text05dc
+	run_script OWScript_Jump
+	dw .ows_d7bc
+
+.ows_d80c
+	run_script OWScript_PrintTextString
+	tx Text05e9
+	run_script OWScript_AskQuestionJumpDefaultYes
+	dw 0000
+	dw .ows_d817
+	run_script OWScript_Jump
+	dw .ows_d7bc
+
+.ows_d817
+	run_script OWScript_SetDialogName
+	db $01
+	run_script OWScript_PrintTextString
+	tx Text05ea
+	run_script OWScript_nop
+	run_script OWScript_SetFlagValue
+	db EVENT_FLAG_3E
+	db $01
+	run_script OWScript_CloseAdvancedTextBox
+	run_script OWScript_SetNextNPCandOWSequence
+	db SAM
+	dw OWSequence_d827
+	run_script OWScript_EndScriptLoop1
+	ret
+
+OWSequence_d827: ; d827 (3:5827)
+	start_script
+	run_script OWScript_StartBattle
+	db PRIZES_2
+	db SAMS_PRACTICE_DECK_ID
+	db MUSIC_DUEL_THEME_1
+	run_script OWScript_QuitScriptFully
+; 0xd82d
+
+	INCROM $d82d, $dc68
+
+FightingClubLobbyAfterDuel: ; dc68 (3:5c68)
+	ld hl, .after_duel_table
+	call FindEndOfBattleScript
+	ret
+.after_duel_table
+	db IMAKUNI
+	db IMAKUNI
+	dw OWSequence_BeatImakuni
+	dw OWSequence_LostToImakuni
+	db $00
+
+	INCROM $dc76, $dd0d
+
+OWSequence_Imakuni: ; dd0d (3:5d0d)
+	start_script
+	run_script OWScript_SetFlagValue
+	db EVENT_FLAG_13
+	db $02
+	run_script OWScript_JumpIfFlagZero2
+	db EVENT_FLAG_02
+	dw NO_JUMP
+	run_script OWScript_PrintVariableText
+	tx Text0467
+	tx Text0468
+	run_script OWScript_MaxOutFlagValue
+	db EVENT_FLAG_02
+	run_script OWScript_AskQuestionJump
+	tx Text0469
+	dw .declineDuel
+	run_script OWScript_PrintTextString
+	tx Text046a
+	run_script OWScript_QuitScriptFully
+
+.declineDuel
+	run_script OWScript_PrintTextString
+	tx Text046b
+	run_script OWScript_StartBattle
+	db PRIZES_6
+	db IMAKUNI_DECK_ID
+	db MUSIC_IMAKUNI
+	run_script OWScript_QuitScriptFully
+; 0xdd2d
+
+OWSequence_BeatImakuni: ; dd2d (3:5d2d)
+	start_script
+	run_script OWScript_JumpIfFlagEqual
+	db EVENT_FLAG_36
+	db $07
+	dw .ows_dd3f
+	run_script OWScript_IncrementFlagValue
+	db EVENT_FLAG_36
+	run_script OWScript_JumpIfFlagEqual
+	db EVENT_FLAG_36
+	db $03
+	dw .ows_dd46
+	run_script OWScript_JumpIfFlagEqual
+	db EVENT_FLAG_36
+	db $06
+	dw .ows_dd4c
+.ows_dd3f
+	run_script OWScript_PrintTextString
+	tx Text046c
+	run_script OWScript_GiveOneOfEachTrainerBooster
+	run_script OWScript_Jump
+	dw .ows_dd56
+
+.ows_dd46
+	run_script OWScript_PrintTextString
+	tx Text046d
+	run_script OWScript_Jump
+	dw .ows_dd4f
+
+.ows_dd4c
+	run_script OWScript_PrintTextString
+	tx Text046e
+.ows_dd4f
+	run_script OWScript_PrintTextString
+	tx Text046f
+	run_script OWScript_GiveCard
+	db IMAKUNI_CARD
+	run_script OWScript_ShowCardReceivedScreen
+	db IMAKUNI_CARD
+.ows_dd56
+	run_script OWScript_PrintTextString
+	tx Text0470
+	run_script OWScript_Jump
+	dw OWJump_ImakuniCommon
+
+OWSequence_LostToImakuni: ; dd5c (3:5d5c)
+	start_script
+	run_script OWScript_PrintTextString
+	tx Text0471
+
+OWJump_ImakuniCommon: ; dd60 (3:5d60)
+	run_script OWScript_CloseTextBox
+	run_script OWScript_JumpIfPlayerCoordMatches
+	db 18
+	db 4
+	dw .ows_dd69
+	run_script OWScript_Jump
+	dw .ows_dd6e
+
+.ows_dd69
+	run_script OWScript_SetPlayerDirection
+	db EAST
+	run_script OWScript_MovePlayer
+	db WEST
+	db $01
+
+.ows_dd6e
+	run_script Func_ce4a
+	db $78
+	db $5d
+	run_script Func_cdcb
+	run_script OWScript_MaxOutFlagValue
+	db EVENT_FLAG_03
+	run_script Func_d408
+	db $09
+	run_script Func_d41d
+	run_script OWScript_QuitScriptFully
+; 0xdd78
+
+	INCROM $dd78, $e13f
 
 WaterClubMovePlayer: ; e13f (3:613f)
 	ld a, [wPlayerYCoord]
 	cp $8
 	ret nz
-	call Func_ca69
-	db $33
+	get_flag_value EVENT_JOSHUA_STATE
 	cp $2
 	ret nc
-	ld a, $21
+	ld a, JOSHUA
 	ld [wTempNPC], a
 	ld bc, OWSequence_NotReadyToSeeAmy
-	jp Func_c926
+	jp SetNextNPCAndOWSequence
 
 WaterClubAfterDuel: ;e157 (3:6157)
 	ld hl, .after_duel_table
@@ -3241,7 +3496,7 @@ OWSequence_Sara: ; e177 (3:6177)
 	dw .yes_duel
 	run_script OWScript_PrintTextString
 	tx Text042e
-	run_script OWScript_EndScriptCloseText
+	run_script OWScript_QuitScriptFully
 .yes_duel
 	run_script OWScript_PrintTextString
 	tx Text042f
@@ -3249,7 +3504,7 @@ OWSequence_Sara: ; e177 (3:6177)
 	db PRIZES_2
 	db WATERFRONT_POKEMON_DECK_ID ; 6189
 	db MUSIC_DUEL_THEME_1
-	run_script OWScript_EndScriptCloseText
+	run_script OWScript_QuitScriptFully
 
 OWSequence_BeatSara: ; e18c (3:618c)
 	start_script
@@ -3263,7 +3518,7 @@ OWSequence_BeatSara: ; e18c (3:618c)
 	db NO_BOOSTER
 	run_script OWScript_PrintTextString
 	tx Text0431
-	run_script OWScript_EndScriptCloseText
+	run_script OWScript_QuitScriptFully
 
 OWSequence_LostToSara: ; e19a (03:619a)
 	start_script
@@ -3279,7 +3534,7 @@ OWSequence_Amanda: ; e19e (03:619e)
 	dw .yes_duel
 	run_script OWScript_PrintTextString
 	tx Text0435
-	run_script OWScript_EndScriptCloseText
+	run_script OWScript_QuitScriptFully
 .yes_duel
 	run_script OWScript_PrintTextString
 	tx Text0436
@@ -3287,7 +3542,7 @@ OWSequence_Amanda: ; e19e (03:619e)
 	db PRIZES_3
 	db LONELY_FRIENDS_DECK_ID
 	db MUSIC_DUEL_THEME_1
-	run_script OWScript_EndScriptCloseText
+	run_script OWScript_QuitScriptFully
 
 OWSequence_BeatAmanda: ; e1b3 (03:61b3)
 	start_script
@@ -3301,24 +3556,24 @@ OWSequence_BeatAmanda: ; e1b3 (03:61b3)
 	db NO_BOOSTER
 	run_script OWScript_PrintTextString
 	tx Text0438
-	run_script OWScript_EndScriptCloseText
+	run_script OWScript_QuitScriptFully
 
 OWSequence_LostToAmanda: ; e1c1 (03:61c1)
 	start_script
 	run_script OWScript_PrintTextCloseBox
 	tx Text0439
 
-OWSequence_NotReadyToSeeAmy:
+OWSequence_NotReadyToSeeAmy: ; e15c (03:6153)
 	start_script
-	run_script Func_d0f2
+	run_script OWScript_JumpIfPlayerCoordMatches
 	db $12
 	db $08
 	dw $61ec
-	run_script Func_d0f2
+	run_script OWScript_JumpIfPlayerCoordMatches
 	db $14
 	db $08
 	dw $61f2
-	run_script Func_d0f2
+	run_script OWScript_JumpIfPlayerCoordMatches
 	db $18
 	db $08
 	dw $61f8
@@ -3330,18 +3585,18 @@ OWSequence_NotReadyToSeeAmy:
 	db $62
 	run_script OWScript_PrintTextString
 	tx Text043a
-	run_script Func_d0f2
+	run_script OWScript_JumpIfPlayerCoordMatches
 	db $12
 	db $0a
 	dw $61fe
-	run_script Func_d0f2
+	run_script OWScript_JumpIfPlayerCoordMatches
 	db $14
 	db $0a
 	dw $6202
 	run_script Func_ce4a
 	db $15
 	db $62
-	run_script OWScript_EndScriptCloseText
+	run_script OWScript_QuitScriptFully
 
 .ows_e1ec
 	run_script Func_ce4a
@@ -3362,7 +3617,7 @@ OWSequence_NotReadyToSeeAmy:
 	run_script Func_ce4a
 	db $18
 	db $62
-	run_script OWScript_EndScriptCloseText
+	run_script OWScript_QuitScriptFully
 ; 0xe202
 
 	INCROM $e202, $e21c
@@ -3383,7 +3638,7 @@ OWSequence_Joshua:
 	db JOSHUA_TALKED
 	run_script OWScript_PrintTextString
 	tx Text043b
-	run_script OWScript_EndScriptCloseText
+	run_script OWScript_QuitScriptFully
 
 .beat_sara_and_amanda
 	run_script OWScript_JumpIfFlagNonzero1
@@ -3414,7 +3669,7 @@ OWSequence_Joshua:
 	run_script OWScript_PrintVariableText
 	tx Text0440
 	tx Text0441
-	run_script OWScript_EndScriptCloseText
+	run_script OWScript_QuitScriptFully
 
 .startDuel:
 	run_script OWScript_PrintTextString
@@ -3425,7 +3680,7 @@ OWSequence_Joshua:
 	db PRIZES_4
 	db SOUND_OF_THE_WAVES_DECK_ID
 	db MUSIC_DUEL_THEME_1
-	run_script OWScript_EndScriptCloseText
+	run_script OWScript_QuitScriptFully
 
 OWSequence_LostToJoshua: ; e260 (3:6260)
 	start_script
@@ -3436,7 +3691,7 @@ OWSequence_LostToJoshua: ; e260 (3:6260)
 	run_script OWScript_PrintVariableText
 	tx Text0443
 	tx Text0444
-	run_script OWScript_EndScriptCloseText
+	run_script OWScript_QuitScriptFully
 
 OWSequence_BeatJoshua: ; e26c (3:626c)
 	start_script
@@ -3462,7 +3717,7 @@ OWSequence_BeatJoshua: ; e26c (3:626c)
 	db EVENT_JOSHUA_STATE
 	db JOSHUA_BEATEN
 	dw .firstJoshuaWin
-	run_script OWScript_EndScriptCloseText
+	run_script OWScript_QuitScriptFully
 
 .firstJoshuaWin:
 	run_script OWScript_SetFlagValue
@@ -3478,13 +3733,13 @@ OWSequence_BeatJoshua: ; e26c (3:626c)
 	run_script Func_cfc6
 	db $00
 	run_script OWScript_CloseAdvancedTextBox
-	run_script Func_d088
+	run_script OWScript_SetNextNPCandOWSequence
 	db AMY
 	dw OWSequence_MeetAmy
 	run_script OWScript_EndScriptLoop1
-; 0xe2a0
+	ret
 
-	INCROM $e2a0, $e2d1
+	INCROM $e2a1, $e2d1
 
 OWSequence_MeetAmy: ; e2d1 (3:62d1)
 	start_script
@@ -3512,12 +3767,12 @@ OWSequence_MeetAmy: ; e2d1 (3:62d1)
 	run_script Func_d0be
 	db $14
 	db $04
-	run_script Func_d055
+	run_script OWScript_SetPlayerDirection
 	db $03
 	run_script OWScript_MovePlayer
 	db WEST
 	db $01
-	run_script Func_d055
+	run_script OWScript_SetPlayerDirection
 	db $00
 	run_script OWScript_MovePlayer
 	db NORTH
@@ -3553,7 +3808,7 @@ OWSequence_Amy: ; e304 (3:6304)
 	db $14
 	db $04
 	dw OWSequence_LostToAmy.ows_e34e
-	run_script OWScript_EndScriptCloseText
+	run_script OWScript_QuitScriptFully
 
 .startDuel
 	run_script OWScript_PrintTextString
@@ -3562,7 +3817,7 @@ OWSequence_Amy: ; e304 (3:6304)
 	db PRIZES_6
 	db GO_GO_RAIN_DANCE_DECK_ID
 	db MUSIC_DUEL_THEME_2
-	run_script OWScript_EndScriptCloseText
+	run_script OWScript_QuitScriptFully
 
 OWSequence_BeatAmy: ; e322 (3:6322)
 	start_script
@@ -3593,7 +3848,7 @@ OWSequence_BeatAmy: ; e322 (3:6322)
 	db $14
 	db $04
 	dw OWSequence_LostToAmy.ows_e34e
-	run_script OWScript_EndScriptCloseText
+	run_script OWScript_QuitScriptFully
 
 OWSequence_LostToAmy: ; e344 (3:6344)
 	start_script
@@ -3603,7 +3858,7 @@ OWSequence_LostToAmy: ; e344 (3:6344)
 	db $14
 	db $04
 	dw .ows_e34e
-	run_script OWScript_EndScriptCloseText
+	run_script OWScript_QuitScriptFully
 
 .ows_e34e
 	run_script Func_d095
@@ -3613,7 +3868,7 @@ OWSequence_LostToAmy: ; e344 (3:6344)
 	run_script Func_d0be
 	db $16
 	db $04
-	run_script OWScript_EndScriptCloseText
+	run_script OWScript_QuitScriptFully
 
 OWJump_TalkToAmyAgain: ; e356 (3:6356)
 	run_script OWScript_PrintTextString
@@ -3631,7 +3886,7 @@ OWJump_TalkToAmyAgain: ; e356 (3:6356)
 	db PRIZES_6
 	db GO_GO_RAIN_DANCE_DECK_ID
 	db MUSIC_DUEL_THEME_2
-	run_script OWScript_EndScriptCloseText
+	run_script OWScript_QuitScriptFully
 ; 0xe369
 
 	INCROM $e369, $e525
@@ -3669,7 +3924,7 @@ FindEndOfBattleScript: ; e52c (3:652c)
 	ld c, [hl]
 	inc hl
 	ld b, [hl]
-	jp Func_c926
+	jp SetNextNPCAndOWSequence
 ; 0xe553
 
 GrassClubEntranceAfterDuelTable: ; e553 (3:6553)
@@ -3717,7 +3972,7 @@ OWSequence_Brittany: ; e5d2 (3:65d2)
 	dw .wantToDuel
 	run_script OWScript_PrintTextString
 	tx Text06e3
-	run_script OWScript_EndScriptCloseText
+	run_script OWScript_QuitScriptFully
 
 .wantToDuel
 	run_script OWScript_PrintTextString
@@ -3726,7 +3981,7 @@ OWSequence_Brittany: ; e5d2 (3:65d2)
 	db PRIZES_4
 	db ETCETERA_DECK_ID
 	db MUSIC_DUEL_THEME_1
-	run_script OWScript_EndScriptCloseText
+	run_script OWScript_QuitScriptFully
 
 OWSequence_BeatBrittany: ; e5ee (3:65ee)
 	start_script
@@ -3763,7 +4018,7 @@ OWSequence_BeatBrittany: ; e5ee (3:65ee)
 	run_script OWScript_PrintTextString
 	tx Text06e8
 .finishSequence
-	run_script OWScript_EndScriptCloseText
+	run_script OWScript_QuitScriptFully
 
 OWSequence_LostToBrittany: ; e618 (3:6618)
 	start_script
@@ -3800,34 +4055,32 @@ LoadClubEntrance: ; e809 (3:6809)
 TryFirstRonaldEncounter: ; e813 (3:6813)
 	ld a, RONALD1
 	ld [wTempNPC], a
-	call Func_39c3
+	call FindLoadedNPC
 	ret c
 	ld bc, OWSequence_FirstRonaldEncounter
-	jp Func_c926
+	jp SetNextNPCAndOWSequence
 
 TryFirstRonaldFight: ; e822 (3:6822)
 	ld a, RONALD2
 	ld [$d3ab], a
-	call Func_39c3
+	call FindLoadedNPC
 	ret c
-	call Func_ca69
-	db $4c
+	get_flag_value EVENT_FLAG_4C
 	or a
 	ret nz
 	ld bc, OWSequence_FirstRonaldFight
-	jp Func_c926
+	jp SetNextNPCAndOWSequence
 
 TrySecondRonaldFight: ; e837 (3:6837)
 	ld a, RONALD3
 	ld [$d3ab], a
-	call Func_39c3
+	call FindLoadedNPC
 	ret c
-	call Func_ca69
-	db $4d
+	get_flag_value EVENT_FLAG_4D
 	or a
 	ret nz
 	ld bc, OWSequenceSecondRonaldFight
-	jp Func_c926
+	jp SetNextNPCAndOWSequence
 ; 0xe84c
 
 	INCROM $e84c, $e862
@@ -3852,7 +4105,7 @@ OWSequence_FirstRonaldEncounter: ; e862 (3:6862)
 	db $01
 	run_script OWScript_PrintTextString
 	tx Text0646
-	run_script Func_cce4
+	run_script OWScript_AskQuestionJumpDefaultYes
 	dw 0000
 	dw .ows_e882
 	run_script OWScript_PrintTextString
@@ -3867,7 +4120,7 @@ OWSequence_FirstRonaldEncounter: ; e862 (3:6862)
 	run_script OWScript_PrintTextString
 	tx Text0649
 	run_script OWScript_CloseTextBox
-	run_script Func_d055
+	run_script OWScript_SetPlayerDirection
 	db $03
 	run_script OWScript_MovePlayer
 	db EAST
@@ -3877,7 +4130,7 @@ OWSequence_FirstRonaldEncounter: ; e862 (3:6862)
 	db $68
 	run_script Func_cdcb
 	run_script Func_d41d
-	run_script OWScript_EndScriptCloseText
+	run_script OWScript_QuitScriptFully
 ; 0xe894
 
 	INCROM $e894, $e8c0
@@ -3894,16 +4147,16 @@ OWSequence_FirstRonaldFight: ; e8c0 (3:68c0)
 	db $69
 	run_script OWScript_PrintTextString
 	tx Text064a
-	run_script Func_d0f2
+	run_script OWScript_JumpIfPlayerCoordMatches
 	db $08
 	db $02
 	dw $68d6
-	run_script Func_d055
+	run_script OWScript_SetPlayerDirection
 	db $03
 	run_script OWScript_MovePlayer
 	db WEST
 	db $01
-	run_script Func_d055
+	run_script OWScript_SetPlayerDirection
 	db $02
 	run_script OWScript_MovePlayer
 	db SOUTH
@@ -3920,7 +4173,7 @@ OWSequence_FirstRonaldFight: ; e8c0 (3:68c0)
 	db PRIZES_6
 	db IM_RONALD_DECK_ID
 	db MUSIC_RONALD
-	run_script OWScript_EndScriptCloseText
+	run_script OWScript_QuitScriptFully
 
 OWSequence_BeatFirstRonaldFight: ; e8e9 (3:68e9)
 	start_script
@@ -3928,7 +4181,7 @@ OWSequence_BeatFirstRonaldFight: ; e8e9 (3:68e9)
 	tx Text064c
 	run_script OWScript_GiveCard
 	db JIGGLYPUFF1
-	run_script Func_cee2
+	run_script OWScript_ShowCardReceivedScreen
 	db JIGGLYPUFF1
 	run_script OWScript_PrintTextString
 	tx Text064d
@@ -3950,7 +4203,7 @@ OWJump_FinishedFirstRonaldFight
 	db $69
 	run_script Func_cdcb
 	run_script Func_d41d
-	run_script OWScript_EndScriptCloseText
+	run_script OWScript_QuitScriptFully
 ; 0xe905
 
 	INCROM $e905, $e91e
@@ -3961,22 +4214,23 @@ OWSequenceSecondRonaldFight: ; e91e (3:691e)
 	db $05
 	db $69
 	run_script OWScript_DoFrames
-	db $3c
+	db 60
 	run_script Func_ce4a
 	db $0d
 	db $69
 	run_script OWScript_PrintTextString
 	tx Text064f
-	run_script Func_d0f2
+	run_script OWScript_JumpIfPlayerCoordMatches
 	db $08
 	db $02
-	dw $6934
-	run_script Func_d055
+	dw .ows_6934
+	run_script OWScript_SetPlayerDirection
 	db $03
 	run_script OWScript_MovePlayer
 	db WEST
 	db $01
-	run_script Func_d055
+.ows_6934
+	run_script OWScript_SetPlayerDirection
 	db $02
 	run_script OWScript_MovePlayer
 	db SOUTH
@@ -3987,13 +4241,13 @@ OWSequenceSecondRonaldFight: ; e91e (3:691e)
 	run_script OWScript_PrintTextString
 	tx Text0650
 	run_script OWScript_SetFlagValue
-	db $4d
+	db EVENT_FLAG_4D
 	db $01
 	run_script OWScript_StartBattle
 	db PRIZES_6
 	db POWERFUL_RONALD_DECK_ID
 	db MUSIC_RONALD
-	run_script OWScript_EndScriptCloseText
+	run_script OWScript_QuitScriptFully
 
 OWSequence_BeatSecondRonaldFight: ; e947 (3:6947)
 	start_script
@@ -4001,7 +4255,7 @@ OWSequence_BeatSecondRonaldFight: ; e947 (3:6947)
 	tx Text0651
 	run_script OWScript_GiveCard
 	db SUPER_ENERGY_RETRIEVAL
-	run_script Func_cee2
+	run_script OWScript_ShowCardReceivedScreen
 	db SUPER_ENERGY_RETRIEVAL
 	run_script OWScript_PrintTextString
 	tx Text0652
@@ -4015,7 +4269,7 @@ OWSequence_LostToSecondRonaldFight: ; e955 (3:6955)
 
 OWJump_FinishedSecondRonaldFight ; e959 (3:6959)
 	run_script OWScript_SetFlagValue
-	db $4d
+	db EVENT_FLAG_4D
 	db $02
 	run_script OWScript_CloseTextBox
 	run_script Func_ce4a
@@ -4023,18 +4277,16 @@ OWJump_FinishedSecondRonaldFight ; e959 (3:6959)
 	db $69
 	run_script Func_cdcb
 	run_script Func_d41d
-	run_script OWScript_EndScriptCloseText
+	run_script OWScript_QuitScriptFully
 ; 0xe963
 
 	INCROM $e963, $f580
 
 Func_f580: ; f580 (3:7580)
-	call Func_ca69
-	db $44
+	get_flag_value EVENT_FLAG_44
 	cp $3
 	jr z, .asm_f596
-	call Func_ca69
-	db $45
+	get_flag_value EVENT_FLAG_45
 	cp $3
 	ld d, $18
 	jr nz, .asm_f598
@@ -4085,7 +4337,7 @@ Func_fc2b: ; fc2b (3:7c2b)
 	ld [wCurrentNPCNameTx], a
 	ld a, $3
 	ld [wCurrentNPCNameTx+1], a
-	jp Func_c935
+	jp SetNextOWSequence
 
 PointerTable_fc4c: ; fc4c (3:7c4c)
 	dw Unknown_fc64

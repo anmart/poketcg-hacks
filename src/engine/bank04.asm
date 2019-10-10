@@ -366,7 +366,7 @@ Func_10e71: ; 10e71 (4:4e71)
 	and D_PAD
 	jr z, .asm_10e83
 	farcall Func_c5d5
-	ld [wd334], a
+	ld [wPlayerDirection], a
 	call Func_10e97
 	jr .asm_10e96
 .asm_10e83
@@ -388,7 +388,7 @@ Func_10e97: ; 10e97 (4:4e97)
 	rlca
 	rlca
 	ld c, a
-	ld a, [wd334]
+	ld a, [wPlayerDirection]
 	add c
 	ld c, a
 	ld b, $0
@@ -478,13 +478,13 @@ LoadOverworldMapSelection: ; 10f61 (4:4f61)
 	ld hl, OverworldMapIndexes
 	add hl, bc
 	ld a, [hli]
-	ld [wd0bb], a
+	ld [wTempMap], a
 	ld a, [hli]
-	ld [wd0bc], a
+	ld [wTempPlayerXCoord], a
 	ld a, [hli]
-	ld [wd0bd], a
+	ld [wTempPlayerYCoord], a
 	ld a, $0
-	ld [wd0be], a
+	ld [wTempPlayerDirection], a
 	ld hl, wd0b4
 	set 4, [hl]
 	pop bc
@@ -711,7 +711,7 @@ Func_11102: ; 11102 (4:5102)
 	jr z, .asm_1113a
 	ld a, $3
 .asm_1113a
-	ld [wd334], a
+	ld [wPlayerDirection], a
 	ret
 
 Func_1113e: ; 1113e (4:513e)
@@ -747,7 +747,7 @@ Func_1113e: ; 1113e (4:513e)
 	jr z, .asm_11175
 	ld a, $0
 .asm_11175
-	ld [wd334], a
+	ld [wPlayerDirection], a
 	ret
 
 Func_11179: ; 11179 (4:5179)
@@ -819,13 +819,13 @@ Func_1157c: ; 1157c (4:557c)
 
 .asm_11586
 	ld a, $2
-	ld [wd0bc], a
+	ld [wTempPlayerXCoord], a
 	ld a, $4
-	ld [wd0bd], a
+	ld [wTempPlayerYCoord], a
 	ld a, $2
-	ld [wd0be], a
+	ld [wTempPlayerDirection], a
 	ld a, $1
-	ld [wd0bb], a
+	ld [wTempMap], a
 	ld a, $1
 	ld [wd32e], a
 
@@ -878,8 +878,8 @@ LoadNPCSpriteData: ; 11857 (4:5857)
 	pop hl
 	ret
 
-; this appears to find data about the NPC we're talking to
-Func_1187d: ; 1187d (4:587d)
+; Loads Name into wCurrentNPCNameTx and gets OWSequence ptr into bc
+GetNPCNameAndOWSequence: ; 1187d (4:587d)
 	push hl
 	call GetNPCDataPointer
 	ld bc, NPC_DATA_OWSEQUENCE_PTR
@@ -998,18 +998,18 @@ OverworldScriptTable: ; 1217b (4:617b)
 	dw Func_d03f
 	dw OWScript_Jump
 	dw Func_d04f
-	dw Func_d055
+	dw OWScript_SetPlayerDirection
 	dw OWScript_MovePlayer
-	dw Func_cee2
+	dw OWScript_ShowCardReceivedScreen
 	dw OWScript_SetDialogName
-	dw Func_d088
+	dw OWScript_SetNextNPCandOWSequence
 	dw Func_d095
 	dw Func_d0be
 	dw OWScript_DoFrames
 	dw Func_d0d9
-	dw Func_d0f2
+	dw OWScript_JumpIfPlayerCoordMatches
 	dw Func_ce4a
-	dw Func_ceba
+	dw OWScript_GiveOneOfEachTrainerBooster
 	dw Func_d103
 	dw Func_d125
 	dw Func_d135
@@ -1022,12 +1022,12 @@ OverworldScriptTable: ; 1217b (4:617b)
 	dw Func_d195
 	dw Func_d1ad
 	dw Func_d1b3
-	dw OWScript_EndScriptCloseText
+	dw OWScript_QuitScriptFully
 	dw Func_d244
 	dw Func_d24c
 	dw OWScript_OpenDeckMachine
 	dw Func_d271
-	dw Func_d36d
+	dw OWScript_EnterMap
 	dw Func_ce6f
 	dw Func_d209
 	dw Func_d38f
@@ -1048,7 +1048,7 @@ OverworldScriptTable: ; 1217b (4:617b)
 	dw Func_d41d
 	dw Func_d42f
 	dw Func_d435
-	dw Func_cce4
+	dw OWScript_AskQuestionJumpDefaultYes
 	dw Func_d2f6
 	dw Func_d317
 	dw Func_d43d
