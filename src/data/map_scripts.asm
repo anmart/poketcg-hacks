@@ -343,11 +343,11 @@ MapScripts: ; 1162a (4:562a)
 	dw $7718
 
 ; HALL_OF_HONOR
-	dw HallOfHonorNPCS
+	dw HackHallOfHonorNPCs
 	dw $0000
 	dw $7ec2
 	dw $0000
 	dw $7bdb
 	dw $0000
-	dw $0000
+	dw HackHallOfHonorMoved
 	dw $0000

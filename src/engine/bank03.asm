@@ -5215,3 +5215,50 @@ HackChangeImakuniBoosters:
 
 	call HackGiveBoosters
 	jp OWScript_GiveOneOfEachTrainerBooster.done
+
+OWSequence_HackRonaldEnding:
+	start_script
+	run_script OWScript_JumpIfFlagNonzero2
+	db EVENT_FLAG_22
+	dw .done
+	run_script OWScript_PrintTextString
+	tx Text064c
+
+.done
+	run_script OWScript_QuitScriptFully
+
+; Walk up to player
+; give them a grass card (special promo grass card cut from the venusaur?)
+; Tell them they have no idea what's going on but think it's your fault
+; Say they hope you're happy
+; Leave
+
+HACK_RONALD_TRIGGER_X1    EQU $0A
+HACK_RONALD_TRIGGER_X2    EQU $0C
+HACK_RONALD_TRIGGER_Y     EQU $0E
+
+HackHallOfHonorMoved:
+	ld hl, wHackTalkedToRonaldOnce
+	ld a, [hl]
+	or a
+	ret nz
+
+	ld a, [wPlayerYCoord]
+	cp HACK_RONALD_TRIGGER_Y
+	ret nz
+
+	ld a, [wPlayerXCoord]
+	cp HACK_RONALD_TRIGGER_X1
+	jr z, .continue
+	cp HACK_RONALD_TRIGGER_X2
+	ret nz
+
+.continue
+	; pretty much entirely copied from the Try*RonaldFight routines
+	ld a, RONALD3
+	ld [wTempNPC], a
+	call FindLoadedNPC
+	ret c
+	ld [hl], 1 ; wHackTalkedToRonaldOnce
+	ld bc, OWSequence_HackRonaldEnding
+	jp SetNextNPCAndOWSequence

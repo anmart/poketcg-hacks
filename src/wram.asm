@@ -2743,4 +2743,8 @@ wHackBoosterList::
 wHackUseCardLossText::
 	ds $1
 
+; Used to check if you've talked to ronald in the legend room before
+wHackTalkedToRonaldOnce::
+	ds $1
+
 INCLUDE "sram.asm"

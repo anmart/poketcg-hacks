@@ -1645,3 +1645,20 @@ HackBattleContinueHook:
 	ld a, GAME_EVENT_CONTINUE_DUEL
 	ld [wGameEvent], a
 	jp HackResumeContinueDuel
+
+HackHallOfHonorNPCs:
+	db RONALD3, 10, 26, NORTH
+	dw $0000
+	db LEGEND_CARDS_TOP_LEFT, $0a, $08, SOUTH
+	dw $0000
+	db LEGEND_CARDS_TOP_RIGHT, $0c, $08, SOUTH
+	dw $0000
+	db LEGEND_CARDS_LEFT_SPARK, $08, $0a, SOUTH
+	dw $0000
+	db LEGEND_CARDS_BOTTOM_LEFT, $0a, $0a, SOUTH
+	dw $0000
+	db LEGEND_CARDS_BOTTOM_RIGHT, $0c, $0a, SOUTH
+	dw $0000
+	db LEGEND_CARDS_RIGHT_SPARK, $0e, $0a, SOUTH
+	dw $0000
+	db $00
