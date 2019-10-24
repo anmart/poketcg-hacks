@@ -788,21 +788,11 @@ TextHackBlank: ; 39d39 (e:5d39)
 	text "                  "
 	done
 
-	line "to Card Pop!?"
-	done
-
 TextHackLostCards: ; 39d5c (e:5d5c)
 	text "Removed cards:"
 	done
-	text "            "
-	line "                "
-	done
 
 Text018c: ; 39d8b (e:5d8b)
-	text ""
-	line "err!!"
-	done
-
 TextHackUpdateDeck: ; 39dcc (e:5dcc)
 	text "These have been removed from"
 	line "your deck and collection."
@@ -845,9 +835,14 @@ Text0194: ; 39ed3 (e:5ed3)
 	line "Looked at the card list!"
 	done
 
-Text0195: ; 39f03 (e:5f03)
-	text "Now printing."
-	line "Please wait..."
+TextHackRonaldDialog2:
+	text "I know this is happening because"
+	line "of you."
+	line "I don't know how or why, but I"
+	line "know it's you."
+	line "You have the Legendary Cards now"
+	line "isn't that enough?"
+	line "Can you put an end to this?"
 	done
 
 Text0196: ; 39f21 (e:5f21)
@@ -870,42 +865,26 @@ TextHackNoPokemon: ; 39f6b (e:5f6b)
 	text "Oh! you don't have any pokemon"
 	line "in your deck? Bold Move I guess..."
 	line "But it's not really how"
-	line "I want to play. Maybe Edit   "
-	line "Your deck first before trying  "
-	line "to battle me again?                "
-	done
-	done
+	line "I want to play. Maybe Edit"
+	line "Your deck first before trying"
+	line "to battle me again?"
 	done
 
-Text019b: ; 39fae (e:5fae)
-Text019c: ; 39fe5 (e:5fe5)
+TextHackRonaldDialog1: ; 39fae (e:5fae)
+	text "<RAMNAME>"
+	line "I want to give you something."
+	done
+
+TextHackRonaldDialog0: ; 39fe5 (e:5fe5)
+	text "Wait!"
+	done
+
 Text019d: ; 3a02a (e:602a)
-	text "Receiving Deck configuration..."
-	line "Position the Game Boys and press A."
-	done
-
 Text019e: ; 3a06f (e:606f)
-	text "Card transfer wasn't successful."
-	done
-
 Text019f: ; 3a091 (e:6091)
-	text "Card transfer wasn't successful"
-	done
-
 Text01a0: ; 3a0b2 (e:60b2)
-	text "Deck configuration transfer"
-	line "wasn't successful"
-	done
-
 Text01a1: ; 3a0e1 (e:60e1)
-	text "Deck configuration transfer"
-	line "wasn't successful."
-	done
-
 Text01a2: ; 3a111 (e:6111)
-	text "Now printing..."
-	done
-
 DrMasonText: ; 3a122 (e:6122)
 	text "Dr. Mason"
 	done

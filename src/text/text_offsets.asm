@@ -406,14 +406,14 @@ TextOffsets:: ; 34000 (d:4000)
 	textpointer ReceivedPromotionalFlyingPikachuText     ; 0x0192
 	textpointer ReceivedPromotionalSurfingPikachuText    ; 0x0193
 	textpointer Text0194                                 ; 0x0194
-	textpointer Text0195                                 ; 0x0195
+	textpointer TextHackRonaldDialog2                                ; 0x0195
 	textpointer Text0196                                 ; 0x0196
 	textpointer Text0197                                 ; 0x0197
 	textpointer Text0198                                 ; 0x0198
 	textpointer Text0199                                 ; 0x0199
 	textpointer TextHackNoPokemon                                 ; 0x019a
-	textpointer Text019b                                 ; 0x019b
-	textpointer Text019c                                 ; 0x019c
+	textpointer TextHackRonaldDialog1                                 ; 0x019b
+	textpointer TextHackRonaldDialog0                                 ; 0x019c
 	textpointer Text019d                                 ; 0x019d
 	textpointer Text019e                                 ; 0x019e
 	textpointer Text019f                                 ; 0x019f

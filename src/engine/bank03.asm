@@ -5216,13 +5216,66 @@ HackChangeImakuniBoosters:
 	call HackGiveBoosters
 	jp OWScript_GiveOneOfEachTrainerBooster.done
 
+HACK_RONALD_TRIGGER_X1    EQU $0A
+HACK_RONALD_TRIGGER_X2    EQU $0C
+HACK_RONALD_TRIGGER_Y     EQU $0E
+
+HackRonaldMovementEast:
+	db EAST
+	db $ff
+
+HackRonaldMovementIn:
+	db NORTH
+	db NORTH
+	db NORTH
+	db NORTH
+	db NORTH
+	db $ff
+
+HackRonaldMovementOut:
+	db SOUTH
+	db SOUTH
+	db SOUTH
+	db SOUTH
+	db SOUTH
+	db $ff
+
 OWSequence_HackRonaldEnding:
 	start_script
 	run_script OWScript_JumpIfFlagNonzero2
 	db EVENT_FLAG_22
 	dw .done
+
+	run_script OWScript_JumpIfPlayerCoordMatches
+	db HACK_RONALD_TRIGGER_X1
+	db HACK_RONALD_TRIGGER_Y
+	dw .playerAligned
+
+	run_script Func_ce4a
+	dw HackRonaldMovementEast
+
+.playerAligned
+	run_script OWScript_SetPlayerDirection
+	db SOUTH
 	run_script OWScript_PrintTextString
-	tx Text064c
+	tx TextHackRonaldDialog0
+	run_script OWScript_CloseAdvancedTextBox
+
+	run_script Func_ce4a
+	dw HackRonaldMovementIn
+	run_script OWScript_PrintTextString
+	tx TextHackRonaldDialog1
+
+	run_script OWScript_ShowCardReceivedScreen
+	db GRASS_ENERGY
+
+	run_script OWScript_PrintTextString
+	tx TextHackRonaldDialog2
+	run_script OWScript_DoFrames
+	db 90
+	run_script OWScript_CloseAdvancedTextBox
+	run_script Func_ce4a
+	dw HackRonaldMovementOut
 
 .done
 	run_script OWScript_QuitScriptFully
@@ -5232,11 +5285,6 @@ OWSequence_HackRonaldEnding:
 ; Tell them they have no idea what's going on but think it's your fault
 ; Say they hope you're happy
 ; Leave
-
-HACK_RONALD_TRIGGER_X1    EQU $0A
-HACK_RONALD_TRIGGER_X2    EQU $0C
-HACK_RONALD_TRIGGER_Y     EQU $0E
-
 HackHallOfHonorMoved:
 	ld hl, wHackTalkedToRonaldOnce
 	ld a, [hl]
