@@ -24,7 +24,7 @@ ENDM
 	const Func_cda8_index                       ; $07
 	const OWScript_PrintTextQuitFully_index      ; $08
 	const Func_cdcb_index                       ; $09
-	const Func_ce26_index                       ; $0a
+	const OWScript_MoveActiveNPCByDirection_index                       ; $0a
 	const OWScript_CloseTextBox_index           ; $0b
 	const OWScript_GiveBoosterPacks_index       ; $0c
 	const Func_cf0c_index                       ; $0d
@@ -53,7 +53,7 @@ ENDM
 	const OWScript_DoFrames_index               ; $24
 	const Func_d0d9_index                       ; $25
 	const OWScript_JumpIfPlayerCoordMatches_index                       ; $26
-	const Func_ce4a_index                       ; $27
+	const OWScript_MoveActiveNPC_index                       ; $27
 	const OWScript_GiveOneOfEachTrainerBooster_index                       ; $28
 	const Func_d103_index                       ; $29
 	const Func_d125_index                       ; $2a
@@ -61,7 +61,7 @@ ENDM
 	const Func_d16b_index                       ; $2c
 	const Func_cd4f_index                       ; $2d
 	const Func_cd94_index                       ; $2e
-	const Func_ce52_index                       ; $2f
+	const OWScript_MoveWramNPC_index                       ; $2f
 	const Func_cdd8_index                       ; $30
 	const Func_cdf5_index                       ; $31
 	const Func_d195_index                       ; $32
@@ -73,7 +73,7 @@ ENDM
 	const OWScript_OpenDeckMachine_index        ; $38
 	const Func_d271_index                       ; $39
 	const OWScript_EnterMap_index                       ; $3a
-	const Func_ce6f_index                       ; $3b
+	const OWScript_MoveArbitraryNPC_index                       ; $3b
 	const Func_d209_index                       ; $3c
 	const Func_d38f_index                       ; $3d
 	const Func_d396_index                       ; $3e

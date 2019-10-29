@@ -979,7 +979,7 @@ OverworldScriptTable: ; 1217b (4:617b)
 	dw Func_cda8
 	dw OWScript_PrintTextQuitFully
 	dw Func_cdcb
-	dw Func_ce26
+	dw OWScript_MoveActiveNPCByDirection
 	dw OWScript_CloseTextBox
 	dw OWScript_GiveBoosterPacks
 	dw Func_cf0c
@@ -1008,7 +1008,7 @@ OverworldScriptTable: ; 1217b (4:617b)
 	dw OWScript_DoFrames
 	dw Func_d0d9
 	dw OWScript_JumpIfPlayerCoordMatches
-	dw Func_ce4a
+	dw OWScript_MoveActiveNPC
 	dw OWScript_GiveOneOfEachTrainerBooster
 	dw Func_d103
 	dw Func_d125
@@ -1016,7 +1016,7 @@ OverworldScriptTable: ; 1217b (4:617b)
 	dw Func_d16b
 	dw Func_cd4f
 	dw Func_cd94
-	dw Func_ce52
+	dw OWScript_MoveWramNPC
 	dw Func_cdd8
 	dw Func_cdf5
 	dw Func_d195
@@ -1028,7 +1028,7 @@ OverworldScriptTable: ; 1217b (4:617b)
 	dw OWScript_OpenDeckMachine
 	dw Func_d271
 	dw OWScript_EnterMap
-	dw Func_ce6f
+	dw OWScript_MoveArbitraryNPC
 	dw Func_d209
 	dw Func_d38f
 	dw Func_d396

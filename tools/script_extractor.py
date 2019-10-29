@@ -9,7 +9,7 @@
 ###### Script list is a work in progress. The following arguments are    ######
 ###### accepted and accounted for.                                       ######
 ###### b - byte    w - word    j - jump (within script)    t - text (tx) ######
-###### f - flag    d - direction    i - decimal byte                     ######
+###### f - flag    d - direction    i - decimal byte    m - npc move ptr ######
 ###### q - Used when the script's arguments have not been determined yet ######
 ###############################################################################
 import argparse
@@ -21,7 +21,39 @@ QUIT_JUMP = 2
 QUIT_SPECIAL = 3
 QUIT_DEBUG = -1
 
-def decodeLine(scriptList, game_data, loc, ignore_broken, branchList):
+dir_list = ["NORTH","EAST","SOUTH","WEST"]
+
+def printHeader(loc, prefix):
+		ls = format(loc,"04x")
+		lsa = format(loc-0x8000,"04x")
+		print(prefix + ls + ": ; " + ls + " (3:" + lsa + ")" )
+
+def extractMovement(game_data, loc, errQuit):
+	printHeader(loc, "NPCMovement_")
+	loc -= 1 # so we can continue without breaking things
+	while game_data[loc+1] != 0xff:
+		loc += 1
+		dirLow = game_data[loc] & 0x0f
+		if dirLow > 3:
+			print("ERROR: [" + format(loc,"04x") + "] was not a valid direction. Got: " +  format(game_data[loc],"02x"))
+			if errQuit:
+				return QUIT_DEBUG
+			continue
+		lineStr = "\tdb " + dir_list[dirLow]
+		dirHigh = game_data[loc] & 0xf0
+		if dirHigh == 0x80:
+			lineStr += " | NO_MOVE"
+		elif dirHigh != 0x00:
+			print("ERROR: [" + format(loc,"04x") + "] was not a valid direction. Got: " +  format(game_data[loc],"02x"))
+			if errQuit:
+				return QUIT_DEBUG
+			continue
+		print(lineStr)
+	print("\tdb $ff")
+	print("; " + format(loc+2,"04x"))
+	return DO_NOT_QUIT
+
+def decodeLine(scriptList, game_data, loc, ignore_broken, locList):
 	currLine = scriptList[game_data[loc]]
 	ret = "\trun_script " + currLine[0] + "\n"
 	loc+=1
@@ -42,7 +74,7 @@ def decodeLine(scriptList, game_data, loc, ignore_broken, branchList):
 				ret += "\tdw NO_JUMP\n"
 			else:
 				ret += "\tdw .ows_" + format(wordLoc+0x8000,"04x") + "\n"
-				branchList.append(wordLoc)
+				locList.append(wordLoc)
 			loc += 2
 		elif c == "t":
 			addr = (game_data[loc] + (game_data[loc+1]<<8))
@@ -55,9 +87,12 @@ def decodeLine(scriptList, game_data, loc, ignore_broken, branchList):
 			ret += "\tdb EVENT_FLAG_" + format(game_data[loc],"02X") + "\n"
 			loc += 1
 		elif c == "d":
-			dir_list = ["NORTH","EAST","SOUTH","WEST"]
 			ret += "\tdb " + dir_list[game_data[loc]] + "\n"
 			loc += 1
+		elif c == "m":
+			wordLoc = (game_data[loc] + (game_data[loc+1]<<8))
+			ret += "\tdw NPCMovement_" + format(wordLoc + 0x8000, "04x") + "\n"
+			loc += 2
 		elif c == "q":
 			print("haven't updated data for this yet")
 			if not ignore_broken:
@@ -68,19 +103,21 @@ def decodeLine(scriptList, game_data, loc, ignore_broken, branchList):
 
 def main():
 	scriptList = createList()
-	branchList = []
+	locList = []
 
 	parser = argparse.ArgumentParser(description='Pokemon TCG Script Extractor')
 	parser.add_argument('--noauto', action='store_true', help='turns off automatic script parsing')
 	parser.add_argument('--error', action='store_true', help='stops execution if an error occurs')
+	parser.add_argument('-m', '--movement', action='store_true', help='interprets bytes as a movement script rather than an OWSequence')
 	parser.add_argument('-r', '--rom', default="baserom.gbc", help='rom file to extract script from')
-	parser.add_argument('location', help='location to extract from. May be local to bank or global.')
+	parser.add_argument('locations', nargs="+", help='locations to extract from. May be local to bank or global.')
 	args = parser.parse_args()
-	loc = int(args.location,0)
-	if loc > 0x7fff:
-		# Must be a global location
-		loc -= 0x8000
-	branchList.append(loc)
+	for locStr in args.locations:
+		loc = int(locStr,0)
+		if loc > 0x7fff:
+			# Must be a global location
+			loc -= 0x8000
+		locList.append(loc)
 
 	# this is a list of every start location we've read to avoid infinite loops
 	exploredList = []
@@ -91,14 +128,17 @@ def main():
 	auto = not args.noauto
 	end = DO_NOT_QUIT
 	ignore_broken = not args.error
-	while (len(branchList) > 0 and end != QUIT_DEBUG):
-		branchList.sort() # export parts in order somewhat
-		loc = branchList.pop(0) + 0x8000
-		end = printScript(game_data, loc, auto, ignore_broken, scriptList,\
-		branchList, exploredList)
+	while (len(locList) > 0 and end != QUIT_DEBUG):
+		locList.sort() # export parts in order somewhat
+		loc = locList.pop(0) + 0x8000
+		if args.movement:
+			end = extractMovement(game_data,loc, args.error)
+		else:
+			end = printScript(game_data, loc, auto, ignore_broken, scriptList,\
+			locList, exploredList)
 
 def printScript(game_data, loc, auto, ignore_broken, scriptList, \
-				branchList, exploredList):
+				locList, exploredList):
 	if loc in exploredList:
 		return
 	exploredList.append(loc)
@@ -110,13 +150,11 @@ def printScript(game_data, loc, auto, ignore_broken, scriptList, \
 	else:
  		
 		# TODO this is hacky please don't do this 
-		ls = format(loc,"04x")
-		lsa = format(loc-0x8000,"04x")
-		print("OWSequence_" + ls + ": ; " + ls + " (3:" + lsa + ")" )
+		printHeader(loc, "OWSequence_")
 		loc += 1
 		print("\tstart_script")
 	while end == DO_NOT_QUIT:
-		loc, outstr, end = decodeLine(scriptList,game_data,loc,ignore_broken,branchList)
+		loc, outstr, end = decodeLine(scriptList,game_data,loc,ignore_broken,locList)
 		outstr = outstr[:-1] # [:-1] strips the newline at the end
 		if auto:
 			print(outstr)
@@ -147,7 +185,7 @@ def createList(): # this is a func just so all this can go at the bottom
 	("Func_cda8", "bbbb", DO_NOT_QUIT),
 	("OWScript_PrintTextQuitFully", "t", QUIT_SPECIAL),
 	("Func_cdcb", "", DO_NOT_QUIT),
-	("Func_ce26", "bb", DO_NOT_QUIT),
+	("OWScript_MoveActiveNPCByDirection", "w", DO_NOT_QUIT),
 	("OWScript_CloseTextBox", "", DO_NOT_QUIT),
 	("OWScript_GiveBoosterPacks", "bbb", DO_NOT_QUIT),
 	("Func_cf0c", "bj", DO_NOT_QUIT), # more complex behavior too (jumping)
@@ -170,39 +208,39 @@ def createList(): # this is a func just so all this can go at the bottom
 	("OWScript_MovePlayer", "db", DO_NOT_QUIT),
 	("OWScript_ShowCardReceivedScreen", "b", DO_NOT_QUIT),
 	("OWScript_SetDialogName", "b", DO_NOT_QUIT),
-	("OWScript_SetNextNPCandOWSequence", "bw", DO_NOT_QUIT),
+	("OWScript_SetNextNPCandOWSequence", "bj", DO_NOT_QUIT),
 	("Func_d095", "bbb", DO_NOT_QUIT),
 	("Func_d0be", "bb", DO_NOT_QUIT),
-	("OWScript_DoFrames", "b", DO_NOT_QUIT),
+	("OWScript_DoFrames", "i", DO_NOT_QUIT),
 	("Func_d0d9", "bbw", DO_NOT_QUIT), # jumps but still needs args
 	("OWScript_JumpIfPlayerCoordMatches", "iij", DO_NOT_QUIT), # jumps but still needs args
-	("Func_ce4a", "bb", DO_NOT_QUIT),
+	("OWScript_MoveActiveNPC", "m", DO_NOT_QUIT),
 	("OWScript_GiveOneOfEachTrainerBooster", "", DO_NOT_QUIT),
 	("Func_d103", "q", DO_NOT_QUIT),
 	("Func_d125", "b", DO_NOT_QUIT),
 	("Func_d135", "b", DO_NOT_QUIT),
-	("Func_d16b", "q", DO_NOT_QUIT),
-	("Func_cd4f", "q", DO_NOT_QUIT),
+	("Func_d16b", "b", DO_NOT_QUIT),
+	("Func_cd4f", "bbb", DO_NOT_QUIT),
 	("Func_cd94", "q", DO_NOT_QUIT),
-	("Func_ce52", "q", DO_NOT_QUIT),
-	("Func_cdd8", "q", DO_NOT_QUIT),
-	("Func_cdf5", "q", DO_NOT_QUIT),
-	("Func_d195", "q", DO_NOT_QUIT),
+	("OWScript_MoveWramNPC", "m", DO_NOT_QUIT),
+	("Func_cdd8", "", DO_NOT_QUIT),
+	("Func_cdf5", "bb", DO_NOT_QUIT),
+	("Func_d195", "", DO_NOT_QUIT),
 	("Func_d1ad", "", DO_NOT_QUIT),
-	("Func_d1b3", "q", DO_NOT_QUIT),
+	("Func_d1b3", "", DO_NOT_QUIT),
 	("OWScript_QuitScriptFully", "", QUIT_SPECIAL),
 	("Func_d244", "q", DO_NOT_QUIT),
 	("Func_d24c", "q", DO_NOT_QUIT),
 	("OWScript_OpenDeckMachine", "b", DO_NOT_QUIT),
 	("Func_d271", "q", DO_NOT_QUIT),
 	("OWScript_EnterMap", "bbood", DO_NOT_QUIT),
-	("Func_ce6f", "bd", DO_NOT_QUIT),
-	("Func_d209", "q", DO_NOT_QUIT),
-	("Func_d38f", "q", DO_NOT_QUIT),
+	("OWScript_MoveArbitraryNPC", "bm", DO_NOT_QUIT),
+	("Func_d209", "", DO_NOT_QUIT),
+	("Func_d38f", "b", DO_NOT_QUIT),
 	("Func_d396", "b", DO_NOT_QUIT),
 	("Func_cd76", "", DO_NOT_QUIT),
 	("Func_d39d", "b", DO_NOT_QUIT),
-	("Func_d3b9", "q", DO_NOT_QUIT),
+	("Func_d3b9", "", DO_NOT_QUIT),
 	("OWScript_TryGivePCPack", "b", DO_NOT_QUIT),
 	("OWScript_nop", "", DO_NOT_QUIT),
 	("Func_d3d4", "q", DO_NOT_QUIT),
@@ -226,7 +264,7 @@ def createList(): # this is a func just so all this can go at the bottom
 	("OWScript_EndScriptLoop5", "q", QUIT_CONTINUE_CODE),
 	("OWScript_EndScriptLoop6", "q", QUIT_CONTINUE_CODE),
 	("OWScript_SetFlagValue", "fb", DO_NOT_QUIT),
-	("OWScript_JumpIfFlagZero1", "q", DO_NOT_QUIT),
+	("OWScript_JumpIfFlagZero1", "fj", DO_NOT_QUIT),
 	("OWScript_JumpIfFlagNonzero1", "q", DO_NOT_QUIT),
 	("OWScript_JumpIfFlagEqual", "fbj", DO_NOT_QUIT), # also capable of jumping
 	("OWScript_JumpIfFlagNotEqual", "fbj", DO_NOT_QUIT), # jumps
