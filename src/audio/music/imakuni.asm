@@ -1,9 +1,9 @@
-Music_Imakuni_Ch1: ; fad55 (3e:6d55)
+Music_Imakuni_Ch1:
 	speed 3
-	musicdc 17
+	stereo_panning 1, 1
 	vibrato_type 5
 	vibrato_delay 20
-	musice8 8
+	cutoff 8
 	duty 2
 	volume 160
 	MainLoop
@@ -185,11 +185,11 @@ Branch_fae1d:
 	music_ret
 
 
-Music_Imakuni_Ch2: ; fae32 (3e:6e32)
-	musicdc 17
+Music_Imakuni_Ch2:
+	stereo_panning 1, 1
 	vibrato_type 0
 	vibrato_delay 0
-	musice8 8
+	cutoff 8
 	duty 1
 	volume 160
 	Loop 6
@@ -291,14 +291,14 @@ Branch_faea5:
 	music_ret
 
 
-Music_Imakuni_Ch3: ; faebc (3e:6ebc)
-	musicdc 17
+Music_Imakuni_Ch3:
+	stereo_panning 1, 1
 	volume 32
 	wave 1
 	vibrato_type 6
 	vibrato_delay 0
-	musice9 0
-	musice8 8
+	echo 0
+	cutoff 8
 	MainLoop
 	music_call Branch_faf7d
 	vibrato_delay 8
@@ -472,7 +472,7 @@ Branch_faf7d:
 	music_ret
 
 
-Music_Imakuni_Ch4: ; fafa4 (3e:6fa4)
+Music_Imakuni_Ch4:
 	speed 1
 	octave 1
 	Loop 10
@@ -536,4 +536,3 @@ Music_Imakuni_Ch4: ; fafa4 (3e:6fa4)
 	snare1 15
 	snare1 15
 	EndMainLoop
-; 0xfafea

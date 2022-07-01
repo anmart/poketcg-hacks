@@ -1,8 +1,8 @@
-Music_BoosterPack_Ch1: ; f7d60 (3d:7d60)
-	musicdc 17
+Music_BoosterPack_Ch1:
+	stereo_panning 1, 1
 	vibrato_type 1
 	vibrato_delay 20
-	musice8 8
+	cutoff 8
 	octave 4
 	duty 1
 	speed 1
@@ -43,11 +43,11 @@ Music_BoosterPack_Ch1: ; f7d60 (3d:7d60)
 	music_end
 
 
-Music_BoosterPack_Ch2: ; f7d9e (3d:7d9e)
-	musicdc 17
+Music_BoosterPack_Ch2:
+	stereo_panning 1, 1
 	vibrato_type 1
 	vibrato_delay 20
-	musice8 8
+	cutoff 8
 	octave 3
 	duty 1
 	speed 1
@@ -87,12 +87,12 @@ Music_BoosterPack_Ch2: ; f7d9e (3d:7d9e)
 	music_end
 
 
-Music_BoosterPack_Ch3: ; f7ddb (3d:7ddb)
-	musicdc 17
+Music_BoosterPack_Ch3:
+	stereo_panning 1, 1
 	wave 1
 	volume 32
-	musice8 8
-	musice9 0
+	cutoff 8
+	echo 0
 	octave 1
 	speed 1
 	D# 6
@@ -111,4 +111,3 @@ Music_BoosterPack_Ch3: ; f7ddb (3d:7ddb)
 	tie
 	G_ 6
 	music_end
-; 0xf7df8

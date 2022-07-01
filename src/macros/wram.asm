@@ -1,4 +1,4 @@
-card_data_struct: MACRO
+MACRO card_data_struct
 \1Type::          ds 1
 \1Gfx::           ds 2
 \1Name::          ds 2
@@ -10,8 +10,8 @@ card_data_struct: MACRO
 \1Stage::         ds 1
 \1NonPokemonDescription:: ; ds 2
 \1PreEvoName::    ds 2
-\1Move1::         move_data_struct \1Move1
-\1Move2::         move_data_struct \1Move2
+\1Atk1::         atk_data_struct \1Atk1
+\1Atk2::         atk_data_struct \1Atk2
 \1RetreatCost::   ds 1
 \1Weakness::      ds 1
 \1Resistance::    ds 1
@@ -25,7 +25,7 @@ card_data_struct: MACRO
 \1Unknown2::      ds 1
 ENDM
 
-move_data_struct: MACRO
+MACRO atk_data_struct
 \1EnergyCost::     ds NUM_TYPES / 2
 \1Name::           ds 2
 \1Description::    ds 4
@@ -35,38 +35,34 @@ move_data_struct: MACRO
 \1Flag1::          ds 1
 \1Flag2::          ds 1
 \1Flag3::          ds 1
-\1Unknown1::       ds 1
+\1EffectParam::    ds 1
 \1Animation::      ds 1
 ENDM
 
-text_header: MACRO
+MACRO text_header
 \1DefaultFont:: ds 1
 \1FontWidth::   ds 1
 \1Address::     ds 2
 \1RomBank::     ds 1
 ENDM
 
-; TODO: Figure out what the rest are for
-sprite_anim_struct: MACRO
-\1Field0x00::  ds 1
-\1Field0x01::  ds 1 ; movement handling / palette
-\1CoordX::     ds 1
-\1CoordY::     ds 1
-\1TileID::     ds 1
-\1Field0x05::  ds 1
-\1Field0x06::  ds 1
-\1Field0x07::  ds 1
-\1Field0x08::  ds 1
-\1Field0x09::  ds 1
-\1Field0x0a::  ds 1
-\1Field0x0b::  ds 1
-\1Field0x0c::  ds 1
-\1Field0x0d::  ds 1
-\1MovementCounter::  ds 1
-\1Field0x0f::  ds 1
+MACRO sprite_anim_struct
+\1Enabled::             ds 1
+\1Attributes::          ds 1
+\1CoordX::              ds 1
+\1CoordY::              ds 1
+\1TileID::              ds 1
+\1ID::                  ds 1
+\1Bank::                ds 1
+\1Pointer::             ds 2
+\1FrameOffsetPointer::  ds 2
+\1FrameBank::           ds 1
+\1FrameDataPointer::    ds 2
+\1Counter::             ds 1
+\1Flags::               ds 1
 ENDM
 
-loaded_npc_struct: MACRO
+MACRO loaded_npc_struct
 \1ID::         ds 1
 \1Sprite::     ds 1
 \1CoordX::     ds 1
@@ -79,4 +75,26 @@ loaded_npc_struct: MACRO
 \1Field0x09::  ds 1
 \1Field0x0a::  ds 1
 \1Field0x0b::  ds 1
+ENDM
+
+MACRO sprite_vram_struct
+\1Valid::      ds 1
+\1ID::         ds 1
+\1TileOffset:: ds 1
+\1TileSize::   ds 1
+ENDM
+
+MACRO duel_anim_struct
+\1ID::             ds 1
+\1Screen::         ds 1
+\1DuelistSide::    ds 1
+\1LocationParam::  ds 1
+\1Damage::         ds 2
+\1Unknown2::       ds 1
+\1Bank::           ds 1
+ENDM
+
+MACRO deck_struct
+\1Name::  ds DECK_NAME_SIZE
+\1Cards:: ds DECK_SIZE
 ENDM

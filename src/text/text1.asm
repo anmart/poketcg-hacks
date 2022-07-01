@@ -39,7 +39,7 @@ PKMNPWRText: ; 36356 (d:6356)
 	done
 
 Text000b: ; 36360 (d:6360)
-	textfw0 "ポ", "ケ", "モ", "ン", "カ", "-(2)", "ド"
+	textfw0 "ポケモンカ—ド"
 	done
 
 LengthText: ; 36368 (d:6368)
@@ -54,7 +54,7 @@ PokemonText: ; 36378 (d:6378)
 	text " Pokémon"
 	done
 
-Text000f: ; 36382 (d:6382)
+MetresText: ; 36382 (d:6382)
 	textfw3 "m"
 	done
 
@@ -78,55 +78,55 @@ StarRarityText: ; 36393 (d:6393)
 	textfw3 "★"
 	done
 
-Text0015: ; 36396 (d:6396)
+AllCardsOwnedText: ; 36396 (d:6396)
 	text " All cards owned:"
 	done
 
-Text0016: ; 363a9 (d:63a9)
+TotalNumberOfCardsText: ; 363a9 (d:63a9)
 	text "Total number of cards"
 	done
 
-Text0017: ; 363c0 (d:63c0)
+TypesOfCardsText: ; 363c0 (d:63c0)
 	text "Types of cards"
 	done
 
-Text0018: ; 363d0 (d:63d0)
+GrassPokemonText: ; 363d0 (d:63d0)
 	text "Grass Pokémon"
 	done
 
-Text0019: ; 363df (d:63df)
+FirePokemonText: ; 363df (d:63df)
 	text "Fire Pokémon"
 	done
 
-Text001a: ; 363ed (d:63ed)
+WaterPokemonText: ; 363ed (d:63ed)
 	text "Water Pokémon"
 	done
 
-Text001b: ; 363fc (d:63fc)
+LightningPokemonText: ; 363fc (d:63fc)
 	text "Lightning Pokémon"
 	done
 
-Text001c: ; 3640f (d:640f)
+FightingPokemonText: ; 3640f (d:640f)
 	text "Fighting Pokémon"
 	done
 
-Text001d: ; 36421 (d:6421)
+PsychicPokemonText: ; 36421 (d:6421)
 	text "Psychic Pokémon"
 	done
 
-Text001e: ; 36432 (d:6432)
+ColorlessPokemonText: ; 36432 (d:6432)
 	text "Colorless Pokémon"
 	done
 
-Text001f: ; 36445 (d:6445)
+TrainerCardText: ; 36445 (d:6445)
 	text "Trainer Card"
 	done
 
-Text0020: ; 36453 (d:6453)
+EnergyCardText: ; 36453 (d:6453)
 	text "Energy Card"
 	done
 
-Text0021: ; 36460 (d:6460)
+DeckPrinterText: ; 36460 (d:6460)
 	text "Deck"
 	done
 
@@ -175,15 +175,15 @@ BetweenTurnsText: ; 36553 (d:6553)
 	text "Between Turns."
 	done
 
-Text002c: ; 36563 (d:6563)
+UnableToUseItText: ; 36563 (d:6563)
 	text "Unable to use it."
 	done
 
-Text002d: ; 36576 (d:6576)
+NoEnergyCardsText: ; 36576 (d:6576)
 	text "No Energy cards."
 	done
 
-Text002e: ; 36588 (d:6588)
+IsThisOKText: ; 36588 (d:6588)
 	text "Is this OK?"
 	done
 
@@ -195,7 +195,7 @@ DiscardName: ; 365a1 (d:65a1)
 	text "Discard"
 	done
 
-Text0031: ; 365aa (d:65aa)
+IncompleteText: ; 365aa (d:65aa)
 	text "Incomplete"
 	done
 
@@ -217,32 +217,32 @@ PokemonsAttackText: ; 365d8 (d:65d8)
 	text "<RAMTEXT>!"
 	done
 
-Text0036: ; 365e1 (d:65e1)
+ResistanceLessDamageText: ; 365e1 (d:65e1)
 	text "<RAMTEXT> received"
 	line "<RAMNUM> damage due to Resistance!"
 	done
 
-Text0037: ; 36609 (d:6609)
+WeaknessMoreDamageText: ; 36609 (d:6609)
 	text "<RAMTEXT> received"
 	line "<RAMNUM> damage due to Weakness!"
 	done
 
-Text0038: ; 3662f (d:662f)
+WeaknessMoreDamage2Text: ; 3662f (d:662f)
 	text "<RAMTEXT> received"
 	line "<RAMNUM> damage due to Weakness!"
 	done
 
-Text0039: ; 36655 (d:6655)
+ResistanceNoDamageText: ; 36655 (d:6655)
 	text "<RAMTEXT> did not"
 	line "receive damage due to Resistance."
 	done
 
-Text003a: ; 36682 (d:6682)
+AttackDamageText: ; 36682 (d:6682)
 	text "<RAMTEXT> took"
 	line "<RAMNUM> damage."
 	done
 
-Text003b: ; 36694 (d:6694)
+NoDamageText: ; 36694 (d:6694)
 	text "<RAMTEXT> did not"
 	line "receive damage!"
 	done
@@ -260,11 +260,11 @@ MayOnlyAttachOneEnergyCardText: ; 366d9 (d:66d9)
 	line "per turn."
 	done
 
-Text003f: ; 36706 (d:6706)
+UseThisPokemonPowerText: ; 36706 (d:6706)
 	text "Use this Pokémon Power?"
 	done
 
-Text0040: ; 3671f (d:671f)
+PokemonPowerSelectNotRequiredText: ; 3671f (d:671f)
 	text "You do not need to select the"
 	line "Pokémon Power to use it."
 	done
@@ -290,11 +290,11 @@ DuelistPlacedACardText: ; 367f9 (d:67f9)
 	line "a <RAMTEXT>."
 	done
 
-Text0045: ; 36808 (d:6808)
+UnableToSelectText: ; 36808 (d:6808)
 	text "Unable to select."
 	done
 
-Text0046: ; 3681b (d:681b)
+ColorListText: ; 3681b (d:681b)
 	text "Grass"
 	line "Fire"
 	line "Water"
@@ -303,31 +303,31 @@ Text0046: ; 3681b (d:681b)
 	line "Psychic"
 	done
 
-Text0047: ; 36848 (d:6848)
+GrassSymbolText: ; 36848 (d:6848)
 	textfw0 "<GRASS>"
 	done
 
-Text0048: ; 3684b (d:684b)
+FireSymbolText: ; 3684b (d:684b)
 	textfw0 "<FIRE>"
 	done
 
-Text0049: ; 3684e (d:684e)
+WaterSymbolText: ; 3684e (d:684e)
 	textfw0 "<WATER>"
 	done
 
-Text004a: ; 36851 (d:6851)
+LightningSymbolText: ; 36851 (d:6851)
 	textfw0 "<LIGHTNING>"
 	done
 
-Text004b: ; 36854 (d:6854)
+FightingSymbolText: ; 36854 (d:6854)
 	textfw0 "<FIGHTING>"
 	done
 
-Text004c: ; 36857 (d:6857)
+PsychicSymbolText: ; 36857 (d:6857)
 	textfw0 "<PSYCHIC>"
 	done
 
-Text004d: ; 3685a (d:685a)
+BenchText: ; 3685a (d:685a)
 	text "Bench"
 	done
 
@@ -344,12 +344,12 @@ ChooseEnergyCardToDiscardText: ; 36891 (d:6891)
 	line "you wish to discard."
 	done
 
-Text0051: ; 368be (d:68be)
+ChooseNextActivePokemonText: ; 368be (d:68be)
 	text "The Active Pokémon was Knocked Out."
 	line "Please choose the next Pokémon."
 	done
 
-Text0052: ; 36903 (d:6903)
+PressStartWhenReadyText: ; 36903 (d:6903)
 	text "Press START"
 	line "When you are ready."
 	done
@@ -372,7 +372,7 @@ ChooseTheCardYouWishToExamineText: ; 3697c (d:697c)
 	line "you wish to examine."
 	done
 
-TransmitingDataText: ; 369a2 (d:69a2)
+TransmittingDataText: ; 369a2 (d:69a2)
 	text "Transmitting data..."
 	done
 
@@ -612,15 +612,15 @@ DuelistIsThinkingText: ; 36f4a (d:6f4a)
 	text "<RAMNAME> is thinking."
 	done
 
-Text0089: ; 36f5a (d:6f5a)
-	textfw0 " ", " ", " ", " ", " ", " ", " ", " ", " ", " "
+ClearOpponentNameText: ; 36f5a (d:6f5a)
+	textfw0 "          "
 	done
 
-Text008a: ; 36f65 (d:6f65)
+SelectComputerOpponentText: ; 36f65 (d:6f65)
 	text "Select a computer opponent."
 	done
 
-Text008b: ; 36f82 (d:6f82)
+NumberOfPrizesText: ; 36f82 (d:6f82)
 	text "Number of Prizes"
 	done
 
@@ -763,7 +763,7 @@ ResetBackUpRamText: ; 372a9 (d:72a9)
 	text "Reset Back Up RAM?"
 	done
 
-Text00a3: ; 372bd (d:72bd)
+YourDataWasDestroyedSomehowText: ; 372bd (d:72bd)
 	text "Your Data was destroyed"
 	line "somehow."
 	line ""
@@ -781,7 +781,7 @@ TheDiscardPileHasNoCardsText: ; 3735b (d:735b)
 	text "The Discard Pile has no cards."
 	done
 
-Text00a6: ; 3737b (d:737b)
+PlayerDiscardPileText: ; 3737b (d:737b)
 	text "Player's Discard Pile"
 	done
 
@@ -802,36 +802,36 @@ PleaseSelectHandText: ; 373b5 (d:73b5)
 	line "Hand."
 	done
 
-Text00ab: ; 373ca (d:73ca)
+PleaseSelectCardText: ; 373ca (d:73ca)
 	text "Please select"
 	line "Card."
 	done
 
-Text00ac: ; 373df (d:73df)
+NoPokemonWithDamageCountersText: ; 373df (d:73df)
 	text "There are no Pokémon"
 	line "with Damage Counters."
 	done
 
-Text00ad: ; 3740b (d:740b)
+NoDamageCountersText: ; 3740b (d:740b)
 	text "There are no Damage Counters."
 	done
 
-Text00ae: ; 3742a (d:742a)
+NoEnergyAttachedToOpponentsActiveText: ; 3742a (d:742a)
 	text "No Energy cards are attached to"
 	line "the opponent's Active Pokémon."
 	done
 
-Text00af: ; 3746a (d:746a)
+ThereAreNoEnergyCardsInDiscardPileText: ; 3746a (d:746a)
 	text "There are no Energy cards"
 	line "in the the Discard Pile."
 	done
 
-Text00b0: ; 3749e (d:749e)
+ThereAreNoBasicEnergyCardsInDiscardPileText: ; 3749e (d:749e)
 	text "There are no Basic Energy cards"
 	line "in the Discard Pile."
 	done
 
-Text00b1: ; 374d4 (d:74d4)
+NoCardsLeftInTheDeckText: ; 374d4 (d:74d4)
 	text "There are no cards left in the Deck."
 	done
 
@@ -849,50 +849,50 @@ CantEvolvePokemonInSameTurnItsPlacedText: ; 37546 (d:7546)
 	line "in the same turn it was placed."
 	done
 
-Text00b5: ; 37583 (d:7583)
+NotAffectedByPoisonSleepParalysisOrConfusionText: ; 37583 (d:7583)
 	text "Not affected by Poison,"
 	line "Sleep, Paralysis, or Confusion."
 	done
 
-Text00b6: ; 375bc (d:75bc)
+NotEnoughCardsInHandText: ; 375bc (d:75bc)
 	text "Not enough cards in Hand."
 	done
 
-Text00b7: ; 375d7 (d:75d7)
+EffectNoPokemonOnTheBenchText: ; 375d7 (d:75d7)
 	text "No Pokémon on the Bench."
 	done
 
-Text00b8: ; 375f1 (d:75f1)
+ThereAreNoPokemonInDiscardPileText: ; 375f1 (d:75f1)
 	text "There are no Pokémon"
 	line "in the Discard Pile."
 	done
 
-Text00b9: ; 3761c (d:761c)
+ConditionsForEvolvingToStage2NotFulfilledText: ; 3761c (d:761c)
 	text "Conditions for evolving to"
 	line "Stage 2 not fulfilled."
 	done
 
-Text00ba: ; 3764f (d:764f)
+ThereAreNoCardsInHandThatYouCanChangeText: ; 3764f (d:764f)
 	text "There are no cards in Hand"
 	line "that you can change."
 	done
 
-Text00bb: ; 37680 (d:7680)
+ThereAreNoCardsInTheDiscardPileText: ; 37680 (d:7680)
 	text "There are no cards in the"
 	line "Discard Pile."
 	done
 
-Text00bc: ; 376a9 (d:76a9)
+ThereAreNoStage1PokemonText: ; 376a9 (d:76a9)
 	text "There are no Stage 1 Pokémon"
 	line "in the Play Area."
 	done
 
-Text00bd: ; 376d9 (d:76d9)
+NoEnergyCardsAttachedToPokemonInYourPlayAreaText: ; 376d9 (d:76d9)
 	text "No Energy cards are attached to"
 	line "Pokémon in your Play Area."
 	done
 
-Text00be: ; 37715 (d:7715)
+NoEnergyCardsAttachedToPokemonInOppPlayAreaText: ; 37715 (d:7715)
 	text "No Energy cards attached to Pokémon"
 	line "in your opponent's Play Area."
 	done
@@ -906,46 +906,46 @@ NotEnoughEnergyCardsText: ; 37781 (d:7781)
 	text "Not enough Energy cards."
 	done
 
-Text00c1: ; 3779b (d:779b)
+NotEnoughFireEnergyText: ; 3779b (d:779b)
 	text "Not enough Fire Energy."
 	done
 
-Text00c2: ; 377b4 (d:77b4)
+NotEnoughPsychicEnergyText: ; 377b4 (d:77b4)
 	text "Not enough Psychic Energy."
 	done
 
-Text00c3: ; 377d0 (d:77d0)
+NotEnoughWaterEnergyText: ; 377d0 (d:77d0)
 	text "Not enough Water Energy."
 	done
 
-Text00c4: ; 377ea (d:77ea)
+ThereAreNoTrainerCardsInDiscardPileText: ; 377ea (d:77ea)
 	text "There are no Trainer Cards"
 	line "in the Discard Pile."
 	done
 
-Text00c5: ; 3781b (d:781b)
+NoAttackMayBeChoosenText: ; 3781b (d:781b)
 	text "No Attacks may be choosen."
 	done
 
-Text00c6: ; 37837 (d:7837)
+YouDidNotReceiveAnAttackToMirrorMoveText: ; 37837 (d:7837)
 	text "You did not receive an Attack"
 	line "to Mirror Move."
 	done
 
-Text00c7: ; 37866 (d:7866)
+ThisAttackCannotBeUsedTwiceText: ; 37866 (d:7866)
 	text "This attack cannot"
 	line "be used twice."
 	done
 
-Text00c8: ; 37889 (d:7889)
+NoWeaknessText: ; 37889 (d:7889)
 	text "No Weakness."
 	done
 
-Text00c9: ; 37897 (d:7897)
+NoResistanceText: ; 37897 (d:7897)
 	text "No Resistance."
 	done
 
-Text00ca: ; 378a7 (d:78a7)
+OnlyOncePerTurnText: ; 378a7 (d:78a7)
 	text "Only once per turn."
 	done
 
@@ -954,38 +954,38 @@ CannotUseDueToStatusText: ; 378bc (d:78bc)
 	line "or Confusion."
 	done
 
-Text00cc: ; 378ef (d:78ef)
+CannotBeUsedInTurnWhichWasPlayedText: ; 378ef (d:78ef)
 	text "Cannot be used in the turn in"
 	line "which it was played."
 	done
 
-Text00cd: ; 37923 (d:7923)
+ThereIsNoEnergyCardAttachedText: ; 37923 (d:7923)
 	text "There is no Energy card attached."
 	done
 
-Text00ce: ; 37946 (d:7946)
+NoGrassEnergyText: ; 37946 (d:7946)
 	text "No Grass Energy."
 	done
 
-Text00cf: ; 37958 (d:7958)
+CannotUseSinceTheresOnly1PkmnText: ; 37958 (d:7958)
 	text "Cannot use since there's only"
 	line "1 Pokémon."
 	done
 
-Text00d0: ; 37982 (d:7982)
+CannotUseBecauseItWillBeKnockedOutText: ; 37982 (d:7982)
 	text "Cannot use because"
 	line "it will be Knocked Out."
 	done
 
-Text00d1: ; 379ae (d:79ae)
+CanOnlyBeUsedOnTheBenchText: ; 379ae (d:79ae)
 	text "Can only be used on the Bench."
 	done
 
-Text00d2: ; 379ce (d:79ce)
+ThereAreNoPokemonOnBenchText: ; 379ce (d:79ce)
 	text "There are no Pokémon on the Bench."
 	done
 
-Text00d3: ; 379f2 (d:79f2)
+OpponentIsNotAsleepText: ; 379f2 (d:79f2)
 	text "Opponent is not Asleep"
 	done
 
@@ -1002,36 +1002,36 @@ BackUpIsBrokenText: ; 37a59 (d:7a59)
 	text "Back Up is broken."
 	done
 
-Text00d7: ; 37a6d (d:7a6d)
+PrinterIsNotConnectedText: ; 37a6d (d:7a6d)
 	text "Error No. 02:"
 	line "Printer is not connected."
 	done
 
-Text00d8: ; 37a96 (d:7a96)
+BatteriesHaveLostTheirChargeText: ; 37a96 (d:7a96)
 	text "Error No. 01:"
 	line "Batteries have lost their charge."
 	done
 
-Text00d9: ; 37ac7 (d:7ac7)
+PrinterPaperIsJammedText: ; 37ac7 (d:7ac7)
 	text "Error No. 03:"
 	line "Printer paper is jammed."
 	done
 
-Text00da: ; 37aef (d:7aef)
+CheckCableOrPrinterSwitchText: ; 37aef (d:7aef)
 	text "Error No. 02:"
 	line "Check cable or printer switch."
 	done
 
-Text00db: ; 37b1d (d:7b1d)
+PrinterPacketErrorText: ; 37b1d (d:7b1d)
 	text "Error No. 04:"
 	line "Printer Packet Error."
 	done
 
-Text00dc: ; 37b42 (d:7b42)
+PrintingWasInterruptedText: ; 37b42 (d:7b42)
 	text "Printing was interrupted."
 	done
 
-Text00dd: ; 37b5d (d:7b5d)
+CardPopCannotBePlayedWithTheGameBoyText: ; 37b5d (d:7b5d)
 	text "Card Pop! cannot be played"
 	line "with the Game Boy."
 	line "Please use a"
@@ -1073,22 +1073,22 @@ VenomPowderCheckText: ; 37cdf (d:7cdf)
 	line "opponent is Poisoned & Confused."
 	done
 
-Text00e5: ; 37d1f (d:7d1f)
+IfTailsYourPokemonBecomesConfusedText: ; 37d1f (d:7d1f)
 	text "If Tails,  your Pokémon"
 	line "becomes Confused."
 	done
 
-Text00e6: ; 37d4a (d:7d4a)
+DamageCheckIfTailsNoDamageText: ; 37d4a (d:7d4a)
 	text "Damage check!"
 	line "If Tails, no damage!!!"
 	done
 
-Text00e7: ; 37d70 (d:7d70)
+IfHeadsDraw1CardFromDeckText: ; 37d70 (d:7d70)
 	text "If Heads,"
 	line "Draw 1 card from Deck!"
 	done
 
-Text00e8: ; 37d92 (d:7d92)
+FlipUntilFailAppears10DamageForEachHeadsText: ; 37d92 (d:7d92)
 	text "Flip until Tails appears."
 	line "10 damage for each Heads!!!"
 	done
@@ -1098,37 +1098,37 @@ IfHeadPlus10IfTails10ToYourselfText: ; 37dc9 (d:7dc9)
 	line "If Tails, +10 damage to yourself!"
 	done
 
-Text00ea: ; 37e03 (d:7e03)
+DamageToOppBenchIfHeadsDamageToYoursIfTailsText: ; 37e03 (d:7e03)
 	text "10 damage to opponent's Bench if"
 	line "Heads, damage to yours if Tails."
 	done
 
-Text00eb: ; 37e46 (d:7e46)
+IfHeadsChangeOpponentsActivePokemonText: ; 37e46 (d:7e46)
 	text "If Heads, change opponent's"
 	line "Active Pokémon."
 	done
 
-Text00ec: ; 37e73 (d:7e73)
+IfHeadsHealIsSuccessfulText: ; 37e73 (d:7e73)
 	text "If Heads,"
 	line "Heal is successful."
 	done
 
-Text00ed: ; 37e92 (d:7e92)
+IfTailsDamageToYourselfTooText: ; 37e92 (d:7e92)
 	text "If Tails, <RAMNUM> damage"
 	line "to yourself, too."
 	done
 
-Text00ee: ; 37eb8 (d:7eb8)
+SuccessCheckIfHeadsAttackIsSuccessfulText: ; 37eb8 (d:7eb8)
 	text "Success check!!!"
 	line "If Heads, Attack is successful!"
 	done
 
-Text00ef: ; 37eea (d:7eea)
+TrainerCardSuccessCheckText: ; 37eea (d:7eea)
 	text "Trainer card success check!"
 	line "If Heads, you're successful!"
 	done
 
-Text00f0: ; 37f24 (d:7f24)
+CardCheckIfHeads8CardsIfTails1CardText: ; 37f24 (d:7f24)
 	text "Card check!"
 	line "If Heads, 8 cards! If Tails, 1 card!"
 	done
@@ -1151,3 +1151,5 @@ DamageCheckIfHeadsXDamageText: ; 37fcd (d:7fcd)
 	text "Damage check!"
 	line "If Heads, x <RAMNUM> damage!!"
 	done
+
+	ds $d

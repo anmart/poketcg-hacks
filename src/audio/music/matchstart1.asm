@@ -1,7 +1,7 @@
-Music_MatchStart1_Ch1: ; f7919 (3d:7919)
+Music_MatchStart1_Ch1:
 	speed 1
-	musicdc 17
-	musice8 8
+	stereo_panning 1, 1
+	cutoff 8
 	Loop 3
 	duty 2
 	volume 240
@@ -51,4 +51,3 @@ Music_MatchStart1_Ch1: ; f7919 (3d:7919)
 	inc_octave
 	B_ 1
 	music_end
-; 0xf7956

@@ -1,12 +1,12 @@
-Music_DeckMachine_Ch1: ; f6ef1 (3d:6ef1)
-	musicdc 17
-	musice8 8
+Music_DeckMachine_Ch1:
+	stereo_panning 1, 1
+	cutoff 8
 	duty 3
 	MainLoop
 	octave 5
 	speed 1
 	Loop 9
-	musice8 6
+	cutoff 6
 	volume 145
 	C_ 7
 	volume 49
@@ -36,9 +36,9 @@ Music_DeckMachine_Ch1: ; f6ef1 (3d:6ef1)
 	volume 49
 	G_ 8
 	volume 145
-	musice8 4
+	cutoff 4
 	F_ 7
-	musice8 5
+	cutoff 5
 	volume 65
 	G_ 8
 	EndLoop
@@ -53,11 +53,11 @@ Music_DeckMachine_Ch1: ; f6ef1 (3d:6ef1)
 	EndMainLoop
 
 
-Music_DeckMachine_Ch2: ; f6f41 (3d:6f41)
-	musicdc 17
-	musice8 8
+Music_DeckMachine_Ch2:
+	stereo_panning 1, 1
+	cutoff 8
 	duty 1
-	musice8 7
+	cutoff 7
 	MainLoop
 	octave 3
 	speed 1
@@ -97,12 +97,12 @@ Music_DeckMachine_Ch2: ; f6f41 (3d:6f41)
 	EndMainLoop
 
 
-Music_DeckMachine_Ch3: ; f6f7b (3d:6f7b)
-	musicdc 17
+Music_DeckMachine_Ch3:
+	stereo_panning 1, 1
 	volume 32
 	wave 1
-	musice9 96
-	musice8 8
+	echo 96
+	cutoff 8
 	MainLoop
 	octave 2
 	speed 1
@@ -111,32 +111,32 @@ Music_DeckMachine_Ch3: ; f6f7b (3d:6f7b)
 	rest 8
 	G_ 7
 	inc_octave
-	musice8 5
+	cutoff 5
 	G_ 8
-	musice8 8
+	cutoff 8
 	rest 7
 	dec_octave
 	C_ 8
 	inc_octave
-	musice8 5
+	cutoff 5
 	E_ 7
 	dec_octave
-	musice8 8
+	cutoff 8
 	C_ 8
 	D_ 7
 	inc_octave
-	musice8 5
+	cutoff 5
 	C_ 8
 	dec_octave
 	rest 7
-	musice8 8
+	cutoff 8
 	A_ 8
 	inc_octave
-	musice8 5
+	cutoff 5
 	G_ 7
 	dec_octave
 	dec_octave
-	musice8 8
+	cutoff 8
 	A_ 8
 	inc_octave
 	D_ 7
@@ -145,31 +145,31 @@ Music_DeckMachine_Ch3: ; f6f7b (3d:6f7b)
 	rest 8
 	G_ 7
 	inc_octave
-	musice8 5
+	cutoff 5
 	G_ 8
 	rest 7
 	dec_octave
-	musice8 8
+	cutoff 8
 	E_ 8
 	inc_octave
-	musice8 5
+	cutoff 5
 	E_ 7
 	dec_octave
-	musice8 8
+	cutoff 8
 	C_ 8
 	F_ 7
 	inc_octave
-	musice8 5
+	cutoff 5
 	C_ 8
 	rest 7
 	dec_octave
-	musice8 8
+	cutoff 8
 	F_ 8
 	inc_octave
-	musice8 5
+	cutoff 5
 	G_ 7
 	dec_octave
-	musice8 8
+	cutoff 8
 	E_ 8
 	D_ 7
 	rest 8
@@ -178,33 +178,33 @@ Music_DeckMachine_Ch3: ; f6f7b (3d:6f7b)
 	rest 8
 	G_ 7
 	inc_octave
-	musice8 5
+	cutoff 5
 	G_ 8
 	rest 7
 	dec_octave
-	musice8 8
+	cutoff 8
 	C_ 8
 	inc_octave
-	musice8 5
+	cutoff 5
 	E_ 7
 	dec_octave
 	dec_octave
-	musice8 8
+	cutoff 8
 	G_ 8
 	inc_octave
 	C_ 7
 	inc_octave
-	musice8 5
+	cutoff 5
 	C_ 8
 	rest 7
 	dec_octave
-	musice8 8
+	cutoff 8
 	F_ 8
 	inc_octave
-	musice8 5
+	cutoff 5
 	G_ 7
 	dec_octave
-	musice8 8
+	cutoff 8
 	E_ 8
 	D_ 7
 	rest 8
@@ -224,7 +224,7 @@ Music_DeckMachine_Ch3: ; f6f7b (3d:6f7b)
 	EndMainLoop
 
 
-Music_DeckMachine_Ch4: ; f7018 (3d:7018)
+Music_DeckMachine_Ch4:
 	speed 1
 	octave 1
 	MainLoop
@@ -255,4 +255,3 @@ Branch_f7031:
 	bass 7
 	snare3 8
 	music_ret
-; 0xf703a

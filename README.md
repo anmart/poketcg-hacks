@@ -17,30 +17,33 @@ Every hack is set up as a branch of this repo, with _patch\__ as a prefix
 
 This is a disassembly of Pokémon TCG.
 
-It uses the following ROM as a base:
+It builds the following rom:
 
-* Pokémon Trading Card Game (U) [C][!].gbc  `md5: 219b2cc64e5a052003015d4bd4c622cd`
+- Pokémon Trading Card Game (U) [C][!].gbc `sha1: 0f8670a583255cff3e5b7ca71b5d7454d928fc48`
 
-To assemble, first download RGBDS (https://github.com/bentley/rgbds/releases) and extract it to /usr/local/bin.
-Copy the above ROM to this directory as "baserom.gbc".
+To assemble, first download RGBDS (https://github.com/gbdev/rgbds/releases) and extract it to /usr/local/bin.
 Run `make` in your shell.
 
-This will output a file named "tcg.gbc".
+This will output a file named "poketcg.gbc".
 
 
 ### See Also
+- **Discord:** [pret][discord]
+- **IRC:** [libera#pret][irc]
 
-* Disassembly of [**Pokémon Red/Blue**][pokered]
-* Disassembly of [**Pokémon Yellow**][pokeyellow]
-* Disassembly of [**Pokémon Gold**][pokegold]
-* Disassembly of [**Pokémon Crystal**][pokecrystal]
-* Disassembly of [**Pokémon Pinball**][pokepinball]
-* Disassembly of [**Pokémon Ruby**][pokeruby]
-* Disassembly of [**Pokémon Fire Red**][pokefirered]
-* Disassembly of [**Pokémon Emerald**][pokeemerald]
-* Discord: [**pret**][Discord]
-* irc: **irc.freenode.net** [**#pret**][irc]
+Other disassembly projects:
 
+- [**Pokémon TCG 2**][poketcg2]
+- [**Pokémon Red/Blue**][pokered]
+- [**Pokémon Yellow**][pokeyellow]
+- [**Pokémon Gold/Silver**][pokegold]
+- [**Pokémon Crystal**][pokecrystal]
+- [**Pokémon Pinball**][pokepinball]
+- [**Pokémon Ruby**][pokeruby]
+- [**Pokémon FireRed**][pokefirered]
+- [**Pokémon Emerald**][pokeemerald]
+
+[poketcg2]: https://github.com/pret/poketcg2
 [pokered]: https://github.com/pret/pokered
 [pokeyellow]: https://github.com/pret/pokeyellow
 [pokegold]: https://github.com/pret/pokegold
@@ -49,5 +52,5 @@ This will output a file named "tcg.gbc".
 [pokeruby]: https://github.com/pret/pokeruby
 [pokefirered]: https://github.com/pret/pokefirered
 [pokeemerald]: https://github.com/pret/pokeemerald
-[Discord]: https://discord.gg/6EuWgX9
-[irc]: https://kiwiirc.com/client/irc.freenode.net/?#pret
+[discord]: https://discord.gg/d5dubZ3
+[irc]: https://web.libera.chat/?#pret

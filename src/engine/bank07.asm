@@ -1,6 +1,55 @@
-	INCROM $1c000, $1c056
+JumpSetWindowOff:
+	jp SetWindowOff
 
-Func_1c056: ; 1c056 (7:4056)
+; debug function
+; prints player's coordinates by pressing B
+; and draws palettes by pressing A
+Func_1c003: ; unreferenced
+	ld a, [wCurMap]
+	or a
+	jr z, JumpSetWindowOff
+	ld a, [wOverworldMode]
+	cp OWMODE_START_SCRIPT
+	jr nc, JumpSetWindowOff
+
+	ldh a, [hKeysHeld]
+	ld b, a
+	and A_BUTTON | B_BUTTON
+	cp b
+	jr nz, JumpSetWindowOff
+	and B_BUTTON
+	jr z, JumpSetWindowOff
+
+	ld bc, $20
+	ld a, [wPlayerXCoord]
+	bank1call WriteTwoByteNumberInTxSymbolFormat
+	ld bc, $320
+	ld a, [wPlayerYCoord]
+	bank1call WriteTwoByteNumberInTxSymbolFormat
+	ld a, $77
+	ldh [hWX], a
+	ld a, $88
+	ldh [hWY], a
+
+	ldh a, [hKeysPressed]
+	and A_BUTTON
+	jr z, .skip_load_scene
+	ld a, SCENE_COLOR_PALETTE
+	lb bc, 0, 33
+	call LoadScene
+.skip_load_scene
+	ldh a, [hKeysHeld]
+	and A_BUTTON
+	jr z, .set_wd_on
+	ld a, $67
+	ldh [hWX], a
+	ld a, $68
+	ldh [hWY], a
+.set_wd_on
+	call SetWindowOn
+	ret
+
+Func_1c056:
 	push hl
 	push bc
 	push de
@@ -50,7 +99,8 @@ Func_1c056: ; 1c056 (7:4056)
 
 INCLUDE "data/warps.asm"
 
-Func_1c33b: ; 1c33b (7:433b)
+; loads data from the map header of wCurMap
+LoadMapHeader:
 	push hl
 	push bc
 	push de
@@ -60,29 +110,32 @@ Func_1c33b: ; 1c33b (7:433b)
 	add a
 	add c
 	ld c, a
-	ld b, $0
+	ld b, 0
 	ld hl, MapHeaders
 	add hl, bc
 	ld a, [hli]
-	ld [wd131], a
+	ld [wCurTilemap], a
 	ld a, [hli]
-	ld c, a
+	ld c, a ; CGB tilemap variant
 	ld a, [hli]
-	ld [wd28f], a
+	ld [wCurMapInitialPalette], a ; always 0?
 	ld a, [hli]
-	ld [wd132], a
+	ld [wCurMapSGBPals], a
 	ld a, [hli]
-	ld [wd290], a
+	ld [wCurMapPalette], a
 	ld a, [hli]
-	ld [wd111], a
+	ld [wDefaultSong], a
+
 	ld a, [wConsole]
-	cp $2
-	jr nz, .asm_1c370
+	cp CONSOLE_CGB
+	jr nz, .got_tilemap
+	; use CGB variant, if valid
 	ld a, c
 	or a
-	jr z, .asm_1c370
-	ld [wd131], a
-.asm_1c370
+	jr z, .got_tilemap
+	ld [wCurTilemap], a
+.got_tilemap
+
 	pop de
 	pop bc
 	pop hl
@@ -90,10 +143,23 @@ Func_1c33b: ; 1c33b (7:433b)
 
 INCLUDE "data/map_headers.asm"
 
-Func_1c440: ; 1c440 (7:4440)
-	INCROM $1c440, $1c455
+ClearNPCs:
+	push hl
+	push bc
+	ld hl, wLoadedNPCs
+	ld c, LOADED_NPC_MAX * LOADED_NPC_LENGTH
+	xor a
+.loop
+	ld [hli], a
+	dec c
+	jr nz, .loop
+	ld [wNumLoadedNPCs], a
+	ld [wRonaldIsInMap], a
+	pop bc
+	pop hl
+	ret
 
-GetNPCDirection: ; 1c455 (7:4455)
+GetNPCDirection:
 	push hl
 	ld a, [wLoadedNPCTempIndex]
 	ld l, LOADED_NPC_DIRECTION
@@ -102,22 +168,25 @@ GetNPCDirection: ; 1c455 (7:4455)
 	pop hl
 	ret
 
-Func_1c461: ; 1c461 (7:4461)
+; sets new position to active NPC
+; and updates its tile permissions
+; bc = new coords
+SetNPCPosition:
 	push hl
 	push bc
-	call Func_1c719
+	call UpdateNPCsTilePermission
 	ld a, [wLoadedNPCTempIndex]
 	ld l, LOADED_NPC_COORD_X
 	call GetItemInLoadedNPCIndex
 	ld a, b
 	ld [hli], a
 	ld [hl], c
-	call $46e3
+	call SetNPCsTilePermission
 	pop bc
 	pop hl
 	ret
 
-Func_1c477: ; 1c477 (7:4477)
+GetNPCPosition:
 	push hl
 	ld a, [wLoadedNPCTempIndex]
 	ld l, LOADED_NPC_COORD_X
@@ -129,7 +198,7 @@ Func_1c477: ; 1c477 (7:4477)
 	ret
 
 ; Loads NPC Sprite Data
-Func_1c485: ; 1c485 (7:4485)
+LoadNPC:
 	push hl
 	push bc
 	push de
@@ -148,12 +217,12 @@ Func_1c485: ; 1c485 (7:4485)
 	dec c
 	jr nz, .findEmptyIndexLoop
 	ld hl, wLoadedNPCs
-	debug_ret
+	debug_nop
 	jr .exit
 .foundEmptyIndex
 	ld a, b
 	ld [wLoadedNPCTempIndex], a
-	ld a, [wd3b3]
+	ld a, [wNPCSpriteID]
 	farcall CreateSpriteAndAnimBufferEntry
 	jr c, .exit
 	ld a, [wLoadedNPCTempIndex]
@@ -169,73 +238,76 @@ Func_1c485: ; 1c485 (7:4485)
 	ld [hli], a
 	ld a, [wLoadNPCDirection]
 	ld [hli], a
-	ld a, [wd3b2]
+	ld a, [wNPCAnimFlags]
 	ld [hli], a
-	ld a, [wd3b1]
+	ld a, [wNPCAnim]
 	ld [hli], a
 	ld a, [wLoadNPCDirection]
 	ld [hli], a
-	call Func_1c58e
-	call Func_1c5b9
-	ld hl, wd349
+	call UpdateNPCAnimation
+	call ApplyRandomCountToNPCAnim
+	ld hl, wNumLoadedNPCs
 	inc [hl]
 	pop hl
-	call Func_1c665
-	call Func_1c6e3
+
+	call UpdateNPCSpritePosition
+	call SetNPCsTilePermission
+
 	ld a, [wTempNPC]
-	call Func_1c4fa
+	call CheckIfNPCIsRonald
 	jr nc, .exit
-	ld a, $01
-	ld [wd3b8], a
+	ld a, TRUE
+	ld [wRonaldIsInMap], a
 .exit
 	pop de
 	pop bc
 	pop hl
 	ret
 
-Func_1c4fa: ; 1c4fa (7:44fa)
-	cp RONALD1
-	jr z, .asm_1c508
-	cp RONALD2
-	jr z, .asm_1c508
-	cp RONALD3
-	jr z, .asm_1c508
+; returns carry if input NPC ID in register a is Ronald
+CheckIfNPCIsRonald:
+	cp NPC_RONALD1
+	jr z, .set_carry
+	cp NPC_RONALD2
+	jr z, .set_carry
+	cp NPC_RONALD3
+	jr z, .set_carry
 	or a
 	ret
-.asm_1c508
+.set_carry
 	scf
 	ret
 
-Func_1c50a: ; 1c50a (7:450a)
+UnloadNPC:
 	push hl
-	call Func_1c719
+	call UpdateNPCsTilePermission
 	ld a, [wLoadedNPCTempIndex]
 	call GetLoadedNPCID
 	ld a, [hl]
 	or a
-	jr z, .asm_1c52c
-	call $44fa
-	jr nc, .asm_1c521
-	xor a
-	ld [wd3b8], a
+	jr z, .exit
+	call CheckIfNPCIsRonald
+	jr nc, .not_ronald
+	xor a ; FALSE
+	ld [wRonaldIsInMap], a
+.not_ronald
 
-.asm_1c521
 	xor a
 	ld [hli], a
 	ld a, [hl]
-	farcall $4, $69fd
-	ld hl, wd349
+	farcall DisableSpriteAnim
+	ld hl, wNumLoadedNPCs
 	dec [hl]
 
-.asm_1c52c
+.exit
 	pop hl
 	ret
 
-Func_1c52e: ; 1c52e (7:452e)
+Func_1c52e:
 	push hl
 	push af
 	ld a, [wLoadedNPCTempIndex]
-	ld l, LOADED_NPC_FIELD_07
+	ld l, LOADED_NPC_DIRECTION_BACKUP
 	call GetItemInLoadedNPCIndex
 	pop af
 	ld [hl], a
@@ -243,16 +315,16 @@ Func_1c52e: ; 1c52e (7:452e)
 	pop hl
 	ret
 
-Func_1c53f: ; 1c53f (7:453f)
+Func_1c53f:
 	push hl
 	push bc
 	ld a, [wLoadedNPCTempIndex]
 	ld l, LOADED_NPC_DIRECTION
 	call GetItemInLoadedNPCIndex
 	ld a, [hl]
-	ld bc, $0003
+	ld bc, LOADED_NPC_DIRECTION_BACKUP - LOADED_NPC_DIRECTION
 	add hl, bc
-	ld [hl], a
+	ld [hl], a ; LOADED_NPC_DIRECTION_BACKUP
 	push af
 	call Func_1c5e9
 	pop af
@@ -260,7 +332,7 @@ Func_1c53f: ; 1c53f (7:453f)
 	pop hl
 	ret
 
-Func_1c557: ; 1c557 (7:4557)
+Func_1c557:
 	push bc
 	ld c, a
 	ld a, [wLoadedNPCTempIndex]
@@ -284,21 +356,22 @@ Func_1c557: ; 1c557 (7:4557)
 	pop bc
 	ret
 
-Func_1c57b: ; 1c57b (7:457b)
+; a = NPC animation
+SetNPCAnimation:
 	push hl
 	push bc
 	push af
 	ld a, [wLoadedNPCTempIndex]
-	ld l, LOADED_NPC_FIELD_06
+	ld l, LOADED_NPC_ANIM
 	call GetItemInLoadedNPCIndex
 	pop af
 	ld [hl], a
-	call Func_1c58e
+	call UpdateNPCAnimation
 	pop bc
 	pop hl
 	ret
 
-Func_1c58e: ; 1c58e (7:458e)
+UpdateNPCAnimation:
 	push hl
 	push bc
 	ld a, [wWhichSprite]
@@ -310,52 +383,259 @@ Func_1c58e: ; 1c58e (7:458e)
 	jr z, .quit
 	ld a, [hl]
 	ld [wWhichSprite], a
-	ld bc, LOADED_NPC_FIELD_06 - LOADED_NPC_SPRITE
+	ld bc, LOADED_NPC_ANIM - LOADED_NPC_SPRITE
 	add hl, bc
-	ld a, [hld]
-	bit 4, [hl]
+	ld a, [hld] ; LOADED_NPC_ANIM
+	bit NPC_FLAG_DIRECTIONLESS_F, [hl] ; LOADED_NPC_FLAGS
 	jr nz, .asm_1c5ae
 	dec hl
-	add [hl]
+	add [hl] ; LOADED_NPC_ANIM + LOADED_NPC_DIRECTION
 	inc hl
 .asm_1c5ae
-	farcall Func_12ab5
+	farcall StartNewSpriteAnimation
 .quit
 	pop af
 	ld [wWhichSprite], a
 	pop bc
 	pop hl
 	ret
-; 0x1c5b9
 
-Func_1c5b9: ; 1c5b9 (7:45b9)
-	INCROM $1c5b9, $1c5e9
-
-Func_1c5e9: ; 1c5e9 (7:45e9)
+; if NPC's sprite has an animation,
+; give it a random initial value
+; this makes it so that all NPCs are out of phase
+; when they are loaded into a map
+ApplyRandomCountToNPCAnim:
 	push hl
 	push bc
+	ld a, [wWhichSprite]
+	push af
 	ld a, [wLoadedNPCTempIndex]
-	ld l, LOADED_NPC_FIELD_07
-	call GetItemInLoadedNPCIndex
+	call GetLoadedNPCID
+	ld a, [hli]
+	or a
+	jr z, .done
 	ld a, [hl]
-	ld bc, $fffd
-	add hl, bc
+	ld [wWhichSprite], a
+	ld c, SPRITE_ANIM_COUNTER
+	call GetSpriteAnimBufferProperty
+	ld a, [hl]
+	or a
+	jr z, .done
+	cp $ff
+	jr z, .done
+	dec a
+	call Random
+	ld c, a
+	ld a, [hl]
+	sub c
 	ld [hl], a
-	call Func_1c58e
+.done
+	pop af
+	ld [wWhichSprite], a
 	pop bc
 	pop hl
 	ret
-; 0x1c5ff
 
-	INCROM $1c5ff, $1c610
+; sets the loaded NPC's direction
+; to the direction that is in LOADED_NPC_DIRECTION_BACKUP
+Func_1c5e9:
+	push hl
+	push bc
+	ld a, [wLoadedNPCTempIndex]
+	ld l, LOADED_NPC_DIRECTION_BACKUP
+	call GetItemInLoadedNPCIndex
+	ld a, [hl]
+	ld bc, LOADED_NPC_DIRECTION - LOADED_NPC_DIRECTION_BACKUP
+	add hl, bc
+	ld [hl], a ; LOADED_NPC_DIRECTION
+	call UpdateNPCAnimation
+	pop bc
+	pop hl
+	ret
 
-Func_1c610: ; 1c610 (7:4610)
-	INCROM $1c610, $1c665
+; a = new direction
+SetNPCDirection:
+	push hl
+	push af
+	ld a, [wLoadedNPCTempIndex]
+	ld l, LOADED_NPC_DIRECTION
+	call GetItemInLoadedNPCIndex
+	pop af
+	ld [hl], a
+	call UpdateNPCAnimation
+	pop hl
+	ret
 
-Func_1c665: ; 1c665 (7:4665)
-	INCROM $1c665, $1c6e3
+HandleAllNPCMovement:
+	push hl
+	push bc
+	push de
+	xor a
+	ld [wIsAnNPCMoving], a
+	ld a, [wNumLoadedNPCs]
+	or a
+	jr z, .exit
 
-Func_1c6e3: ; 1c6e3 (7:46e3)
+	ld c, LOADED_NPC_MAX
+	ld hl, wLoadedNPCs
+	ld de, LOADED_NPC_LENGTH
+.loop_npcs
+	ld a, [hl]
+	or a
+	jr z, .next_npc
+	push bc
+	inc hl
+	ld a, [hld]
+	ld [wWhichSprite], a
+	call UpdateNPCMovementStep
+	call .UpdateSpriteAnimFlag
+	call UpdateNPCSpritePosition
+	call UpdateIsAnNPCMovingFlag
+	pop bc
+.next_npc
+	add hl, de
+	dec c
+	jr nz, .loop_npcs
+.exit
+	pop de
+	pop bc
+	pop hl
+	ret
+
+.UpdateSpriteAnimFlag
+	push hl
+	push bc
+	ld bc, LOADED_NPC_COORD_X
+	add hl, bc
+	ld b, [hl]
+	inc hl
+	ld c, [hl]
+	call GetPermissionOfMapPosition
+	and $10
+	push af
+	ld c, SPRITE_ANIM_FLAGS
+	call GetSpriteAnimBufferProperty
+	pop af
+	ld a, [hl]
+	jr z, .reset_flag
+	set SPRITE_ANIM_FLAG_UNSKIPPABLE, [hl]
+	jr .done
+.reset_flag
+	res SPRITE_ANIM_FLAG_UNSKIPPABLE, [hl]
+.done
+	pop bc
+	pop hl
+	ret
+
+UpdateNPCSpritePosition:
+	push hl
+	push bc
+	push de
+	call .GetOffset
+
+	; get NPC and sprite coords
+	push bc
+	ld de, LOADED_NPC_COORD_X
+	add hl, de
+	ld e, l
+	ld d, h
+	ld c, SPRITE_ANIM_COORD_X
+	call GetSpriteAnimBufferProperty
+	pop bc
+
+	; hl = sprite coords
+	; de = NPC coords
+	ld a, [de] ; x
+	sla a
+	sla a
+	sla a
+	add $8
+	sub b
+	ld [hli], a
+	inc de
+	ld a, [de] ; y
+	sla a
+	sla a
+	sla a
+	add $10
+	sub c
+	ld [hli], a
+	pop de
+	pop bc
+	pop hl
+	ret
+
+; outputs in bc the coordinate offsets
+; given NPCs direction and its movement step
+.GetOffset
+	push hl
+	ld bc, $0
+	ld de, LOADED_NPC_FLAGS
+	add hl, de
+	ld e, 0
+	ld a, [hl]
+	and NPC_FLAG_MOVING
+	jr z, .got_direction
+	dec hl
+	ld a, [hl] ; LOADED_NPC_DIRECTION
+	ld de, LOADED_NPC_MOVEMENT_STEP - LOADED_NPC_DIRECTION
+	add hl, de
+	ld e, [hl] ; LOADED_NPC_MOVEMENT_STEP
+.got_direction
+	ld hl, .function_table
+	call JumpToFunctionInTable
+	pop hl
+	ret
+
+.function_table
+	dw .north
+	dw .east
+	dw .south
+	dw .west
+
+.west
+	ld a, e
+	cpl
+	inc a
+	ld e, a
+.east
+	ld b, e
+	ldh a, [hSCX]
+	sub b
+	ld b, a
+	ldh a, [hSCY]
+	ld c, a
+	ret
+
+.north
+	ld a, e
+	cpl
+	inc a
+	ld e, a
+.south
+	ld c, e
+	ldh a, [hSCY]
+	sub c
+	ld c, a
+	ldh a, [hSCX]
+	ld b, a
+	ret
+
+; ands wIsAnNPCMoving with the current
+; NPC's NPC_FLAG_MOVING_F
+UpdateIsAnNPCMovingFlag:
+	push hl
+	push bc
+	ld bc, LOADED_NPC_FLAGS
+	add hl, bc
+	ld a, [wIsAnNPCMoving]
+	or [hl]
+	ld [wIsAnNPCMoving], a
+	pop bc
+	pop hl
+	ret
+
+SetNPCsTilePermission:
 	push hl
 	push bc
 	ld a, [wLoadedNPCTempIndex]
@@ -370,10 +650,32 @@ Func_1c6e3: ; 1c6e3 (7:46e3)
 	pop hl
 	ret
 
-Func_1c6f8: ; 1c6f8 (7:46f8)
-	INCROM $1c6f8, $1c719
+SetAllNPCTilePermissions:
+	push hl
+	push bc
+	push de
+	ld b, $00
+	ld c, LOADED_NPC_MAX
+	ld hl, wLoadedNPCs
+	ld de, LOADED_NPC_LENGTH
+.loop_npcs
+	ld a, [hl]
+	or a
+	jr z, .next_npc
+	ld a, b
+	ld [wLoadedNPCTempIndex], a
+	call SetNPCsTilePermission
+.next_npc
+	add hl, de
+	inc b
+	dec c
+	jr nz, .loop_npcs
+	pop de
+	pop bc
+	pop hl
+	ret
 
-Func_1c719: ; 1c719 (7:4719)
+UpdateNPCsTilePermission:
 	push hl
 	push bc
 	ld a, [wLoadedNPCTempIndex]
@@ -383,13 +685,13 @@ Func_1c719: ; 1c719 (7:4719)
 	ld b, a
 	ld c, [hl]
 	ld a, $40
-	call $3937
+	call UpdatePermissionOfMapPosition
 	pop bc
 	pop hl
 	ret
 
 ; Find NPC at coords b (x) c (y)
-FindNPCAtLocation: ; 1c72e (7:472e)
+FindNPCAtLocation:
 	push hl
 	push bc
 	push de
@@ -438,9 +740,9 @@ FindNPCAtLocation: ; 1c72e (7:472e)
 	pop hl
 	ret
 
-; Probably needs a new name. Loads data for NPC that the next OWSequence is for
+; Probably needs a new name. Loads data for NPC that the next Script is for
 ; Sets direction, Loads Image data for it, loads name, and more
-SetNewOWSequenceNPC: ; 1c768 (7:4768)
+SetNewScriptNPC:
 	push hl
 	ld a, [wLoadedNPCTempIndex]
 	ld l, LOADED_NPC_DIRECTION
@@ -448,352 +750,264 @@ SetNewOWSequenceNPC: ; 1c768 (7:4768)
 	ld a, [wPlayerDirection]
 	xor $02
 	ld [hl], a
-	call Func_1c58e
-	ld a, $02
-	farcall Func_c29b
+	call UpdateNPCAnimation
+	ld a, 1 << RESTORE_FACING_DIRECTION
+	farcall SetOverworldNPCFlags
 	ld a, [wLoadedNPCTempIndex]
 	call GetLoadedNPCID
 	ld a, [hl]
-	farcall GetNPCNameAndOWSequence
+	farcall GetNPCNameAndScript
 	pop hl
 	ret
 
-Func_1c78d: ; 1c78d (7:478d)
+StartNPCMovement:
 	push hl
+; set NPC as moving
 	ld a, [wLoadedNPCTempIndex]
-	ld l, LOADED_NPC_FIELD_05
+	ld l, LOADED_NPC_FLAGS
 	call GetItemInLoadedNPCIndex
-	set 5, [hl]
+	set NPC_FLAG_MOVING_F, [hl]
+
+; reset its movement step
 	ld a, [wLoadedNPCTempIndex]
-	ld l, LOADED_NPC_FIELD_08
+	ld l, LOADED_NPC_MOVEMENT_STEP
 	call GetItemInLoadedNPCIndex
 	xor a
 	ld [hli], a
-.asm_1c7a2
-	ld [hl], c
+.loop_movement
+	ld [hl], c ; LOADED_NPC_MOVEMENT_PTR
 	inc hl
 	ld [hl], b
 	dec hl
-	call $39ea
+	call GetNextNPCMovementByte
 	cp $f0
-	jr nc, .asm_1c7bb
+	jr nc, .special_command
 	push af
-	and $7f
-	call $45ff
+	and DIRECTION_MASK
+	call SetNPCDirection
 	pop af
+	; if it was not a rotation, exit...
 	bit 7, a
-	jr z, .asm_1c7dc
+	jr z, .exit
+	; ...otherwise jump to next movement instruction
 	inc bc
-	jr .asm_1c7a2
+	jr .loop_movement
 
-.asm_1c7bb
+.special_command
 	cp $ff
-	jr z, .asm_1c7d2
+	jr z, .stop_movement
+; jump to a movement command
+	; read its argument
 	inc bc
-	call $39ea
+	call GetNextNPCMovementByte
 	push hl
 	ld l, a
 	ld h, $0
 	bit 7, l
-	jr z, .asm_1c7cc
-	dec h
-
-.asm_1c7cc
+	jr z, .got_offset
+	dec h ; $ff
+.got_offset
+	; add the offset to bc
 	add hl, bc
 	ld c, l
 	ld b, h
 	pop hl
-	jr .asm_1c7a2
+	jr .loop_movement
 
-.asm_1c7d2
+.stop_movement
 	ld a, [wLoadedNPCTempIndex]
-	ld l, LOADED_NPC_FIELD_05
+	ld l, LOADED_NPC_FLAGS
 	call GetItemInLoadedNPCIndex
-	res 5, [hl]
+	res NPC_FLAG_MOVING_F, [hl]
 
-.asm_1c7dc
+.exit
 	pop hl
 	ret
 
-Func_1c7de: ; 1c7de (7:47de)
-	ld a, [wc3b7]
-	and $20
-    ret
-; 0x1c7e4
-
-	INCROM $1c7e4, $1c82e
-
-Func_1c82e: ; 1c82e (7:482e)
-	INCROM $1c82e, $1c83d
-
-Func_1c83d: ; 1c83d (7:483d)
-	push hl
-	push bc
-	ld b, a
-	ld c, $a
-	ld hl, wd3bb
-.asm_1c845
-	ld a, [hl]
-	or a
-	jr z, .asm_1c853
-	cp b
-	jr z, .asm_1c855
-	inc hl
-	dec c
-	jr nz, .asm_1c845
-	debug_ret
-	jr .asm_1c855
-
-.asm_1c853
-	ld a, b
-	ld [hl], a
-
-.asm_1c855
-	pop bc
-	pop hl
+; returns nz if there is an NPC currently moving
+CheckIsAnNPCMoving:
+	ld a, [wIsAnNPCMoving]
+	and NPC_FLAG_MOVING
 	ret
-; 0x1c858
 
-	INCROM $1c858, $1cb18
-
-Func_1cb18: ; 1cb18 (7:4b18)
+; while the NPC is moving, increment its movement step by 1
+; once it reaches a value greater than 16, update
+; its tile permission and its position and start next movement
+UpdateNPCMovementStep:
 	push hl
 	push bc
 	push de
-	ld a, [wDoFrameFunction]
-	cp LOW(Func_3ba2)
-	jr nz, .asm_1cb5b
-	ld a, [wDoFrameFunction + 1]
-	cp HIGH(Func_3ba2)
-	jr nz, .asm_1cb5b
-	ld a, $ff
-	ld [wd4c0], a
-	ld a, [wd42a]
-	cp $ff
-	call nz, $4cd4
-	ld hl, wAnimationQueue
-	ld c, $07
-.asm_1cb3b
-	push bc
-	ld a, [hl]
-	cp $ff
-	jr z, .asm_1cb4b
-	ld [wWhichSprite], a
-	farcall $4, $69fa
-	ld a, $ff
-	ld [hl], a
-.asm_1cb4b
-	pop bc
+	ld bc, LOADED_NPC_FLAGS
+	add hl, bc
+	bit NPC_FLAG_MOVING_F, [hl]
+	jr z, .exit
+	ld bc, LOADED_NPC_MOVEMENT_STEP - LOADED_NPC_FLAGS
+	add hl, bc
+	inc [hl] ; increment movement step
+	bit 4, [hl]
+	jr z, .exit ; still hasn't reached the next tile
+	call UpdateNPCsTilePermission
+	call UpdateNPCPosition
 	inc hl
-	dec c
-	jr nz, .asm_1cb3b
-	xor a
-	ld [wd4ac], a
-	ld [wd4ad], a
-.asm_1cb57
+	ld c, [hl] ; LOADED_NPC_MOVEMENT_PTR
+	inc hl
+	ld b, [hl]
+	inc bc
+	call StartNPCMovement
+	call SetNPCsTilePermission
+.exit
 	pop de
 	pop bc
 	pop hl
 	ret
-.asm_1cb5b
-	scf
-	jr .asm_1cb57
-; 0x1cb5e
 
-	INCROM $1cb5e, $1d078
+UpdateNPCPosition:
+	push hl
+	push bc
+	ld a, [wLoadedNPCTempIndex]
+	ld l, LOADED_NPC_DIRECTION
+	call GetItemInLoadedNPCIndex
+	ld a, [hld]
+	push hl
+	rlca ; *2
+	ld c, a
+	ld b, $00
+	ld hl, PlayerMovementOffsetTable_Tiles
+	add hl, bc
+	ld b, [hl] ; x offset
+	inc hl
+	ld c, [hl] ; y offset
+	pop hl
+	ld a, [hl] ; LOADED_NPC_COORD_Y
+	add c
+	ld [hld], a
+	ld a, [hl] ; LOADED_NPC_COORD_X
+	add b
+	ld [hl], a
+	pop bc
+	pop hl
+	ret
 
-Func_1d078: ; 1d078 (7:5078)
-	ld a, [wd627]
-	or a
-	jr z, .asm_1d0c7
-.asm_1d07e
-	ld a, MUSIC_STOP
-	call PlaySong
-	call Func_3ca0
-	call $5335
-	call $53ce
+ClearMasterBeatenList:
+	push hl
+	push bc
+	ld c, $a
+	ld hl, wMastersBeatenList
 	xor a
-	ld [wd635], a
-	ld a, $3c
-	ld [wd626], a
-.asm_1d095
-	call DoFrameIfLCDEnabled
-	call UpdateRNGSources
-	call $5614
-	ld hl, wd635
-	inc [hl]
-	call AssertSongFinished
-	or a
-	jr nz, .asm_1d0ae
-	farcall Func_10ab4
-	jr .asm_1d07e
-.asm_1d0ae
-	ld hl, wd626
+.loop
+	ld [hli], a
+	dec c
+	jr nz, .loop
+	pop bc
+	pop hl
+	ret
+
+; writes Master in register a to
+; first empty slot in wMastersBeatenList
+AddMasterBeatenToList:
+	push hl
+	push bc
+	ld b, a
+	ld c, $a
+	ld hl, wMastersBeatenList
+.loop
 	ld a, [hl]
 	or a
-	jr z, .asm_1d0b8
-	dec [hl]
-	jr .asm_1d095
-.asm_1d0b8
-	ldh a, [hKeysPressed]
-	and A_BUTTON | START
-	jr z, .asm_1d095
-	ld a, SFX_02
-	call PlaySFX
-	farcall Func_10ab4
+	jr z, .found_empty_slot
+	cp b
+	jr z, .exit
+	inc hl
+	dec c
+	jr nz, .loop
+	debug_nop
+	jr .exit
 
-.asm_1d0c7
-	call $50fa
-	call $511c
-	ld a, [wd628]
-	cp $2
-	jr nz, .asm_1d0db
-	call $5289
-	jr c, Func_1d078
-	jr .asm_1d0e7
-.asm_1d0db
-	ld a, [wd628]
-	cp $1
-	jr nz, .asm_1d0e7
-	call $52b8
-	jr c, Func_1d078
-.asm_1d0e7
-	ld a, [wd628]
-	cp $0
-	jr nz, .asm_1d0f3
-	call $52dd
-	jr c, Func_1d078
-.asm_1d0f3
-	call ResetDoFrameFunction
-	call Func_3ca0
+.found_empty_slot
+	ld a, b
+	ld [hl], a
+
+.exit
+	pop bc
+	pop hl
 	ret
-; 0x1d0fa
 
-	INCROM $1d0fa, $1d11c
-
-Func_1d11c: ; 1d11c (7:511c)
-	ld a, MUSIC_PC_MAIN_MENU
-	call PlaySong
-	call DisableLCD
-	farcall $4, $4000
-	lb de, $30, $8f
-	call SetupText
-	call Func_3ca0
-	xor a
-	ld [wLineSeparation], a
-	call $51e1
-	call $517f
-	ld a, $ff
-	ld [wd626], a
-	ld a, [wd627]
-	cp $4
-	jr c, .asm_1d14f
-	ld a, [wd624]
-	or a
-	jr z, .asm_1d14f
-	ld a, $1
-.asm_1d14f
-	ld hl, wd636
-	farcall Func_111e9
-	farcall $4, $4031
-.asm_1d15a
-	call DoFrameIfLCDEnabled
-	call UpdateRNGSources
-	call HandleMenuInput
+; iterates all masters and attempts to
+; add each of them to wMastersBeatenList
+AddAllMastersToMastersBeatenList:
+	ld a, $01
+.loop
 	push af
-	call $51e9
+	call AddMasterBeatenToList
 	pop af
-	jr nc, .asm_1d15a
-	ldh a, [hCurMenuItem]
-	cp e
-	jr nz, .asm_1d15a
-	ld [wd627], a
-	ld a, [wd624]
-	or a
-	jr nz, .asm_1d17a
-	inc e
-	inc e
-.asm_1d17a
-	ld a, e
-	ld [wd628], a
-	ret
-; 0x1d17f
-
-	INCROM $1d17f, $1d306
-
-Func_1d306: ; 1d306 (7:5306)
-	INCROM $1d306, $1d386
-
-Titlescreen_1d386: ; 1d386 (7:5386)
-	call AssertSongFinished
-	or a
-	jr nz, .asm_1d39f
-	call DisableLCD
-	ld a, MUSIC_TITLESCREEN
-	call PlaySong
-	ld bc, $0000
-	ld a, $0
-	call Func_3df3
-	call Func_1d59c
-.asm_1d39f
-	call Func_3ca0
-	call Func_1d3a9
-	call EnableLCD
+	inc a
+	cp $0b
+	jr c, .loop
 	ret
 
-Func_1d3a9: ; 1d3a9 (7:53a9)
-	INCROM $1d3a9, $1d42e
-
-Func_1d42e: ; 1d42e (7:542e)
-	INCROM $1d42e, $1d519
-
-Titlescreen_1d519: ; 1d519 (7:5519)
-	ld a, MUSIC_TITLESCREEN
-	call PlaySong
-	call Func_1d42e
-	scf
+Func_1c865:
 	ret
-; 0x1d523
 
-	INCROM $1d523, $1d59c
-
-Func_1d59c: ; 1d59c (7:559c)
-	INCROM $1d59c, $1d6ad
-
-Credits_1d6ad: ; 1d6ad (7:56ad)
-	ld a, MUSIC_STOP
-	call PlaySong
-	call $5705
-	call $4858
-	xor a
-	ld [wd324], a
-	ld a, MUSIC_CREDITS
-	call PlaySong
-	farcall $4, $4031
-	call $57fc
-.asm_1d6c8
-	call DoFrameIfLCDEnabled
-	call $5765
-	call $580b
-	ld a, [wd633]
-	cp $ff
-	jr nz, .asm_1d6c8
-	call WaitForSongToFinish
-	ld a, $8
-	farcall $4, $6863
-	ld a, MUSIC_STOP
-	call PlaySong
-	farcall Func_10ab4
-	call Func_3ca4
-	call Set_WD_off
-	call $5758
-	call EnableLCD
-	call DoFrameIfLCDEnabled
-	call DisableLCD
-	ld hl, wLCDC
-	set 1, [hl]
-	call ResetDoFrameFunction
+; debug function
+; adjusts hSCX and hSCY by using the arrow keys
+; pressing B makes it scroll faster
+Func_1c866: ; unreferenced
+	ldh a, [hKeysHeld]
+	and B_BUTTON
+	call nz, .asm_1c86d ; executes following part twice
+.asm_1c86d
+	ldh a, [hSCX]
+	ld b, a
+	ldh a, [hSCY]
+	ld c, a
+	ldh a, [hKeysHeld]
+	bit D_UP_F, a
+	jr z, .check_d_down
+	inc c
+.check_d_down
+	bit D_DOWN_F, a
+	jr z, .check_d_left
+	dec c
+.check_d_left
+	bit D_LEFT_F, a
+	jr z, .check_d_right
+	inc b
+.check_d_right
+	bit D_RIGHT_F, a
+	jr z, .asm_1c889
+	dec b
+.asm_1c889
+	ld a, b
+	ldh [hSCX], a
+	ld a, c
+	ldh [hSCY], a
 	ret
-; 0x1d705
 
-	INCROM $1d705, $1e1c4
+; sets some flags on a given sprite
+Func_1c890: ; unreferenced
+	ld a, [wVBlankCounter]
+	and %111111
+	ret nz
+
+	ld a, [wd41b]
+	cp $11
+	jr z, .asm_1c8a3
+	cp $0e
+	ret c
+	cp $10
+	ret nc
+
+; wd41b == $11 || (wd41b >= $0e && wd41b < $10)
+.asm_1c8a3
+	ld a, [wd41c]
+	ld [wWhichSprite], a
+	ld c, SPRITE_ANIM_FLAGS
+	call GetSpriteAnimBufferProperty
+	call UpdateRNGSources
+	and (1 << SPRITE_ANIM_FLAG_X_SUBTRACT)
+	jr nz, .asm_1c8b9
+	res SPRITE_ANIM_FLAG_SPEED, [hl]
+	jr .asm_1c8bb
+.asm_1c8b9
+	set SPRITE_ANIM_FLAG_SPEED, [hl]
+.asm_1c8bb
+	ret

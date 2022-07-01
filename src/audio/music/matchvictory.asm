@@ -1,8 +1,8 @@
-Music_MatchVictory_Ch1: ; f7b61 (3d:7b61)
-	musicdc 17
+Music_MatchVictory_Ch1:
+	stereo_panning 1, 1
 	vibrato_type 1
 	vibrato_delay 20
-	musice8 8
+	cutoff 8
 	octave 3
 	duty 0
 	volume 176
@@ -53,11 +53,11 @@ Music_MatchVictory_Ch1: ; f7b61 (3d:7b61)
 	music_end
 
 
-Music_MatchVictory_Ch2: ; f7bb0 (3d:7bb0)
-	musicdc 17
+Music_MatchVictory_Ch2:
+	stereo_panning 1, 1
 	vibrato_type 1
 	vibrato_delay 20
-	musice8 8
+	cutoff 8
 	octave 3
 	duty 0
 	volume 176
@@ -116,12 +116,12 @@ Music_MatchVictory_Ch2: ; f7bb0 (3d:7bb0)
 	music_end
 
 
-Music_MatchVictory_Ch3: ; f7c09 (3d:7c09)
-	musicdc 17
+Music_MatchVictory_Ch3:
+	stereo_panning 1, 1
 	wave 1
 	volume 32
-	musice8 8
-	musice9 0
+	cutoff 8
+	echo 0
 	octave 1
 	speed 1
 	F_ 15
@@ -147,4 +147,3 @@ Music_MatchVictory_Ch3: ; f7c09 (3d:7c09)
 	speed 8
 	A_ 12
 	music_end
-; 0xf7c2e

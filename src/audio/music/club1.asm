@@ -1,13 +1,13 @@
-Music_Club1_Ch1: ; f9be5 (3e:5be5)
+Music_Club1_Ch1:
 	speed 5
-	musicdc 17
+	stereo_panning 1, 1
 	vibrato_type 8
 	vibrato_delay 20
-	musice8 8
+	cutoff 8
 	octave 3
 	duty 0
 	volume 146
-	musice8 8
+	cutoff 8
 	C# 2
 	dec_octave
 	A_ 2
@@ -66,7 +66,7 @@ Music_Club1_Ch1: ; f9be5 (3e:5be5)
 	rest 2
 	duty 0
 	volume 148
-	musice8 8
+	cutoff 8
 	E_ 6
 	rest 2
 	MainLoop
@@ -289,16 +289,16 @@ Music_Club1_Ch1: ; f9be5 (3e:5be5)
 	EndMainLoop
 
 
-Music_Club1_Ch2: ; f9d5f (3e:5d5f)
+Music_Club1_Ch2:
 	speed 5
-	musicdc 17
+	stereo_panning 1, 1
 	vibrato_type 8
 	vibrato_delay 20
-	musice8 7
+	cutoff 7
 	octave 2
 	duty 0
 	volume 146
-	musice8 8
+	cutoff 8
 	A_ 2
 	E_ 2
 	A_ 2
@@ -571,13 +571,13 @@ Music_Club1_Ch2: ; f9d5f (3e:5d5f)
 	EndMainLoop
 
 
-Music_Club1_Ch3: ; f9ec4 (3e:5ec4)
+Music_Club1_Ch3:
 	speed 5
-	musicdc 17
+	stereo_panning 1, 1
 	volume 32
 	wave 1
-	musice9 96
-	musice8 7
+	echo 96
+	cutoff 7
 	octave 1
 	A_ 2
 	rest 2
@@ -590,16 +590,16 @@ Music_Club1_Ch3: ; f9ec4 (3e:5ec4)
 	A# 2
 	rest 4
 	B_ 2
-	musice8 4
+	cutoff 4
 	B_ 2
-	musice8 7
+	cutoff 7
 	F# 2
 	F_ 2
 	inc_octave
-	musice8 4
+	cutoff 4
 	D_ 2
 	dec_octave
-	musice8 7
+	cutoff 7
 	E_ 2
 	rest 4
 	inc_octave
@@ -610,267 +610,267 @@ Music_Club1_Ch3: ; f9ec4 (3e:5ec4)
 	octave 1
 	A_ 4
 	inc_octave
-	musice8 4
+	cutoff 4
 	A_ 2
 	dec_octave
-	musice8 7
+	cutoff 7
 	C# 6
 	E_ 4
 	inc_octave
-	musice8 4
+	cutoff 4
 	A_ 2
 	dec_octave
-	musice8 7
+	cutoff 7
 	F_ 4
 	inc_octave
-	musice8 4
+	cutoff 4
 	A# 2
 	dec_octave
-	musice8 7
+	cutoff 7
 	F# 4
 	inc_octave
-	musice8 4
+	cutoff 4
 	F# 2
-	musice8 7
+	cutoff 7
 	C# 6
 	dec_octave
 	A# 4
 	inc_octave
 	inc_octave
-	musice8 4
+	cutoff 4
 	C# 2
 	dec_octave
 	dec_octave
-	musice8 7
+	cutoff 7
 	F# 6
 	music_call Branch_fa01a
 	octave 1
-	musice8 7
+	cutoff 7
 	A_ 4
 	inc_octave
-	musice8 4
+	cutoff 4
 	A_ 2
 	dec_octave
-	musice8 7
+	cutoff 7
 	C# 6
 	E_ 4
 	inc_octave
-	musice8 4
+	cutoff 4
 	A_ 2
 	dec_octave
-	musice8 7
+	cutoff 7
 	F_ 4
 	inc_octave
 	inc_octave
-	musice8 4
+	cutoff 4
 	C# 2
 	dec_octave
 	dec_octave
-	musice8 7
+	cutoff 7
 	F# 4
 	inc_octave
-	musice8 4
+	cutoff 4
 	F# 2
-	musice8 7
+	cutoff 7
 	C# 6
 	dec_octave
 	A# 4
 	inc_octave
 	inc_octave
-	musice8 4
+	cutoff 4
 	E_ 2
 	dec_octave
 	dec_octave
-	musice8 7
+	cutoff 7
 	F# 6
 	music_call Branch_fa01a
 	octave 1
-	musice8 7
+	cutoff 7
 	D_ 4
 	inc_octave
-	musice8 4
+	cutoff 4
 	F# 2
 	dec_octave
-	musice8 7
+	cutoff 7
 	D_ 4
 	rest 2
 	D_ 4
 	inc_octave
-	musice8 4
+	cutoff 4
 	A_ 2
 	dec_octave
-	musice8 7
+	cutoff 7
 	D_ 4
 	inc_octave
-	musice8 4
+	cutoff 4
 	F# 2
 	dec_octave
-	musice8 7
+	cutoff 7
 	D_ 4
 	inc_octave
-	musice8 4
+	cutoff 4
 	F_ 2
 	dec_octave
-	musice8 7
+	cutoff 7
 	D_ 4
 	rest 2
 	D_ 4
 	inc_octave
-	musice8 4
+	cutoff 4
 	A_ 2
 	dec_octave
-	musice8 7
+	cutoff 7
 	D_ 4
 	inc_octave
-	musice8 4
+	cutoff 4
 	F_ 2
 	dec_octave
-	musice8 7
+	cutoff 7
 	C# 4
 	inc_octave
-	musice8 4
+	cutoff 4
 	E_ 2
 	dec_octave
-	musice8 7
+	cutoff 7
 	C# 6
 	E_ 4
 	inc_octave
 	inc_octave
-	musice8 4
+	cutoff 4
 	E_ 2
 	dec_octave
 	dec_octave
-	musice8 7
+	cutoff 7
 	F_ 6
 	F# 4
 	inc_octave
-	musice8 4
+	cutoff 4
 	A# 2
-	musice8 7
+	cutoff 7
 	C# 6
 	dec_octave
 	A# 4
 	inc_octave
-	musice8 4
+	cutoff 4
 	F# 2
 	dec_octave
-	musice8 7
+	cutoff 7
 	F# 6
 	B_ 4
 	inc_octave
-	musice8 4
+	cutoff 4
 	A_ 2
 	dec_octave
-	musice8 7
+	cutoff 7
 	F# 6
 	A_ 4
 	inc_octave
-	musice8 4
+	cutoff 4
 	F# 2
 	dec_octave
-	musice8 7
+	cutoff 7
 	A# 4
 	inc_octave
 	inc_octave
-	musice8 4
+	cutoff 4
 	D_ 2
 	dec_octave
 	dec_octave
-	musice8 7
+	cutoff 7
 	B_ 4
 	inc_octave
-	musice8 4
+	cutoff 4
 	A_ 2
 	dec_octave
-	musice8 7
+	cutoff 7
 	F# 6
 	D_ 4
 	inc_octave
-	musice8 4
+	cutoff 4
 	F# 2
 	dec_octave
-	musice8 7
+	cutoff 7
 	F# 6
 	E_ 4
 	inc_octave
-	musice8 4
+	cutoff 4
 	A_ 2
 	dec_octave
-	musice8 6
+	cutoff 6
 	E_ 6
-	musice8 7
+	cutoff 7
 	E_ 4
 	inc_octave
-	musice8 4
+	cutoff 4
 	F# 2
 	dec_octave
-	musice8 7
+	cutoff 7
 	E_ 4
 	inc_octave
-	musice8 4
+	cutoff 4
 	F# 2
-	musice8 7
+	cutoff 7
 	E_ 4
-	musice8 4
+	cutoff 4
 	G# 2
 	dec_octave
-	musice8 7
+	cutoff 7
 	E_ 4
 	inc_octave
-	musice8 4
+	cutoff 4
 	F# 2
 	dec_octave
-	musice8 7
+	cutoff 7
 	F# 4
 	inc_octave
-	musice8 4
+	cutoff 4
 	G# 2
 	dec_octave
-	musice8 7
+	cutoff 7
 	G# 4
 	inc_octave
-	musice8 4
+	cutoff 4
 	B_ 2
-	musice8 7
+	cutoff 7
 	EndMainLoop
 
 Branch_fa01a:
 	octave 1
 	B_ 4
 	inc_octave
-	musice8 4
+	cutoff 4
 	A_ 2
 	dec_octave
-	musice8 7
+	cutoff 7
 	C# 6
 	D_ 4
 	inc_octave
-	musice8 4
+	cutoff 4
 	F# 2
 	dec_octave
-	musice8 7
+	cutoff 7
 	D# 6
 	E_ 4
 	inc_octave
-	musice8 4
+	cutoff 4
 	B_ 2
 	dec_octave
-	musice8 7
+	cutoff 7
 	B_ 6
 	G# 4
 	inc_octave
-	musice8 4
+	cutoff 4
 	B_ 2
 	dec_octave
-	musice8 7
+	cutoff 7
 	E_ 4
 	inc_octave
-	musice8 4
+	cutoff 4
 	E_ 2
 	music_ret
 
 
-Music_Club1_Ch4: ; fa044 (3e:6044)
+Music_Club1_Ch4:
 	speed 5
 	octave 1
 	bass 2
@@ -917,4 +917,3 @@ Branch_fa06f:
 	snare3 2
 	EndLoop
 	music_ret
-; 0xfa077

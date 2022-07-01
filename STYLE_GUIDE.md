@@ -17,7 +17,7 @@ If you have plans to contribute to the poketcg disassembly, consider giving this
 - [Constants](#constants)
 - [Numbers](#numbers)
 - [Macros](#macros)
-- [Refractoring](#refractoring)
+- [Refactoring](#refactoring)
 
 
 # Disassembling code
@@ -48,7 +48,7 @@ When naming a function, it should be concise but also capture the purpose and co
 * ``OpenNonTurnHolderDiscardPileScreen``
 * ``LoadCardDataToBuffer1_FromCardID``
 * ``LoadCardDataToBuffer1_FromDeckIndex``
-* ``CheckIfEnoughEnergiesToMove``
+* ``CheckIfEnoughEnergiesToAttack``
 * ``CheckIfEnoughEnergiesOfType``
 
 Sometimes a function is the most top-level function of this kind, so it can be given a very direct name that suggests it, like:
@@ -70,7 +70,6 @@ Another common case is functions that are declared in the home bank for accessib
 CopyCardNameAndLevel: ; 29f5 (0:29f5)
 	farcall _CopyCardNameAndLevel
 	ret
-; 0x29fa  
  ```
 ## Data labels
 
@@ -134,13 +133,13 @@ CopyLine: ; 1ea5 (0:1ea5)
 ```
 
 ```
-; check if a pokemon card has enough energy attached to it in order to use a move
+; check if a pokemon card has enough energy attached to it in order to use an attack
 ; input:
 ;   d = deck index of card (0 to 59)
 ;   e = attack index (0 or 1)
 ;   wAttachedEnergies and wTotalAttachedEnergies
 ; returns: carry if not enough energy, nc if enough energy.
-_CheckIfEnoughEnergiesToMove: ; 48ac (1:48ac)
+_CheckIfEnoughEnergiesToAttack: ; 48ac (1:48ac)
 ```
 
 ```
@@ -203,7 +202,6 @@ DuelHorizontalSeparatorTileData: ; 5199 (1:5199)
 	db 9, 6, $33, $34, 0
 	db 9, 7, $35, $36, $37, $37, $37, $37, $37, $37, $37, $37, $37, 0
 	db $ff
-; 0x51c0
 ```
 
 
@@ -221,7 +219,7 @@ When naming WRAM addresses that belong to the same context or feature, try to ma
 wLoadedCard1:: ; cc24
 	card_data_struct wLoadedCard1
 wLoadedCard2:: ; cc65
-	card_data_struct wLoadedCard2	
+	card_data_struct wLoadedCard2
 ```
 
 Lastly, adding some line of commentary to the memory address is helpful when just the name itself doesn't quite tell the whole story. Usually, this is done to clarify where the memory address is used, or to explain which kind of different values it may hold and perhaps what each of them means (or just to mention the support of specific values, such as $00 or $ff). If the RAM address is supposed to hold a value that maps directly to some group of already defined constants, this is the perfect place to indicate it. Adding commentary to an address that contains a bit field is also particularly useful to describe what each bit means, since that's not doable with just the address name.
@@ -285,36 +283,36 @@ Speaking of generic constants, there are multiple constants aleady defined for d
 Constants for WRAM address offsets (i.e. for the likes of ``wAddressN - wAddress``) are sometimes a good idea às well, and typically follow the addresses defined in some WRAM macro. For example, look at the constants defined with the previously seen ``card_data_struct`` macro in mind:
 
 ```
-CARD_DATA_TYPE                  EQU $00
-CARD_DATA_GFX                   EQU $01
-CARD_DATA_NAME                  EQU $03
-CARD_DATA_RARITY                EQU $05
+DEF CARD_DATA_TYPE                  EQU $00
+DEF CARD_DATA_GFX                   EQU $01
+DEF CARD_DATA_NAME                  EQU $03
+DEF CARD_DATA_RARITY                EQU $05
 (...)
-TRN_CARD_DATA_LENGTH    EQU $0e
-ENERGY_CARD_DATA_LENGTH EQU $0e
-PKMN_CARD_DATA_LENGTH   EQU $41
+DEF TRN_CARD_DATA_LENGTH    EQU $0e
+DEF ENERGY_CARD_DATA_LENGTH EQU $0e
+DEF PKMN_CARD_DATA_LENGTH   EQU $41
 ```
 
 Some constants make sense to have as both a value and a flag. Again, button constants are a good example of this. For these, the convention is to use ``CONSTANT_NAME`` for the value, and ``CONSTANT_NAME_F`` for the flag, so you can use either of them depending on the assembly instruction (e.g. ``and CONSTANT_NAME`` or ``bit CONSTANT_NAME_F, a``. For example:
 
 ```
-A_BUTTON_F EQU 0
-B_BUTTON_F EQU 1
+DEF A_BUTTON_F EQU 0
+DEF B_BUTTON_F EQU 1
 (...)
 
-A_BUTTON   EQU 1 << A_BUTTON_F ; $01
-B_BUTTON   EQU 1 << B_BUTTON_F ; $02
+DEF A_BUTTON   EQU 1 << A_BUTTON_F ; $01
+DEF B_BUTTON   EQU 1 << B_BUTTON_F ; $02
 (...)
 ```
 
 Bit mask constants are also useful if they are used multiple times. Buttons again are a simple enough example to illustrate this:
 
 ```
-BUTTONS    EQU A_BUTTON | B_BUTTON | SELECT | START  ; $0f
-D_PAD      EQU D_RIGHT  | D_LEFT   | D_UP   | D_DOWN ; $f0
+DEF BUTTONS    EQU A_BUTTON | B_BUTTON | SELECT | START  ; $0f
+DEF D_PAD      EQU D_RIGHT  | D_LEFT   | D_UP   | D_DOWN ; $f0
 ```
 
-Finally, note that constants that are exclusive to a specific feature or function should generally be local, and thus placed above the code that uses them. This is usually not the case, however, so you should usually be looking to declare them inside the constants/ directory as mentioned before. This kind of refractoring is also more appropriate when the disassembly is in a more advanced state as well.
+Finally, note that constants that are exclusive to a specific feature or function should generally be local, and thus placed above the code that uses them. This is usually not the case, however, so you should usually be looking to declare them inside the constants/ directory as mentioned before. This kind of refactoring is also more appropriate when the disassembly is in a more advanced state as well.
 
 # Numbers
 
@@ -330,6 +328,6 @@ When disassembling code and declaring data make sure to have a quick look at the
 If a macro is very specific to a feature and you are almost 100% sure that it won't be ever used anywhere else, it's a good idea to put it along with the data structure that uses it (right above it) instead of in the macros/ directory. This makes the macro more immediate to look up. As a more general suggestion, I would advice against creating a macro for a data structure that has not been fully understood. The macro tends to hide its internal structure, which makes it harder to eventaully refractor and also to follow the code that travels through said data structure.
 
 
-# Refractoring
+# Refactoring
 
 If some data structure is large enough to warrant its own file inside the src/data/ directory, or a big module of code that comprises all the code corresponding to a given game feature, feel free to move it over to its own separate place. For the most part, it's generally not a good idea to split or move things around too much when there's still a lot of work to do because it makes it more annoying to locate and modify things.

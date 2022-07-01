@@ -95,7 +95,7 @@ Text049e: ; 4437a (11:437a)
 	line "Well, I hope I see you around!"
 	done
 
-Text049f: ; 443d6 (11:43d6)
+WhatIsADeckText: ; 443d6 (11:43d6)
 	text "What is a deck?"
 	done
 
@@ -1020,3 +1020,5 @@ Text0523: ; 47f08 (11:7f08)
 	text "Hey, <RAMNAME>!"
 	line "What are you doing here?"
 	done
+
+	ds $d6

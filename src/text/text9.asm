@@ -719,13 +719,13 @@ Text07b0: ; 56478 (15:6478)
 	line "when we Duel again!"
 	done
 
-Text07b1: ; 564db (15:64db)
+PokemonTradingCardGameStaffText: ; 564db (15:64db)
 	text ""
 	line "        Pokémon Trading Card Game "
 	line "                  Staff"
 	done
 
-Text07b2: ; 56518 (15:6518)
+ProducersText: ; 56518 (15:6518)
 	text ""
 	line "                Producers"
 	line ""
@@ -735,7 +735,7 @@ Text07b2: ; 56518 (15:6518)
 	line "             Takehiro Izushi"
 	done
 
-Text07b3: ; 5658f (15:658f)
+DirectorText: ; 5658f (15:658f)
 	text ""
 	line "                Director"
 	line ""
@@ -743,7 +743,7 @@ Text07b3: ; 5658f (15:658f)
 	line "                Koji Arai"
 	done
 
-Text07b4: ; 565c6 (15:65c6)
+ProgrammersText: ; 565c6 (15:65c6)
 	text ""
 	line "               Programmers"
 	line ""
@@ -753,7 +753,7 @@ Text07b4: ; 565c6 (15:65c6)
 	line "             Masaki Tsumori"
 	done
 
-Text07b5: ; 5663a (15:663a)
+GBGraphicDesigners1Text: ; 5663a (15:663a)
 	text ""
 	line "           GB Graphic Designers"
 	line ""
@@ -763,19 +763,19 @@ Text07b5: ; 5663a (15:663a)
 	line "           Tsuguyuki Yamamoto"
 	done
 
-Text07b6: ; 566b5 (15:66b5)
+GBGraphicDesigners2Text: ; 566b5 (15:66b5)
 	text "            Yasuhiro Ichizawa"
 	line "              Miwa Matsuda"
 	line "             Norihiro Kanie"
 	done
 
-Text07b7: ; 5670b (15:670b)
+GBGraphicDesigners3Text: ; 5670b (15:670b)
 	text "             Kazushi Kousaka"
 	line "              Hiromi Sugiue"
 	line "           Katsuhisa Nishikawa"
 	done
 
-Text07b8: ; 56764 (15:6764)
+MusicText: ; 56764 (15:6764)
 	text ""
 	line "                  Music"
 	line ""
@@ -783,7 +783,7 @@ Text07b8: ; 56764 (15:6764)
 	line "            Ichiro Shimakura"
 	done
 
-Text07b9: ; 5679d (15:679d)
+SoundEffectsText: ; 5679d (15:679d)
 	text ""
 	line "              Sound Effects"
 	line ""
@@ -791,7 +791,7 @@ Text07b9: ; 5679d (15:679d)
 	line "              Masato Aihara"
 	done
 
-Text07ba: ; 567d9 (15:67d9)
+SoundDirectorText: ; 567d9 (15:67d9)
 	text ""
 	line "             Sound Director"
 	line ""
@@ -799,7 +799,7 @@ Text07ba: ; 567d9 (15:67d9)
 	line "            Toshiaki Takimoto"
 	done
 
-Text07bb: ; 56817 (15:6817)
+SoundSystemSupportText: ; 56817 (15:6817)
 	text ""
 	line "          Sound System Support"
 	line ""
@@ -808,7 +808,7 @@ Text07bb: ; 56817 (15:6817)
 	line "               Hideki Oka"
 	done
 
-Text07bc: ; 56873 (15:6873)
+CardGameCreator1Text: ; 56873 (15:6873)
 	text ""
 	line "            Card Game Creator"
 	line ""
@@ -816,7 +816,7 @@ Text07bc: ; 56873 (15:6873)
 	line "             Takumi Akabane"
 	done
 
-Text07bd: ; 568b1 (15:68b1)
+CardGameCreator2Text: ; 568b1 (15:68b1)
 	text ""
 	line "            Card Game Creator"
 	line ""
@@ -824,7 +824,7 @@ Text07bd: ; 568b1 (15:68b1)
 	line "             Kouichi Oyama"
 	done
 
-Text07be: ; 568ee (15:68ee)
+CardGameCreator3Text: ; 568ee (15:68ee)
 	text ""
 	line "            Card Game Creator"
 	line ""
@@ -832,7 +832,7 @@ Text07be: ; 568ee (15:68ee)
 	line "              Akihiko Miura"
 	done
 
-Text07bf: ; 5692c (15:692c)
+CardIllustrators1Text: ; 5692c (15:692c)
 	text ""
 	line "            Card Illustrators"
 	line ""
@@ -843,14 +843,14 @@ Text07bf: ; 5692c (15:692c)
 	line "             Kagemaru Himeno"
 	done
 
-Text07c0: ; 569c0 (15:69c0)
+CardIllustrators2Text: ; 569c0 (15:69c0)
 	text "             Tomoaki Imakuni"
 	line "               Miki Tanaka"
 	line "              Toshinao Aoki"
 	line "              Benimaru Ito"
 	done
 
-Text07c1: ; 56a30 (15:6a30)
+SpecialAppearances1Text: ; 56a30 (15:6a30)
 	text ""
 	line "         Special Appearances by"
 	line ""
@@ -859,12 +859,12 @@ Text07c1: ; 56a30 (15:6a30)
 	line "             Masako Uchiyama"
 	done
 
-Text07c2: ; 56a8c (15:6a8c)
+SpecialAppearances2Text: ; 56a8c (15:6a8c)
 	text "             Kunimi Kawamura"
 	line "                Imakuni?"
 	done
 
-Text07c3: ; 56ac3 (15:6ac3)
+USCoordination1Text: ; 56ac3 (15:6ac3)
 	text ""
 	line "             US COORDINATION"
 	line "           NINTENDO OF AMERICA"
@@ -874,12 +874,12 @@ Text07c3: ; 56ac3 (15:6ac3)
 	line "              HIRO NAKAMURA"
 	done
 
-Text07c4: ; 56b3a (15:6b3a)
+USCoordination2Text: ; 56b3a (15:6b3a)
 	text "              KENJI OKUBO"
 	line "             WILLIAM TRINEN"
 	done
 
-Text07c5: ; 56b71 (15:6b71)
+USCoordination3Text: ; 56b71 (15:6b71)
 	text ""
 	line "             US COORDINATION"
 	line "           Wizards of the Coast"
@@ -890,13 +890,13 @@ Text07c5: ; 56b71 (15:6b71)
 	line "             Jessica Beaven"
 	done
 
-Text07c6: ; 56c0d (15:6c0d)
+USCoordination4Text: ; 56c0d (15:6c0d)
 	text "             Paul Peterson"
 	line "            Michael G. Ryan"
 	line "               Tom Wylie"
 	done
 
-Text07c7: ; 56c5e (15:6c5e)
+TranslationDraftText: ; 56c5e (15:6c5e)
 	text ""
 	line "            TRANSLATION/DRAFT"
 	line ""
@@ -904,7 +904,7 @@ Text07c7: ; 56c5e (15:6c5e)
 	line "               BILL RITCH"
 	done
 
-Text07c8: ; 56c9a (15:6c9a)
+MasteringText: ; 56c9a (15:6c9a)
 	text ""
 	line "                Mastering"
 	line ""
@@ -912,7 +912,7 @@ Text07c8: ; 56c9a (15:6c9a)
 	line "             Tetsuya Komatsu"
 	done
 
-Text07c9: ; 56cd5 (15:6cd5)
+ManualCreationText: ; 56cd5 (15:6cd5)
 	text ""
 	line "             Manual Creation"
 	line ""
@@ -920,7 +920,7 @@ Text07c9: ; 56cd5 (15:6cd5)
 	line "              Haruki Mitani"
 	done
 
-Text07ca: ; 56d12 (15:6d12)
+ManualIllustrationsText: ; 56d12 (15:6d12)
 	text ""
 	line "           Manual Illustrations"
 	line ""
@@ -928,7 +928,7 @@ Text07ca: ; 56d12 (15:6d12)
 	line "             Kagemaru Himeno"
 	done
 
-Text07cb: ; 56d53 (15:6d53)
+PokemonOriginalStoryText: ; 56d53 (15:6d53)
 	text ""
 	line "          Pokémon Original Story"
 	line ""
@@ -937,7 +937,7 @@ Text07cb: ; 56d53 (15:6d53)
 	line ""
 	done
 
-Text07cc: ; 56d95 (15:6d95)
+CreatedInCooperationWithText: ; 56d95 (15:6d95)
 	text ""
 	line "       Created In Cooperation With"
 	line ""
@@ -947,7 +947,7 @@ Text07cc: ; 56d95 (15:6d95)
 	line "             Takahiro Harada"
 	done
 
-Text07cd: ; 56e11 (15:6e11)
+WithCooperation1Text: ; 56e11 (15:6e11)
 	text ""
 	line "          With Cooperation from"
 	line ""
@@ -957,21 +957,21 @@ Text07cd: ; 56e11 (15:6e11)
 	line "              Keigo Yasuda"
 	done
 
-Text07ce: ; 56e8a (15:6e8a)
+WithCooperation2Text: ; 56e8a (15:6e8a)
 	text "            Yusuke Kurushima"
 	line "           Nobuchika Takahashi"
 	line "             Junko Igarashi"
 	line "              Yukiko Tomita"
 	done
 
-Text07cf: ; 56eff (15:6eff)
+WithCooperation3Text: ; 56eff (15:6eff)
 	text "              Mari Matsuda"
 	line "             Moto Yamaguchi"
 	line "              Shigeru Sato"
 	line "             Chiaki Nishiki"
 	done
 
-Text07d0: ; 56f6e (15:6f6e)
+ProjectManagerText: ; 56f6e (15:6f6e)
 	text ""
 	line "             Project Manager"
 	line ""
@@ -979,7 +979,7 @@ Text07d0: ; 56f6e (15:6f6e)
 	line "            Yasutaka Kakiseko"
 	done
 
-Text07d1: ; 56fad (15:6fad)
+SupervisorText: ; 56fad (15:6fad)
 	text ""
 	line "               Supervisor"
 	line ""
@@ -988,7 +988,7 @@ Text07d1: ; 56fad (15:6fad)
 	line "              Hiroshi Kudo"
 	done
 
-Text07d2: ; 56fe7 (15:6fe7)
+ExecutiveProducerText: ; 56fe7 (15:6fe7)
 	text ""
 	line "           Executive Producer"
 	line ""
@@ -997,7 +997,7 @@ Text07d2: ; 56fe7 (15:6fe7)
 	line "            Hiroshi Yamauchi"
 	done
 
-Text07d3: ; 57027 (15:7027)
+CreatedByText: ; 57027 (15:7027)
 	text ""
 	line "               Created by"
 	line ""
@@ -1006,92 +1006,92 @@ Text07d3: ; 57027 (15:7027)
 	line "                 Hudson"
 	done
 
-Text07d4: ; 5705e (15:705e)
+ChallengeMachineText: ; 5705e (15:705e)
 	text "  Challenge Machine  "
 	done
 
-Text07d5: ; 57075 (15:7075)
+PlayersScoreText: ; 57075 (15:7075)
 	text "<RAMNAME>'s Score"
 	done
 
-Text07d6: ; 57080 (15:7080)
+Defeated5OpponentsXTimesText: ; 57080 (15:7080)
 	text "Defeated 5 opponents      time(s)."
 	done
 
-Text07d7: ; 570a4 (15:70a4)
+PresentConsecutiveWinsText: ; 570a4 (15:70a4)
 	text "Present Consecutive Wins"
 	done
 
-Text07d8: ; 570be (15:70be)
+MaximumConsecutiveWinsText: ; 570be (15:70be)
 	text "Maximum Consecutive Wins"
 	line "    [ <RAMTEXT>  ]"
 	done
 
-Text07d9: ; 570e3 (15:70e3)
+WinsText: ; 570e3 (15:70e3)
 	text "Wins"
 	done
 
-Text07da: ; 570e9 (15:70e9)
+XConsecutiveWinsNthOpponentIsText: ; 570e9 (15:70e9)
 	text "<RAMNAME> <RAMNUM> Consecutive Wins!"
 	line ""
 	text "<RAMNUM> opponent is <RAMTEXT>."
 	done
 
-Text07db: ; 57112 (15:7112)
+NthOpponentIsText: ; 57112 (15:7112)
 	text "<RAMNUM> opponent is <RAMTEXT>."
 	done
 
-Text07dc: ; 57124 (15:7124)
+WouldYouLikeToBeginTheDuelText: ; 57124 (15:7124)
 	text "Would you like to begin the Duel?"
 	done
 
-Text07dd: ; 57147 (15:7147)
+IfYouQuitTheDuelText: ; 57147 (15:7147)
 	text "If you quit the Duel,"
 	line "Your Consecutive Wins will end."
 	done
 
-Text07de: ; 5717e (15:717e)
+WouldYouLikeToQuitTheDuelText: ; 5717e (15:717e)
 	text "Would you like to quit the Duel?"
 	done
 
-Text07df: ; 571a0 (15:71a0)
+PlayTheChallengeMachineText: ; 571a0 (15:71a0)
 	text "Play the Challenge Machine?"
 	done
 
-Text07e0: ; 571bd (15:71bd)
+LetUsChooseYourOpponentText: ; 571bd (15:71bd)
 	text "OK,"
 	line "Let us choose your opponent."
 	done
 
-Text07e1: ; 571df (15:71df)
+LostToTheNthOpponentText: ; 571df (15:71df)
 	text "You lost to the <RAMNUM> opponent,"
 	line "<RAMTEXT>!"
 	done
 
-Text07e2: ; 571ff (15:71ff)
+ConsecutiveWinsEndedAtText: ; 571ff (15:71ff)
 	text "<RAMNAME>'s consecutive wins"
 	line "ended at <RAMNUM>."
 	done
 
-Text07e3: ; 57221 (15:7221)
+WeAwaitYourNextChallengeText: ; 57221 (15:7221)
 	text "We await your next challenge."
 	done
 
-Text07e4: ; 57240 (15:7240)
+YourOpponentsForThisGameText: ; 57240 (15:7240)
 	text "Your opponents for this game:"
 	done
 
-Text07e5: ; 5725f (15:725f)
+WonAgainstXOpponentsText: ; 5725f (15:725f)
 	text "Congratulations!"
 	line "You won against <RAMNUM> opponents!"
 	done
 
-DefeatedFiveOpponentsText: ; 5728e (15:728e)
+Defeated5OpponentsText: ; 5728e (15:728e)
 	text "Congratulations!"
 	line "You defeated 5 opponents!"
 	done
 
-Text07e7: ; 572ba (15:72ba)
+SuccessfullyDefeated5OpponentsText: ; 572ba (15:72ba)
 	text "<RAMNAME> successfully defeated "
 	line "5 opponents "
 	text "<RAMNUM> time(s)!!!"
@@ -1102,79 +1102,79 @@ ConsecutiveWinRecordIncreasedText: ; 572ee (15:72ee)
 	line "record increased to <RAMNUM>!"
 	done
 
-Text07e9: ; 5731a (15:731a)
+ClubMemberText: ; 5731a (15:731a)
 	text "Club Member"
 	done
 
-Text07ea: ; 57327 (15:7327)
+ClubMasterText: ; 57327 (15:7327)
 	text "Club Master"
 	done
 
-Text07eb: ; 57334 (15:7334)
+TechText: ; 57334 (15:7334)
 	text "TECH"
 	done
 
-Text07ec: ; 5733a (15:733a)
+StrangeLifeformText: ; 5733a (15:733a)
 	text "Strange Life-form"
 	done
 
-Text07ed: ; 5734d (15:734d)
+GrandMasterText: ; 5734d (15:734d)
 	text "Grand Master"
 	done
 
-Text07ee: ; 5735b (15:735b)
+ChallengeMachineOpponent1Text: ; 5735b (15:735b)
 	textfw0 "1"
 	done
 
-Text07ef: ; 5735d (15:735d)
+ChallengeMachineOpponent2Text: ; 5735d (15:735d)
 	textfw0 "2"
 	done
 
-Text07f0: ; 5735f (15:735f)
+ChallengeMachineOpponent3Text: ; 5735f (15:735f)
 	textfw0 "3"
 	done
 
-Text07f1: ; 57361 (15:7361)
+ChallengeMachineOpponent4Text: ; 57361 (15:7361)
 	textfw0 "4"
 	done
 
-Text07f2: ; 57363 (15:7363)
+ChallengeMachineOpponent5Text: ; 57363 (15:7363)
 	textfw0 "5"
 	done
 
-Text07f3: ; 57365 (15:7365)
+ChallengeMachineNotDuelledIconText: ; 57365 (15:7365)
 	textfw0 " "
 	done
 
-Text07f4: ; 57367 (15:7367)
+ChallengeMachineDuelWonIconText: ; 57367 (15:7367)
 	textfw3 "☆"
 	done
 
-Text07f5: ; 5736a (15:736a)
+ChallengeMachineDuelLostIconText: ; 5736a (15:736a)
 	textfw3 "★"
 	done
 
-Text07f6: ; 5736d (15:736d)
+ChallengeMachineFireIconText: ; 5736d (15:736d)
 	textfw3 "【", "<FIRE>", "】"
 	done
 
-Text07f7: ; 57374 (15:7374)
+ChallengeMachineLightningIconText: ; 57374 (15:7374)
 	textfw3 "【", "<LIGHTNING>", "】"
 	done
 
-Text07f8: ; 5737b (15:737b)
+ChallengeMachineWaterIconText: ; 5737b (15:737b)
 	textfw3 "【", "<WATER>", "】"
 	done
 
-Text07f9: ; 57382 (15:7382)
+ChallengeMachineFightingIconText: ; 57382 (15:7382)
 	textfw3 "【", "<FIGHTING>", "】"
 	done
 
-Text07fa: ; 57389 (15:7389)
+ChallengeMachinePsychicIconText: ; 57389 (15:7389)
 	textfw3 "【", "<PSYCHIC>", "】"
 	done
 
-Text07fb: ; 57390 (15:7390)
+ChallengeMachineGrassIconText: ; 57390 (15:7390)
 	textfw3 "【", "<GRASS>", "】"
 	done
 
@@ -1485,3 +1485,5 @@ KakunasStiffenDescription: ; 57f57 (15:7f57)
 	line "opponent's next turn. (Any other"
 	line "effects of attacks still happen.)"
 	done
+
+	ds $20
