@@ -1,7 +1,5 @@
-# Pokemon TCG Hacks
-This is a collection of all the hacks I've created using the pret disassembly of [pokemon TCG](https://github.com/pret/poketcg). This repo will fall behind pret's, only pulling when I want to work on a new hack.
-
-Every hack is set up as a branch of this repo, with _patch\__ as a prefix
+# Pokemon TCG Practice Rom
+This is a hack of pokemon TCG for gameboy meant to make practicing speedruns a bit easier.
 
 
 ## Included Hacks
