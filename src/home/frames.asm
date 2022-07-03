@@ -20,19 +20,27 @@ DoFrame:
 	call WaitForVBlank
 	call ReadJoypad
 	call HandleDPadRepeat
-	ld a, [wDebugPauseAllowed]
-	or a
-	jr z, .done
-	ldh a, [hKeysPressed]
+	;ld a, [wDebugPauseAllowed]
+	;or a
+	;jr z, .done
+	ldh a, [hKeysHeld]
 	and SELECT
+	jr z, .done
+	ldh a, [hKeysHeld]
+	and D_PAD | B_BUTTON
 	jr z, .done
 .game_paused_loop
 	call WaitForVBlank
 	call ReadJoypad
 	call HandleDPadRepeat
 	ldh a, [hKeysPressed]
-	and SELECT
+	and B_BUTTON | SELECT
 	jr z, .game_paused_loop
+	; probably hacky, but should prevent menu presses from affecting game too much
+	ld a, [hKeysPressed]
+	ld [hKeysHeld], a
+	xor a
+	ld [hKeysPressed], a
 .done
 	pop bc
 	pop de
